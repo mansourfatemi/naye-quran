@@ -3470,7 +3470,7 @@ let currentSampleIdx=0;
 function playMaqamSample2(secIdx,sampleIdx,e){
   e.stopPropagation();
   const s=currentMaqam.sections[secIdx].samples[sampleIdx];
-  const audioPath="./qaris/manshawy/maqamat/audio/"+s.audio;
+  const audioPath="https://archive.org/download/naye-quran-audio/qaris/manshawy/maqamat/audio/"+s.audio;
   
   if(maqamPlaying && maqamAudio.src.includes(s.audio)){
     maqamAudio.pause();
@@ -4150,7 +4150,7 @@ function openMaqamTilawatDetail(maqam, color, qId, tId){
       <button class="mqd-play ${has?"has":""}" title="${has?"پخش":"بدون صوت"}">${has?"▶":"—"}</button>`;
     const playBtn=row.querySelector(".mqd-play");
     const qIdx=mqdQueue.length;
-    mqdQueue.push({btn:playBtn, audioSrc:has?("./qaris/"+q.id+"/"+f.au):null, au:f.au, has:has});
+    mqdQueue.push({btn:playBtn, audioSrc:has?("https://archive.org/download/naye-quran-audio/qaris/"+q.id+"/"+f.au):null, au:f.au, has:has});
     if(has){
       playBtn.onclick=(e)=>{
         e.stopPropagation();
@@ -4392,7 +4392,7 @@ function togglePlPlay(plId,idx){
   const f=t&&t.faraz[item.i];
   if(!q||!t||!f){alert("این فراز دیگر در دسترس نیست");return;}
   if(!f.au){alert("🔇 این فراز فایل صوتی ندارد");return;}
-  const audioPath="./qaris/"+q.id+"/"+f.au;
+  const audioPath="https://archive.org/download/naye-quran-audio/qaris/"+q.id+"/"+f.au;
   if(plPlayingIdx===idx && !plAudio.paused){
     plAudio.pause();
     plPlayingIdx=null;

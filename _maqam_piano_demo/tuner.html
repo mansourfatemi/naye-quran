@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>تیونر نوای قرآن</title>
+<style>
+  *{box-sizing:border-box;font-family:Tahoma,"Segoe UI",sans-serif}
+  body{margin:0;background:#1a1a1a;color:#eee;min-height:100vh;display:flex;justify-content:center}
+  .app{width:100%;max-width:420px;background:#1a1a1a;min-height:100vh;padding-bottom:24px}
+
+  .tuner-header{background:#e91e63;color:#fff;padding:16px 14px;display:flex;align-items:center;box-shadow:0 3px 10px rgba(0,0,0,.3)}
+  .back-btn{background:none;border:none;color:#fff;font-size:1.5em;cursor:pointer;padding:0 10px;line-height:1}
+  .tuner-title{flex:1;text-align:center;font-size:1.1em;font-weight:bold;margin-left:34px}
+
+  .mic-btn{display:block;margin:16px auto 6px;border:none;cursor:pointer;border-radius:50px;padding:12px 28px;font-size:.92em;font-weight:bold;background:#333;color:#fff;box-shadow:0 3px 10px rgba(0,0,0,.3)}
+  .mic-btn.on{background:#e91e63}
+  .mic-status{text-align:center;font-size:.72em;color:#777;margin-bottom:6px;padding:0 16px;line-height:1.6}
+
+  .octave-row{display:flex;justify-content:space-between;padding:10px 18px 4px;font-size:1.05em;color:#888;direction:ltr}
+  .octave-row span{width:24px;text-align:center;position:relative}
+  .octave-row span.active{color:#fff}
+  .octave-row span.active::before{content:'';position:absolute;top:-3px;left:50%;transform:translateX(-50%);width:30px;height:30px;border-radius:50%;background:#4CAF50;z-index:-1}
+
+  .piano-graphic-wrap{margin:10px auto;overflow-x:auto;padding-bottom:4px}
+  .piano-graphic{position:relative;height:130px;width:308px;margin:0 auto;direction:ltr}
+  .pg-wkey{position:absolute;top:0;width:44px;height:130px;background:#555;border:1px solid #444;border-radius:0 0 5px 5px;transition:background .12s;cursor:pointer}
+  .pg-wkey.active{background:#fff}
+  .pg-bkey{position:absolute;top:0;width:26px;height:80px;background:#111;border-radius:0 0 4px 4px;z-index:5;cursor:pointer;transition:background .12s}
+  /* کلید سیاه فعال = سفید روشن (مثل نتنگار) */
+  .pg-bkey.active{background:#fff}
+
+  .letter-row{display:flex;justify-content:space-between;padding:10px 18px 0;font-size:1.05em;font-weight:bold;color:#999;direction:ltr}
+  .letter-row span{width:38px;text-align:center;cursor:pointer}
+  .letter-row span.active{color:#fff;background:#e91e63;border-radius:50%;padding:4px 0}
+
+  .persian-row{display:flex;justify-content:space-between;padding:8px 18px 0;direction:ltr}
+  .persian-row span{width:38px;text-align:center;font-size:1.05em;color:#999;cursor:pointer}
+  .persian-row span.active{color:#fff;background:#e91e63;border-radius:8px;padding:4px 0}
+
+  .cents-wrap{width:280px;margin:26px auto 0;direction:ltr;position:relative;height:56px}
+  .cents-axis{position:relative;height:30px}
+  .cents-tick{position:absolute;bottom:0;width:1.5px;height:24px;background:#555}
+  .cents-tick.mid{background:#777;height:28px}
+  .cents-label{position:absolute;top:0;font-size:.7em;color:#888;transform:translateX(-50%)}
+  .cents-needle{position:absolute;bottom:0;width:3px;height:28px;background:#e91e63;transition:left .08s linear,background .15s;left:139px}
+  .cents-needle.good{background:#4CAF50}
+  .cents-needle.warn{background:#FF9800}
+
+  .qtone-hint{text-align:center;font-size:.75em;color:#26c6da;background:rgba(38,198,218,.1);border-radius:10px;padding:8px 12px;margin:14px 20px 0;display:none;line-height:1.6}
+  .qtone-hint.show{display:block}
+
+  .big-note-wrap{text-align:center;margin-top:10px}
+  .big-note{font-size:2.6em;font-weight:bold;color:#e91e63;line-height:1}
+  .big-cents{font-size:1.1em;color:#ddd;margin-top:4px}
+  .freq-ref{font-size:.85em;color:#888;margin-top:14px;text-align:center;direction:ltr}
+
+  .idle-msg{text-align:center;color:#777;font-size:.85em;padding:10px 20px 0}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="tuner-header">
+    <button class="back-btn" onclick="history.back()">&#8592;</button>
+    <div class="tuner-title">تیونر نوای قرآن</div>
+  </div>
+
+  <button class="mic-btn" id="micBtn">🎙️ شروع تیونر</button>
+  <div class="mic-status" id="micStatus"></div>
+
+  <div class="octave-row" id="octaveRow"></div>
+
+  <div class="piano-graphic-wrap">
+    <div class="piano-graphic" id="pianoGraphic"></div>
+  </div>
+
+  <div class="letter-row" id="letterRow"></div>
+  <div class="persian-row" id="persianRow"></div>
+
+  <div class="cents-wrap" id="centsWrap">
+    <div class="cents-axis" id="centsAxis"></div>
+    <div class="cents-needle" id="centsNeedle"></div>
+  </div>
+
+  <div class="qtone-hint" id="qtoneHint"></div>
+
+  <div class="big-note-wrap">
+    <div class="big-note" id="bigNote">—</div>
+    <div class="big-cents" id="bigCents">&nbsp;</div>
+  </div>
+  <div class="idle-msg" id="idleMsg">میکروفون را روشن کنید یا روی پیانو بزنید</div>
+  <div class="freq-ref">A4 = 440 Hz</div>
+  <div id="debugLine" style="text-align:center;font-size:.7em;color:#26c6da;padding:4px;direction:ltr"></div>
+</div>
+
+<script>
+function toFa(n){ return n.toString().replace(/[0-9]/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]); }
+
+const NOTE_NAMES_FA = ['دو','دو#','ر','ر#','می','فا','فا#','سل','سل#','لا','لا#','سی'];
+const NOTE_NAMES_EN = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+const IS_SHARP = [false,true,false,true,false,false,true,false,true,false,true,false];
+const WHITE_LETTER_IDX = [0,2,4,5,7,9,11]; // C D E F G A B
+const BLACK_AFTER_WHITE = {1:0, 3:1, 6:3, 8:4, 10:5};
+
+// ══════════ ردیف اکتاو (۰ تا ۸) ══════════
+const octaveRow = document.getElementById('octaveRow');
+for(let o=0; o<=8; o++){
+  const s = document.createElement('span');
+  s.textContent = toFa(o);
+  s.dataset.oct = o;
+  octaveRow.appendChild(s);
+}
+function setActiveOctave(oct){
+  octaveRow.querySelectorAll('span').forEach(s=>{
+    s.classList.toggle('active', Number(s.dataset.oct) === oct);
+  });
+}
+
+// ══════════ ردیف حروف انگلیسی + ردیف نام فارسی ══════════
+const letterRow = document.getElementById('letterRow');
+const persianRow = document.getElementById('persianRow');
+WHITE_LETTER_IDX.forEach(idx=>{
+  const s1 = document.createElement('span');
+  s1.textContent = NOTE_NAMES_EN[idx];
+  s1.dataset.idx = idx;
+  s1.onclick = ()=> manualPlayByIdx(idx);
+  letterRow.appendChild(s1);
+
+  const s2 = document.createElement('span');
+  s2.textContent = NOTE_NAMES_FA[idx];
+  s2.dataset.idx = idx;
+  s2.onclick = ()=> manualPlayByIdx(idx);
+  persianRow.appendChild(s2);
+});
+function setActiveLetter(noteIdx){
+  letterRow.querySelectorAll('span').forEach(s=>{
+    s.classList.toggle('active', Number(s.dataset.idx) === noteIdx);
+  });
+  persianRow.querySelectorAll('span').forEach(s=>{
+    s.classList.toggle('active', Number(s.dataset.idx) === noteIdx);
+  });
+}
+
+// ══════════ گرافیک پیانو ══════════
+const PG_WKEY_W = 44, PG_BKEY_W = 26;
+const pianoGraphic = document.getElementById('pianoGraphic');
+const pgWhiteKeys = [], pgBlackKeys = [];
+WHITE_LETTER_IDX.forEach((idx,i)=>{
+  const el = document.createElement('div');
+  el.className = 'pg-wkey';
+  el.style.left = (i*PG_WKEY_W) + 'px';
+  el.onclick = ()=> manualPlayByIdx(idx);
+  pianoGraphic.appendChild(el);
+  pgWhiteKeys[idx] = el;
+});
+Object.keys(BLACK_AFTER_WHITE).forEach(k=>{
+  const semiIdx = Number(k);
+  const afterWhiteI = BLACK_AFTER_WHITE[semiIdx];
+  const el = document.createElement('div');
+  el.className = 'pg-bkey';
+  el.style.left = ((afterWhiteI+1)*PG_WKEY_W - PG_BKEY_W/2 - 3) + 'px';
+  el.onclick = (e)=>{ e.stopPropagation(); manualPlayByIdx(semiIdx); };
+  pianoGraphic.appendChild(el);
+  pgBlackKeys[semiIdx] = el;
+});
+function setActivePianoKey(noteIdx){
+  Object.values(pgWhiteKeys).forEach(k=>k && k.classList.remove('active'));
+  Object.values(pgBlackKeys).forEach(k=>k && k.classList.remove('active'));
+  if(noteIdx < 0) return;
+  if(IS_SHARP[noteIdx]){
+    if(pgBlackKeys[noteIdx]) pgBlackKeys[noteIdx].classList.add('active');
+  } else {
+    if(pgWhiteKeys[noteIdx]) pgWhiteKeys[noteIdx].classList.add('active');
+  }
+}
+
+// ── نواختن دستی یک نُت مرجع با تپ روی پیانو/حروف ──
+let audioCtx = null;
+function ensureCtx(){
+  if(!audioCtx) audioCtx = new (window.AudioContext||window.webkitAudioContext)();
+  if(audioCtx.state === 'suspended') audioCtx.resume();
+  return audioCtx;
+}
+function playTone(freq){
+  const ctx = ensureCtx();
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = 'triangle';
+  osc.frequency.value = freq;
+  gain.gain.setValueAtTime(0.0001, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.35, ctx.currentTime + 0.01);
+  gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 1.1);
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+  osc.start();
+  osc.stop(ctx.currentTime + 1.15);
+}
+
+let lastDetectedOctave = 4;
+function manualPlayByIdx(noteIdx){
+  const midi = (lastDetectedOctave + 1) * 12 + noteIdx;
+  const freq = 440 * Math.pow(2, (midi - 69) / 12);
+  ensureCtx();
+  playTone(freq);
+  displayNote(noteIdx, lastDetectedOctave, 0);
+}
+
+// ══════════ خطکش سِنت ══════════
+function renderCentsAxis(){
+  const axis = document.getElementById('centsAxis');
+  axis.innerHTML = '';
+  [-50,-25,0,25,50].forEach(v=>{
+    const tick = document.createElement('div');
+    tick.className = 'cents-tick' + (v===0 ? ' mid' : '');
+    tick.style.left = ((v+50)/100*280) + 'px';
+    axis.appendChild(tick);
+    const lbl = document.createElement('div');
+    lbl.className = 'cents-label';
+    lbl.style.left = ((v+50)/100*280) + 'px';
+    lbl.textContent = (v>0?'+':'') + v;
+    axis.appendChild(lbl);
+  });
+}
+renderCentsAxis();
+
+function displayNote(noteIdx, octave, cents){
+  document.getElementById('idleMsg').style.display = 'none';
+  lastDetectedOctave = octave;
+  setActiveOctave(octave);
+  setActiveLetter(noteIdx);
+  setActivePianoKey(noteIdx);
+
+  const bigNote = document.getElementById('bigNote');
+  const bigCents = document.getElementById('bigCents');
+  bigNote.textContent = NOTE_NAMES_FA[noteIdx];
+  const roundedCents = Math.round(cents);
+  bigCents.textContent = (roundedCents>0?'+':'') + toFa(Math.abs(roundedCents)).replace(/^/, roundedCents<0?'−':'');
+
+  const needle = document.getElementById('centsNeedle');
+  const clamped = Math.max(-50, Math.min(50, roundedCents));
+  needle.style.left = ((clamped + 50) / 100 * 280 - 1.5) + 'px';
+  needle.className = 'cents-needle' + (Math.abs(roundedCents) <= 8 ? ' good' : (Math.abs(roundedCents) <= 25 ? ' warn' : ''));
+
+  const qtoneHint = document.getElementById('qtoneHint');
+  if(Math.abs(roundedCents) >= 38){
+    const nextIdx = (noteIdx + (roundedCents>0?1:-1) + 12) % 12;
+    qtoneHint.classList.add('show');
+    qtoneHint.innerHTML = '🔵 این ارتفاع احتمالاً <b>ربعپرده</b> است — تقریباً وسط بین «' + NOTE_NAMES_FA[noteIdx] + '» و «' + NOTE_NAMES_FA[nextIdx] + '»';
+  } else {
+    qtoneHint.classList.remove('show');
+  }
+}
+function displayIdle(){
+  document.getElementById('idleMsg').style.display = 'block';
+  document.getElementById('bigNote').textContent = '—';
+  document.getElementById('bigCents').innerHTML = '&nbsp;';
+  document.getElementById('qtoneHint').classList.remove('show');
+  octaveRow.querySelectorAll('span').forEach(s=>s.classList.remove('active'));
+  letterRow.querySelectorAll('span').forEach(s=>s.classList.remove('active'));
+  persianRow.querySelectorAll('span').forEach(s=>s.classList.remove('active'));
+  setActivePianoKey(-1);
+}
+displayIdle();
+
+// ══════════ تیونر زنده (تشخیص ارتفاع صدا از میکروفون) ══════════
+let micStream = null;
+let micAudioCtx = null;
+let micAnalyser = null;
+let micRunning = false;
+let micRafId = null;
+const micBtn = document.getElementById('micBtn');
+const micStatus = document.getElementById('micStatus');
+
+// ══ YIN pitch detection ══
+function detectPitch(buf, sampleRate){
+  let rms = 0;
+  for(let i = 0; i < buf.length; i++) rms += buf[i] * buf[i];
+  rms = Math.sqrt(rms / buf.length);
+  if(rms < 0.008) return -1;
+
+  const W    = Math.floor(buf.length / 2);
+  const tMin = Math.max(2, Math.floor(sampleRate / 2000));
+  const tMax = Math.min(W - 1, Math.floor(sampleRate / 50));
+
+  const d = new Float32Array(tMax + 1);
+  d[0] = 0;
+  for(let tau = 1; tau <= tMax; tau++){
+    let s = 0;
+    for(let i = 0; i < W; i++){
+      const diff = buf[i] - buf[i + tau];
+      s += diff * diff;
+    }
+    d[tau] = s;
+  }
+
+  const cmnd = new Float32Array(tMax + 1);
+  cmnd[0] = 1;
+  let runSum = 0;
+  for(let tau = 1; tau <= tMax; tau++){
+    runSum += d[tau];
+    cmnd[tau] = runSum > 0 ? (d[tau] * tau) / runSum : 1;
+  }
+
+  const THRESHOLD = 0.20;
+  let bestTau = -1;
+  for(let tau = tMin; tau < tMax - 1; tau++){
+    if(cmnd[tau] < THRESHOLD){
+      while(tau + 1 < tMax && cmnd[tau + 1] < cmnd[tau]) tau++;
+      bestTau = tau;
+      break;
+    }
+  }
+  if(bestTau === -1){
+    let minVal = Infinity;
+    for(let tau = tMin; tau < tMax; tau++){
+      if(cmnd[tau] < minVal){ minVal = cmnd[tau]; bestTau = tau; }
+    }
+    if(minVal > 0.35) return -1;
+  }
+
+  let refined = bestTau;
+  if(bestTau > 1 && bestTau < tMax - 1){
+    const denom = cmnd[bestTau-1] - 2*cmnd[bestTau] + cmnd[bestTau+1];
+    if(Math.abs(denom) > 1e-9)
+      refined = bestTau + (cmnd[bestTau-1] - cmnd[bestTau+1]) / (2 * denom);
+  }
+
+  const freq = sampleRate / refined;
+  if(freq < 50 || freq > 2000) return -1;
+  return freq;
+}
+
+const CONFIRM_FRAMES = 2;
+const CENTS_SMOOTH  = 4;
+const SILENCE_MS    = 3000;
+
+let debounceCount = 0;
+let debounceMidi  = -1;
+let centsHistory  = [];
+let lastSoundTime = 0;
+let silenceTimer  = null;
+
+function micLoop(){
+  if(!micRunning) return;
+  const buf = new Float32Array(micAnalyser.fftSize);
+  micAnalyser.getFloatTimeDomainData(buf);
+  const freq = detectPitch(buf, micAudioCtx.sampleRate);
+
+  const dbg = document.getElementById('debugLine');
+  if(dbg) dbg.textContent = freq > 0
+    ? (freq.toFixed(1) + ' Hz | ' + micAudioCtx.sampleRate + ' sr')
+    : 'no pitch | sr:' + micAudioCtx.sampleRate + ' buf:' + buf.length;
+
+  if(freq > 0 && isFinite(freq)){
+    lastSoundTime = Date.now();
+    if(silenceTimer){ clearTimeout(silenceTimer); silenceTimer = null; }
+
+    const midi    = 69 + 12 * Math.log2(freq / 440);
+    const rounded = Math.round(midi);
+    const cents   = (midi - rounded) * 100;
+
+    if(rounded === debounceMidi){
+      debounceCount++;
+      centsHistory.push(cents);
+      if(centsHistory.length > CENTS_SMOOTH) centsHistory.shift();
+      const smoothCents = centsHistory.reduce((a,b)=>a+b,0) / centsHistory.length;
+
+      if(debounceCount >= CONFIRM_FRAMES){
+        const noteIdx = ((rounded % 12) + 12) % 12;
+        const octave  = Math.floor(rounded / 12) - 1;
+        displayNote(noteIdx, octave, smoothCents);
+      }
+    } else {
+      debounceMidi  = rounded;
+      debounceCount = 1;
+      centsHistory  = [cents];
+    }
+
+  } else {
+    if(!silenceTimer && (Date.now() - lastSoundTime) > 400){
+      silenceTimer = setTimeout(()=>{
+        debounceMidi  = -1;
+        debounceCount = 0;
+        centsHistory  = [];
+        silenceTimer  = null;
+        displayIdle();
+      }, SILENCE_MS);
+    }
+  }
+  micRafId = requestAnimationFrame(micLoop);
+}
+
+function errorAdvice(errName){
+  if(errName === 'NotReadableError'){
+    return 'میکروفون شناسایی شد ولی سیستم اجازهی خواندن آن را نداد. معمولاً یکی از اینهاست: '
+      + '(۱) برنامهی دیگری از میکروفون استفاده میکند — آن را ببندید. '
+      + '(۲) در تنظیمات گوشی ← برنامهها ← این برنامه ← مجوزها، میکروفون را فعال کنید. '
+      + '(۳) گوشی را یکبار ریاستارت کنید.';
+  }
+  if(errName === 'NotAllowedError' || errName === 'PermissionDeniedError'){
+    return 'دسترسی میکروفون رد شده. به تنظیمات گوشی ← برنامهها ← این برنامه ← مجوزها بروید و «میکروفون» را فعال کنید.';
+  }
+  if(errName === 'NotFoundError' || errName === 'DevicesNotFoundError'){
+    return 'هیچ میکروفونی روی این دستگاه شناسایی نشد.';
+  }
+  return 'خطای نامشخص — لطفاً دوباره تلاش کنید یا گوشی را ریاستارت کنید.';
+}
+
+async function startTuner(){
+  if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
+    micStatus.innerHTML = '❌ این نسخهی WebView از میکروفون پشتیبانی نمیکند.';
+    return;
+  }
+  micStatus.textContent = '⏳ در حال درخواست دسترسی میکروفون...';
+
+  let deviceInfo = '';
+  try{
+    if(navigator.mediaDevices.enumerateDevices){
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      const audioInputs = devices.filter(d=>d.kind === 'audioinput');
+      deviceInfo = ' [میکروفونهای شناساییشده: ' + toFa(audioInputs.length) + ']';
+    }
+  }catch(e){}
+
+  const constraintsToTry = [
+    {audio:true},
+    {audio:{echoCancellation:false, noiseSuppression:false, autoGainControl:false}}
+  ];
+  let lastErr = null;
+  for(const c of constraintsToTry){
+    try{
+      micStream = await navigator.mediaDevices.getUserMedia(c);
+      lastErr = null;
+      break;
+    }catch(err){
+      lastErr = err;
+    }
+  }
+  if(lastErr){
+    const name = lastErr && lastErr.name || 'خطا';
+    micStatus.innerHTML = '❌ دسترسی میکروفون ممکن نشد (' + name + ')' + deviceInfo
+      + '<br><span style="color:#aaa">' + errorAdvice(name) + '</span>'
+      + '<br><button style="margin-top:10px;border:none;background:#e91e63;color:#fff;border-radius:20px;padding:6px 16px;font-size:.82em;cursor:pointer" onclick="startTuner()">🔁 تلاش دوباره</button>';
+    return;
+  }
+  micStatus.textContent = '';
+  micAudioCtx = new (window.AudioContext||window.webkitAudioContext)();
+  const source = micAudioCtx.createMediaStreamSource(micStream);
+  micAnalyser = micAudioCtx.createAnalyser();
+  micAnalyser.fftSize = 8192;
+  source.connect(micAnalyser);
+  micRunning = true;
+  micBtn.classList.add('on');
+  micBtn.textContent = '⏹️ توقف تیونر';
+  micLoop();
+}
+function stopTuner(){
+  micRunning = false;
+  if(micRafId) cancelAnimationFrame(micRafId);
+  if(silenceTimer){ clearTimeout(silenceTimer); silenceTimer = null; }
+  if(micStream){ micStream.getTracks().forEach(t=>t.stop()); micStream = null; }
+  if(micAudioCtx){ micAudioCtx.close(); micAudioCtx = null; }
+  debounceMidi = -1; debounceCount = 0; centsHistory = [];
+  micBtn.classList.remove('on');
+  micBtn.textContent = '🎙️ شروع تیونر';
+  displayIdle();
+}
+micBtn.onclick = function(){
+  if(micRunning){ stopTuner(); } else { startTuner(); }
+};
+</script>
+</body>
+</html>

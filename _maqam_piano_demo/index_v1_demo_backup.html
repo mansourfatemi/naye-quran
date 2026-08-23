@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>دمو — مقام حجاز روی پیانو (اصلاحشده)</title>
+<style>
+  *{box-sizing:border-box;font-family:Tahoma,"Segoe UI",sans-serif}
+  body{margin:0;background:#0f0f1a;color:#eee;min-height:100vh;display:flex;justify-content:center}
+  .app{width:100%;max-width:420px;background:#16213e;min-height:100vh;padding-bottom:24px}
+  .header{background:linear-gradient(135deg,#1a1a2e,#16213e);color:#fff;padding:18px 20px;text-align:center;box-shadow:0 3px 12px rgba(0,0,0,.3)}
+  .header h1{font-size:1.15em;margin:0}
+  .header .sub{font-size:.78em;opacity:.6;margin-top:4px}
+  .badge-demo{display:inline-block;background:#FF9800;color:#1a1a2e;font-size:.68em;font-weight:bold;padding:2px 10px;border-radius:10px;margin-top:6px}
+
+  .fix-box{background:#e8f5e9;border:1.5px solid #66bb6a;color:#1b5e20;font-size:.8em;padding:12px 14px;border-radius:10px;margin:16px;line-height:1.8}
+
+  .card{background:#fff;color:#222;border-radius:16px;margin:16px;padding:18px;box-shadow:0 8px 26px rgba(0,0,0,.35)}
+  .card h2{font-size:1.05em;margin:0 0 8px;color:#1a1a2e;text-align:center}
+  .card .sub{font-size:.8em;color:#888;text-align:center;margin-bottom:14px}
+
+  .explain-box{background:#fff3e0;border:1.5px solid #FFB74D;border-radius:12px;padding:14px;margin:14px 16px;min-height:70px;transition:.2s}
+  .explain-box .deg{display:inline-block;background:#FF9800;color:#fff;font-weight:bold;border-radius:50%;width:26px;height:26px;text-align:center;line-height:26px;font-size:.85em;margin-left:8px}
+  .explain-box .name{font-weight:bold;font-size:1.15em;color:#8a5300}
+  .explain-box .desc{font-size:.85em;color:#6d4c00;margin-top:6px;line-height:1.6}
+  .explain-box.idle{background:#f5f5f5;border-color:#ddd}
+  .explain-box.idle .name{color:#999}
+
+  .piano-wrap{margin:18px 16px;overflow-x:auto;padding-bottom:6px}
+  .piano{position:relative;height:180px;width:352px;margin:0 auto;direction:ltr}
+  .wkey{position:absolute;top:0;width:44px;height:180px;background:#fefefe;border:1px solid #ccc;border-radius:0 0 6px 6px;cursor:pointer;box-shadow:inset 0 -6px 10px -6px rgba(0,0,0,.15);transition:background .12s}
+  .wkey.used{box-shadow:inset 0 -6px 10px -6px rgba(255,152,0,.4)}
+  .wkey .lbl{position:absolute;bottom:8px;left:0;right:0;text-align:center;font-size:.68em;color:#999}
+  .wkey .deg-badge{position:absolute;top:8px;left:0;right:0;text-align:center}
+  .wkey.active{background:#FFD180}
+  .bkey{position:absolute;top:0;width:26px;height:110px;background:#1a1a1a;border-radius:0 0 4px 4px;cursor:pointer;z-index:5;box-shadow:0 3px 6px rgba(0,0,0,.4);transition:background .12s}
+  .bkey .lbl{position:absolute;bottom:6px;left:0;right:0;text-align:center;font-size:.6em;color:#ccc}
+  .bkey .deg-badge{position:absolute;top:6px;left:0;right:0;text-align:center}
+  .bkey.active{background:#FF9800}
+  .deg-chip{display:inline-block;background:#FF9800;color:#fff;font-weight:bold;border-radius:50%;width:18px;height:18px;line-height:18px;font-size:.62em}
+  .bkey .deg-chip{background:#FFD180;color:#1a1a2e}
+
+  .qmark{position:absolute;top:-26px;width:30px;height:30px;border-radius:50%;background:#26c6da;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:.72em;cursor:pointer;z-index:10;box-shadow:0 3px 8px rgba(0,0,0,.3);border:2px solid #fff}
+  .qmark.active{background:#00acc1;transform:scale(1.15)}
+  .qmark::after{content:"";position:absolute;bottom:-14px;right:50%;width:2px;height:14px;background:#26c6da}
+
+  .controls{display:flex;justify-content:center;gap:12px;margin:16px}
+  .btn{border:none;cursor:pointer;border-radius:50px;display:flex;align-items:center;justify-content:center;gap:8px;padding:0 20px;height:46px;font-size:.9em;font-weight:bold;box-shadow:0 2px 10px rgba(0,0,0,.15);transition:.15s}
+  .btn:active{transform:scale(.95)}
+  .btn-play{background:#1a1a2e;color:#fff}
+  .btn-loop{background:#f0f0f0;color:#555}
+  .btn-loop.on{background:#4CAF50;color:#fff}
+
+  .legend-title{font-size:.85em;font-weight:bold;color:#555;margin:14px 16px 6px}
+  .legend-list{margin:0 16px;padding:0;list-style:none;font-size:.8em;color:#555}
+  .legend-list li{display:flex;justify-content:space-between;padding:6px 4px;border-bottom:1px solid #f0f0f0}
+  .legend-list .deg-chip{margin-left:8px}
+
+  .note-box{background:#e3f2fd;color:#01579b;font-size:.78em;padding:12px 14px;border-radius:10px;margin:16px;line-height:1.8}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <h1>🎹 مقام حجاز روی پیانو</h1>
+    <div class="sub">آموزش تصویری فاصلههای مقام حجاز</div>
+    <div class="badge-demo">DEMO — هنوز به اپ اصلی وصل نشده</div>
+  </div>
+
+  <div class="fix-box">
+    ✅ <b>اصلاح شد:</b> استقرار (نُت پایه/تونیک) مقام حجاز بهطور استاندارد روی نُت «<b>ر (Re)</b>» است — نه «دو (Do)». نسخهی قبلی این دمو اشتباهاً از «دو» شروع میشد؛ در این نسخه، مقام حجاز درست از «ر» ساخته شده است (جنس حجاز روی ر + جنس راست روی سل — دقیقاً مطابق ساختار استاندارد مقامی).
+  </div>
+
+  <div class="card">
+    <h2>حجاز — از ر (D) شروع میشود</h2>
+    <div class="sub">روی «پخش پیدرپی» بزنید یا خودتان روی هر کلید ضربه بزنید</div>
+
+    <div class="explain-box idle" id="explainBox">
+      <div class="name" id="explainName">برای شروع، پخش را بزنید</div>
+      <div class="desc" id="explainDesc">هر نُت که نواخته شود، اینجا توضیح آن به زبان ساده نمایش داده میشود.</div>
+    </div>
+
+    <div class="piano-wrap">
+      <div class="piano" id="piano"></div>
+    </div>
+
+    <div class="controls">
+      <button class="btn btn-play" id="playBtn">▶ پخش پیدرپی</button>
+      <button class="btn btn-loop" id="loopBtn">🔁 تکرار</button>
+    </div>
+  </div>
+
+  <div class="legend-title">📋 لیست کامل ۸ نُت مقام حجاز (از ر)</div>
+  <ul class="legend-list" id="legendList"></ul>
+
+  <div class="note-box">
+    📱 <b>نکتهی مهم:</b> نُت «سی نیمبمل» (نُت ۶) یک <b>ربعپرده</b> است — دقیقاً بین دو کلید «لا#/سی♭» و «سی» روی پیانوی معمولی قرار دارد. پیانوهای موبایل معمولی (و پیانوی واقعی هم) این نُت را ندارند؛ روی نشانگر فیروزهای 🔵 در تصویر بزنید تا صدای تقریبی آن را بشنوید — برای نواختن واقعی، باید با گوش کمی پایینتر از «سی» تنظیم کنید.
+    <br><br>
+    🎼 <b>ساختار مقام:</b> حجاز از دو بخش ساخته شده — «جنس حجاز» روی ر (نُتهای ۱ تا ۴: ر، ر#، فا#، سل) و سپس «جنس راست» روی سل (نُتهای ۴ تا ۷: سل، لا، سینیمبمل، دو) که به اکتاو (نُت ۸: ر) میرسد.
+  </div>
+</div>
+
+<script>
+// ── محاسبهی فرکانس نتها (کوک استاندارد A4=440Hz) — پایه: ر4 (D4) ──
+const NOTE_FREQ = {
+  D4:293.665, Ds4:311.127, E4:329.628, F4:349.228, Fs4:369.994,
+  G4:391.995, Gs4:415.305, A4:440.000, As4:466.164, B4:493.883,
+  C5:523.251, Cs5:554.365, D5:587.330
+};
+const QUARTER_FREQ = 479.88; // "سی نیمبمل" - تقریباً بین As4(لا#) و B4(سی)
+
+// ── کلیدهای سفید پیانو (۸ کلید، از ر4 تا ر5) ──
+const WHITE_KEYS = [
+  {name:'D4', label:'ر'},
+  {name:'E4', label:'می'},
+  {name:'F4', label:'فا'},
+  {name:'G4', label:'سل'},
+  {name:'A4', label:'لا'},
+  {name:'B4', label:'سی'},
+  {name:'C5', label:'دو'},
+  {name:'D5', label:'ر'},
+];
+// ── کلیدهای سیاه پیانو ──
+const BLACK_KEYS = [
+  {name:'Ds4', label:'ر#',  afterWhiteIdx:0},
+  {name:'Fs4', label:'فا#', afterWhiteIdx:2},
+  {name:'Gs4', label:'سل#', afterWhiteIdx:3},
+  {name:'As4', label:'لا#', afterWhiteIdx:4},
+  {name:'Cs5', label:'دو#', afterWhiteIdx:6},
+];
+
+// ── توالی ۸ نُت مقام حجاز (طبق جدول فواصل: 1⁄2، 11⁄2، 1⁄2، 1، 3⁄4، 3⁄4، 1 — از ر) ──
+const HIJAZ_SCALE = [
+  {deg:1, type:'white', name:'D4',  label:'ر',             desc:'نُت شروع — استقرار (تونیک) اصلی مقام حجاز'},
+  {deg:2, type:'black', name:'Ds4', label:'ر# (می بمل)',    desc:'نیمپرده بالاتر از ر — رنگ خاص و اصلی حجاز از همینجا شروع میشود'},
+  {deg:3, type:'black', name:'Fs4', label:'فا# (سل بمل)',   desc:'یک پرده و نیم بالاتر — این فاصلهٔ بزرگ، هویت اصلی صدای حجاز را میسازد'},
+  {deg:4, type:'white', name:'G4',  label:'سل',            desc:'نیمپرده بالاتر — پایان «جنس حجاز» و شروع «جنس راست»'},
+  {deg:5, type:'white', name:'A4',  label:'لا',            desc:'یک پرده بالاتر — دومین نُت جنس راست'},
+  {deg:6, type:'quarter', name:'Q', label:'سی نیمبمل',     desc:'سهربع پرده بالاتر — این نُت «ربعپرده» است و بین دو کلید معمولی پیانو قرار دارد', freq:QUARTER_FREQ},
+  {deg:7, type:'white', name:'C5', label:'دو',             desc:'سهربع پرده بالاتر — پایان «جنس راست»، نُتی کاملاً طبیعی (بدون بمل/دیز)'},
+  {deg:8, type:'white', name:'D5',  label:'ر (اکتاو)',      desc:'یک پرده بالاتر — رسیدن به اکتاو، پایان مقام حجاز'},
+];
+
+// ── رسم پیانو ──
+const piano = document.getElementById('piano');
+const WKEY_W = 44, BKEY_W = 26;
+const usedWhiteNames = new Set(HIJAZ_SCALE.filter(s=>s.type==='white').map(s=>s.name));
+const usedBlackNames = new Set(HIJAZ_SCALE.filter(s=>s.type==='black').map(s=>s.name));
+
+const keyElements = {}; // name -> DOM element
+
+WHITE_KEYS.forEach((k,i)=>{
+  const el = document.createElement('div');
+  el.className = 'wkey' + (usedWhiteNames.has(k.name) ? ' used' : '');
+  el.style.left = (i*WKEY_W) + 'px';
+  el.dataset.name = k.name;
+  const deg = HIJAZ_SCALE.find(s=>s.type==='white' && s.name===k.name);
+  el.innerHTML = '<div class="lbl">'+k.label+'</div>' + (deg ? '<div class="deg-badge"><span class="deg-chip">'+deg.deg+'</span></div>' : '');
+  el.onclick = ()=> playNote(NOTE_FREQ[k.name], el, deg);
+  piano.appendChild(el);
+  keyElements[k.name] = el;
+});
+
+BLACK_KEYS.forEach(k=>{
+  const el = document.createElement('div');
+  el.className = 'bkey' + (usedBlackNames.has(k.name) ? ' used' : '');
+  el.style.left = ((k.afterWhiteIdx+1)*WKEY_W - BKEY_W/2 - 3) + 'px';
+  el.dataset.name = k.name;
+  const deg = HIJAZ_SCALE.find(s=>s.type==='black' && s.name===k.name);
+  el.innerHTML = '<div class="lbl">'+k.label+'</div>' + (deg ? '<div class="deg-badge"><span class="deg-chip">'+deg.deg+'</span></div>' : '');
+  el.onclick = (e)=>{ e.stopPropagation(); playNote(NOTE_FREQ[k.name], el, deg); };
+  piano.appendChild(el);
+  keyElements[k.name] = el;
+});
+
+// ── نشانگر ربعپرده (بین لا#=As4 و سی=B4) ──
+const qDeg = HIJAZ_SCALE.find(s=>s.type==='quarter');
+const qMarkerLeft = (5*WKEY_W) - 15; // بین کلید سیاه As4 و کلید سفید B4
+const qEl = document.createElement('div');
+qEl.className = 'qmark';
+qEl.style.left = qMarkerLeft + 'px';
+qEl.textContent = '1⁄4';
+qEl.title = 'سی نیمبمل (ربعپرده)';
+qEl.onclick = (e)=>{ e.stopPropagation(); playNote(QUARTER_FREQ, qEl, qDeg); };
+piano.appendChild(qEl);
+keyElements['Q'] = qEl;
+
+// ── پخش صدا (Web Audio API) ──
+let audioCtx = null;
+function ensureCtx(){
+  if(!audioCtx) audioCtx = new (window.AudioContext||window.webkitAudioContext)();
+  if(audioCtx.state === 'suspended') audioCtx.resume();
+  return audioCtx;
+}
+function playNote(freq, el, degInfo){
+  const ctx = ensureCtx();
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = 'triangle';
+  osc.frequency.value = freq;
+  gain.gain.setValueAtTime(0.0001, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.35, ctx.currentTime + 0.01);
+  gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 1.1);
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+  osc.start();
+  osc.stop(ctx.currentTime + 1.15);
+
+  if(el){
+    el.classList.add('active');
+    setTimeout(()=>el.classList.remove('active'), 550);
+  }
+  if(degInfo){
+    updateExplain(degInfo);
+  }
+}
+
+function updateExplain(degInfo){
+  const box = document.getElementById('explainBox');
+  const nameEl = document.getElementById('explainName');
+  const descEl = document.getElementById('explainDesc');
+  box.classList.remove('idle');
+  nameEl.innerHTML = '<span class="deg">'+degInfo.deg+'</span>'+degInfo.label;
+  descEl.textContent = degInfo.desc;
+}
+
+// ── لیست کامل ۸ نُت (Legend) ──
+const legendList = document.getElementById('legendList');
+HIJAZ_SCALE.forEach(s=>{
+  const li = document.createElement('li');
+  li.innerHTML = '<span><span class="deg-chip">'+s.deg+'</span> '+s.label+'</span><span style="color:#999">'+s.desc.split('—')[0].trim()+'</span>';
+  legendList.appendChild(li);
+});
+
+// ── پخش پیدرپی کل مقام ──
+let seqTimer = null;
+let looping = false;
+function playSequence(){
+  stopSequence();
+  let i = 0;
+  function step(){
+    if(i >= HIJAZ_SCALE.length){
+      if(looping){ i = 0; } else { return; }
+    }
+    const s = HIJAZ_SCALE[i];
+    const el = keyElements[s.type==='quarter' ? 'Q' : s.name];
+    const freq = s.type==='quarter' ? QUARTER_FREQ : NOTE_FREQ[s.name];
+    playNote(freq, el, s);
+    i++;
+    seqTimer = setTimeout(step, 750);
+  }
+  step();
+}
+function stopSequence(){
+  if(seqTimer){ clearTimeout(seqTimer); seqTimer = null; }
+}
+
+document.getElementById('playBtn').onclick = ()=>{ ensureCtx(); playSequence(); };
+document.getElementById('loopBtn').onclick = (e)=>{
+  looping = !looping;
+  e.target.classList.toggle('on', looping);
+};
+</script>
+</body>
+</html>
