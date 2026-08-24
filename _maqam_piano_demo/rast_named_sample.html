@@ -191,15 +191,15 @@ const WHITE_KEYS = [
 ];
 const BLACK_KEYS = [
   {name:'Cs4', label:'دو#', authname:'نیم زیرکوله', afterWhiteIdx:0},
-  {name:'Ds4', label:'میبمل', authname:'کردی', afterWhiteIdx:1},
+  {name:'Ds4', label:'می‌بمل', authname:'کردی', afterWhiteIdx:1},
   {name:'Fs4', label:'فا#', authname:'نیم حجاز', afterWhiteIdx:3},
   {name:'Gs4', label:'لابمل', authname:'حصار', afterWhiteIdx:4},
-  {name:'As4', label:'سیبمل', authname:'عجم', afterWhiteIdx:5}
+  {name:'As4', label:'سی‌بمل', authname:'عجم', afterWhiteIdx:5}
 ];
 const WKEY_W = 44, BKEY_W = 26, TICK_W = 44;
 const KEY_SEMI={C4:0,Cs4:1,D4:2,Ds4:3,E4:4,F4:5,Fs4:6,G4:7,Gs4:8,A4:9,As4:10,B4:11,C5:12};
 function freqFromSemi(s){return 261.626*Math.pow(2,s/12);}
-const CHROM_NAMES = ['دو','دو# / ربمل','ر','ر# / میبمل','می','فا','فا# / سلبمل','سل','سل# / لابمل','لا','لا# / سیبمل','سی','دو (اکتاو)'];
+const CHROM_NAMES = ['دو','دو# / ربمل','ر','ر# / می‌بمل','می','فا','فا# / سل‌بمل','سل','سل# / لابمل','لا','لا# / سی‌بمل','سی','دو (اکتاو)'];
 const OFFSET_CENTER_PX = [22,41,66,110,129,154,173,198,217,242,286,305,330];
 function chromName(offset){
   if(Number.isInteger(offset)) return CHROM_NAMES[offset];

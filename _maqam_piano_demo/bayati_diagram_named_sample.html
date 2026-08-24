@@ -210,16 +210,16 @@ const WHITE_KEYS_FIXED = [
   {name:'D5', label:'ر (اکتاو)', deg:8, isTonic:false}
 ];
 const BLACK_KEYS = [
-  {name:'Ds4', label:'رِ#/میبمل'},
+  {name:'Ds4', label:'رِ#/می‌بمل'},
   {name:'Fs4', label:'فا#'},
   {name:'Gs4', label:'لابمل'},
-  {name:'As4', label:'سیبمل',    deg:6, isTonic:false},
+  {name:'As4', label:'سی‌بمل',    deg:6, isTonic:false},
   {name:'Cs4', label:'دو#/دبمل'}
 ];
 const WKEY_W = 44, BKEY_W = 26, TICK_W2 = 44;
 const KEY_SEMI={D4:0,Ds4:1,E4:2,F4:3,Fs4:4,G4:5,Gs4:6,A4:7,As4:8,B4:9,C5:10,Cs4:11,D5:12};
 function freqFromSemi(s){ return TONIC_FREQ_D4*Math.pow(2,s/12); }
-const CHROM_NAMES=['ر','ر#/میبمل','می','فا','فا#','سل','سل#/لابمل','لا','لا#/سیبمل','سی','دو','دو#','ر (اکتاو)'];
+const CHROM_NAMES=['ر','ر#/می‌بمل','می','فا','فا#','سل','سل#/لابمل','لا','لا#/سی‌بمل','سی','دو','دو#','ر (اکتاو)'];
 const OFFSET_CENTER_PX=[22,41,66,110,129,154,173,198,217,242,286,305,330];
 function centerForOffset(offset){
   if(Number.isInteger(offset)) return OFFSET_CENTER_PX[offset];

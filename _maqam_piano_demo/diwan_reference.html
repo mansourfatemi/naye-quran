@@ -95,7 +95,7 @@
 <script>
 function toFa(n){ return n.toString().replace(/[0-9]/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]); }
 
-const WEST_NAMES_BASE = ['دو','دو#/ربمل','ر','ر#/میبمل','می','فا','فا#/سلبمل','سل','سل#/لابمل','لا','لا#/سیبمل','سی'];
+const WEST_NAMES_BASE = ['دو','دو#/ربمل','ر','ر#/می‌بمل','می','فا','فا#/سل‌بمل','سل','سل#/لابمل','لا','لا#/سی‌بمل','سی'];
 function westName(offset){
   const oct = Math.floor(offset/12);
   const local = ((offset%12)+12)%12;
