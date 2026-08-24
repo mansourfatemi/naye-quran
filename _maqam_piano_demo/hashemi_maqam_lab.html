@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>آموزش تعاملی مقامات — نامهای اصیل (استاد هاشمی)</title>
+<style>
+  *{box-sizing:border-box;font-family:Tahoma,"Segoe UI",sans-serif}
+  body{margin:0;background:#0f0f1a;color:#eee;min-height:100vh;display:flex;justify-content:center}
+  .app{width:100%;max-width:420px;background:#16213e;min-height:100vh;padding-bottom:30px}
+  .header{background:linear-gradient(135deg,#5d3a00,#8B5A00);color:#fff;padding:18px 20px;text-align:center;box-shadow:0 3px 12px rgba(0,0,0,.3)}
+  .header h1{font-size:1.1em;margin:0}
+  .header .sub{font-size:.78em;opacity:.75;margin-top:4px;line-height:1.6}
+  .badge{display:inline-block;background:#f2c94c;color:#3a2d10;font-size:.66em;font-weight:bold;padding:2px 10px;border-radius:10px;margin-top:8px}
+
+  .card{background:#fff;color:#222;border-radius:16px;margin:16px;padding:18px;box-shadow:0 8px 26px rgba(0,0,0,.35)}
+  .card h2{font-size:1.05em;margin:0 0 8px;color:#1a1a2e;text-align:center}
+  .card .sub{font-size:.8em;color:#888;text-align:center;margin-bottom:14px}
+
+  select#famSelect{
+    width:100%;padding:12px 14px;border-radius:12px;border:1.5px solid #ddd;font-size:.95em;
+    text-align:right;direction:rtl;background:#faf6ea;color:#1a1a2e;font-family:inherit;font-weight:bold;
+    margin-bottom:10px;
+  }
+  .fam-block{border-radius:10px;padding:10px 12px;margin-bottom:8px;line-height:1.8;font-size:.82em}
+  .fam-structure{background:#fff8e1;color:#7a5c00}
+  .fam-structure b.tag{background:#f2c94c;color:#3a2d10;border-radius:6px;padding:1px 6px;font-size:.85em;margin-left:4px}
+  .fam-effect{background:#fce4ec;color:#880e4f}
+  .fam-effect b.tag{background:#f06292;color:#fff;border-radius:6px;padding:1px 6px;font-size:.85em;margin-left:4px}
+
+  /* ── نمودار فواصل (سبک کلاسیک پروژه) ── */
+  .diagwrap-scroll{overflow-x:auto;direction:ltr;-webkit-overflow-scrolling:touch;margin-top:10px}
+  .diagwrap{margin:0;direction:ltr}
+  .tickline{position:relative;height:14px;border-bottom:2px solid #999}
+  .tickline .tick{position:absolute;bottom:0;width:2px;height:12px;background:#999}
+  .tickline .tick.end{height:18px;background:#333;width:2px}
+  .fracrow{position:relative;height:26px;margin-top:8px}
+  .frac-chip{position:absolute;top:0;transform:translateX(-50%);background:#1e88c9;color:#fff;font-weight:bold;font-size:.68em;border-radius:50%;width:30px;height:23px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 4px rgba(0,0,0,.15)}
+  .numrow{position:relative;height:20px;margin-top:10px;font-weight:bold;color:#333;font-size:.85em}
+  .numrow span{position:absolute;transform:translateX(-50%)}
+  .namerow{position:relative;height:18px;margin-top:6px;font-size:.66em;color:#a35a00;font-weight:bold}
+  .namerow span{position:absolute;transform:translateX(-50%);white-space:nowrap}
+  .offrow{position:relative;height:16px;margin-top:2px;font-size:.62em;color:#777}
+  .offrow span{position:absolute;transform:translateX(-50%);white-space:nowrap}
+  .offrow span.tonic{color:#c99b1f;font-weight:bold}
+  .layers{margin-top:16px;display:flex;flex-direction:column;gap:7px}
+  .layer-row{position:relative;height:28px}
+  .layer-bar{position:absolute;top:0;left:0;height:28px;border-radius:6px;color:#fff;font-weight:bold;font-size:.72em;display:flex;align-items:center;padding-left:8px;box-shadow:0 2px 6px rgba(0,0,0,.15);white-space:nowrap}
+
+  /* ── کیبورد پیانو واقعی (سفید/سیاه)، محدودهی مطلق ثابت برای همهی مقامات ── */
+  .explain-box{background:#ffebee;border:1.5px solid #ef5350;border-radius:12px;padding:14px;margin-top:14px;min-height:70px;transition:.2s}
+  .explain-box .deg{display:inline-block;background:#1e88c9;color:#fff;font-weight:bold;border-radius:50%;width:26px;height:26px;text-align:center;line-height:26px;font-size:.85em;margin-left:8px}
+  .explain-box .name{font-weight:bold;font-size:1.1em;color:#0d47a1}
+  .explain-box .altname{font-size:.8em;color:#a35a00;font-weight:bold;margin-right:6px}
+  .explain-box .desc{font-size:.85em;color:#333;margin-top:6px;line-height:1.6}
+  .explain-box.idle{background:#f5f5f5;border-color:#ddd}
+  .explain-box.idle .name{color:#999}
+
+  .piano-wrap{margin:16px auto 6px;overflow-x:auto;padding-bottom:6px}
+  .piano{position:relative;height:180px;margin:0 auto;direction:ltr}
+  .wkey{position:absolute;top:0;width:40px;height:180px;background:#fefefe;border:1px solid #ccc;border-radius:0 0 6px 6px;cursor:pointer;box-shadow:inset 0 -6px 10px -6px rgba(0,0,0,.15);transition:background .12s}
+  .wkey.used{box-shadow:inset 0 -6px 10px -6px rgba(30,136,201,.45)}
+  .wkey .lbl{position:absolute;bottom:8px;left:0;right:0;text-align:center;font-size:.64em;color:#999}
+  .wkey .deg-badge{position:absolute;top:8px;left:0;right:0;text-align:center}
+  .wkey.active{background:#bbdefb}
+  .wkey.tonic{border:2px solid #f9a825 !important;background:#fffde7 !important}
+  .bkey.tonic{background:#f9a825 !important}
+  .tonic-chip{background:#f9a825 !important;color:#333 !important}
+  .bkey{position:absolute;top:0;width:24px;height:110px;background:#1a1a1a;border-radius:0 0 4px 4px;cursor:pointer;z-index:5;box-shadow:0 3px 6px rgba(0,0,0,.4);transition:background .12s}
+  .bkey .lbl{position:absolute;bottom:6px;left:0;right:0;text-align:center;font-size:.55em;color:#ccc}
+  .bkey .deg-badge{position:absolute;top:6px;left:0;right:0;text-align:center}
+  .bkey.active{background:#1e88c9}
+  .deg-chip{display:inline-block;background:#1e88c9;color:#fff;font-weight:bold;border-radius:50%;width:17px;height:17px;line-height:17px;font-size:.6em}
+  .bkey .deg-chip{background:#90caf9;color:#1a1a2e}
+  .qmark{position:absolute;top:-26px;width:28px;height:28px;border-radius:50%;background:#ff8f00;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:.68em;cursor:pointer;z-index:10;box-shadow:0 3px 8px rgba(0,0,0,.3);border:2px solid #fff}
+  .qmark.tonicq{background:#f9a825 !important}
+  .qmark.active{background:#e65100;transform:scale(1.15)}
+  .qmark::after{content:"";position:absolute;bottom:-14px;right:50%;width:2px;height:14px;background:#ff8f00}
+
+  .controls{display:flex;justify-content:center;gap:10px;margin:16px;flex-wrap:wrap}
+  .btn{border:none;cursor:pointer;border-radius:50px;display:flex;align-items:center;justify-content:center;gap:6px;padding:0 18px;height:44px;font-size:.85em;font-weight:bold;box-shadow:0 2px 10px rgba(0,0,0,.15)}
+  .btn-play{background:#1a1a2e;color:#fff}
+  .btn-loop{background:#f0f0f0;color:#555}
+  .btn-loop.on{background:#4CAF50;color:#fff}
+  .btn-diwan{background:linear-gradient(135deg,#8B5A00,#B8860B);color:#fff;width:100%;justify-content:center}
+
+  .legend-title{font-size:.85em;font-weight:bold;color:#1a1a2e;margin:14px 2px 6px}
+  .legend-list{margin:0;padding:0;list-style:none;font-size:.8em;color:#333;background:#f7f7f7;border-radius:12px;overflow:hidden;border:1px solid #eee}
+  .legend-list li{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;border-bottom:1px solid #eee;cursor:pointer}
+  .legend-list li:last-child{border-bottom:none}
+  .legend-list li:nth-child(even){background:#fff}
+  .legend-list .deg-chip{margin-left:8px}
+  .legend-list .authname{color:#a35a00;font-weight:bold}
+  .legend-list .west{color:#999;font-size:.85em}
+
+  table.famtbl{width:100%;border-collapse:collapse;font-size:.76em;margin-top:6px}
+  table.famtbl th,table.famtbl td{border:1px solid #eee;padding:6px 5px;text-align:center}
+  table.famtbl th{background:#f5f0e0;color:#7a5c00}
+  table.famtbl td.name{font-weight:bold;color:#1a1a2e}
+  table.famtbl td.eff{color:#880e4f;font-size:.92em}
+
+  .note-box{background:#e3f2fd;color:#01579b;font-size:.76em;padding:12px 14px;border-radius:10px;margin:16px;line-height:1.8}
+  .src-box{background:#fff8e1;border:1.5px solid #ffca28;color:#5d4200;font-size:.7em;padding:10px 12px;border-radius:10px;margin:16px;line-height:1.7}
+  .safe-box{background:#e8f5e9;border:1.5px solid #66bb6a;color:#1b5e20;font-size:.72em;padding:10px 12px;border-radius:10px;margin:16px;line-height:1.7}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <h1>🎼 آموزش تعاملی مقامات</h1>
+    <div class="sub">نمودار فواصل + کیبورد واقعی + نامهای اصیل درجات<br>ویژهٔ صفحهٔ استاد سید حمیدالله هاشمی</div>
+    <div class="badge">🆕 طراحی نهایی — سبک کلاسیک پروژه</div>
+  </div>
+
+  <div class="card">
+    <h2>۱. یک خانوادهٔ مقام را انتخاب کنید</h2>
+    <select id="famSelect"></select>
+    <div class="fam-block fam-structure"><b class="tag">🧩 ساختار</b><span id="famStructure"></span></div>
+    <div class="fam-block fam-effect"><b class="tag">💛 حس و اثر</b><span id="famEffect"></span></div>
+  </div>
+
+  <div class="card">
+    <h2 id="diagTitle">فواصل موسیقایی مقام</h2>
+    <div class="sub" id="diagSub"></div>
+    <div class="diagwrap-scroll"><div class="diagwrap">
+      <div class="tickline" id="tickline"></div>
+      <div class="fracrow" id="fracrow"></div>
+      <div class="numrow" id="numrow"></div>
+      <div class="namerow" id="namerow"></div>
+      <div class="offrow" id="offrow"></div>
+    </div></div>
+    <div class="layers" id="layers"></div>
+  </div>
+
+  <div class="card">
+    <h2>۲. نواختن این مقام روی کیبورد</h2>
+    <div class="sub">کلید طلایی=تونیک، کلید آبی=درجهی مقام، دایرهی نارنجی=ربعپرده — کیبورد ثابت است، فقط رنگآمیزی با هر مقام تغییر میکند</div>
+    <div class="explain-box idle" id="explainBox">
+      <div class="name" id="explainName">برای شروع، پخش را بزنید</div>
+      <div class="desc" id="explainDesc">هر نُت که نواخته شود، اینجا توضیح آن نمایش داده میشود.</div>
+    </div>
+    <div class="piano-wrap"><div class="piano" id="piano"></div></div>
+    <div class="controls">
+      <button class="btn btn-play" id="playBtn">▶ پخش پیدرپی</button>
+      <button class="btn btn-loop" id="loopBtn">🔁 تکرار</button>
+    </div>
+
+    <div class="legend-title">📋 لیست ۸ درجهی این مقام (نام اصیل)</div>
+    <ul class="legend-list" id="legendList"></ul>
+  </div>
+
+  <div class="card">
+    <h2>📖 مرجع کامل سُلم موسیقی عربی</h2>
+    <div class="sub">تمام ۴۹ پرده/ربعپرده، از یکاه تا جواب نوا — این جدول برای همهی مقامات یکسان و ثابت است</div>
+    <button class="btn btn-diwan" onclick="window.location.href='diwan_reference.html'">📖 مشاهدهی جدول کامل دیوان (۲ اکتاو)</button>
+  </div>
+
+  <div class="card">
+    <h2>📋 جدول خلاصهی ۹ خانواده</h2>
+    <table class="famtbl" id="famTable"></table>
+  </div>
+
+  <div class="note-box">
+    🎼 <b>راهنما:</b> کیبورد یک آلهی ثابت است که همهی ۹ مقام از همان محدودهی صداییِ مشترک استفاده میکنند — با انتخاب مقام، فقط رنگآمیزی کلیدهای فعال (آبی/طلایی) و نمودار فواصل تغییر میکند.
+  </div>
+  <div class="src-box">
+    🔎 <b>منبع نامهای اصیل:</b> جدول تاریخی دکتر میخائیل مشاقّه، نقلشده در مقالهی محمد قدری دلال (maaber.org).<br>
+    🔎 <b>منبع فاصلهها:</b> دادههای عددیِ تأییدشدهی همین پروژه (اپ Maqamat + maqamworld.com).
+  </div>
+  <div class="safe-box">
+    ✅ این صفحه کاملاً مستقل است. هیچکدام از صفحات قدیمی «آموزش تعاملی مقامات» تغییر نکردهاند.
+  </div>
+</div>
+
+<script>
+function toFa(n){ return n.toString().replace(/[0-9]/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]); }
+function faDec(n){ return n.toString().replace('.', '٫').replace(/[0-9]/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]); }
+function buildRoundTrip(arr){ return arr.concat(arr.slice().reverse()); }
+
+const RAST_FREQ_C4 = 261.626;
+function freqFromAbsOffset(off){ return RAST_FREQ_C4 * Math.pow(2, off/12); }
+
+// ══════════ جدول کامل ۴۹ نام اصیل (بازبینینهایی، مبنا=راست=دو۴) ══════════
+const AUTH_NAMES = [
+  'یکاه','قرار نیم حصار','قرار حصار','قرار تیک حصار','عشیران',
+  'قرار نیم عجم','قرار عجم','عراق','کوشت','تیک کوشت',
+  'راست','نیم زرکولا','زرکولا','تیک زرکولا','دوکاه',
+  'نیم کرد','کرد','سیکاه','بوسلیک','تیک بوسلیک',
+  'جهارکاه','نیم حجاز','حجاز / صبا','تیک حجاز','نوا',
+  'نیم حصار','حصار (شوری)','تیک حصار','حسینی','نیم عجم',
+  'عجم / نیرز','أوج','نفت','تیک نفت','کردان / ماهور',
+  'نیم شاهناز','شاهناز','تیک شاهناز','محیّر','نیم زوال',
+  'زوال / سنبله','بزرک','حسینی شذ','تیک حسینی شذ','ماهوران',
+  'جواب نیم حجاز','جواب حجاز','جواب تیک حجاز','جواب نوا'
+];
+function authName(absOff){
+  const idx = Math.round((absOff+5)/0.5);
+  return AUTH_NAMES[idx] || '؟';
+}
+const WEST_BASE = ['دو','دو#/ربمل','ر','ر#/میبمل','می','فا','فا#/سلبمل','سل','سل#/لابمل','لا','لا#/سیبمل','سی'];
+function westName(absOff){
+  const oct = Math.floor(absOff/12), local=((absOff%12)+12)%12;
+  if(Number.isInteger(local)) return WEST_BASE[local]+(oct!==0?(oct>0?'+'+oct:oct):'');
+  return 'ربعپرده نزدیک '+WEST_BASE[Math.floor(local)];
+}
+const DIFF_LABELS={1:'1⁄2',1.5:'3⁄4',2:'1',3:'1 1⁄2'};
+
+// ══════════ ۹ خانوادهی مقام ══════════
+const FAMILIES = [
+  {key:'rast', label:'🎵 راست', tonic:0, rel:[0,2,3.5,5,7,9,10.5,12], color:'#1e88c9', jins1End:5, jins1Name:'جنس راست',
+   structure:'جنس راست (۱–۵) + جنس راست تکراری روی درجهی ۵ (۵–۸). فاصلهها: ۱، 3⁄4، 3⁄4، ۱ — دوبار.',
+   effect:'احساسی غمگین، جلیل و متوازن. یکی از سه مقام اصلیِ آغازِ مراسم ذکر اسلامی. رایجترین و پرکاربردترین مقام موسیقی عربی/شرقی.'},
+  {key:'nahawand', label:'🎵 نهاوند', tonic:0, rel:[0,2,3,5,7,8,11,12], color:'#c99b1f', jins1End:5, jins1Name:'جنس نهاوند',
+   structure:'جنس نهاوند (۱–۵) + جنس حجاز روی درجهی ۵ (۵–۸).',
+   effect:'حسی عاشقانه، عاطفی و اندکی غمانگیز — نزدیک به گام مینور غربی. در تصنیفهای عاشقانه بسیار پرکاربرد است.'},
+  {key:'nikriz', label:'🎵 نکریز', tonic:0, rel:[0,2,3,6,7,9,10,12], color:'#8e44ad', jins1End:5, jins1Name:'جنس نکریز',
+   structure:'جنس نکریز (۱–۵، با فاصلهی بزرگ ۱1⁄2پرده) + جنس نهاوند (۳ فاصلهی اول) روی درجهی ۵.',
+   effect:'حسی درخشان، جشنگونه و پرشور. در آثار رسمی/تشریفاتی و سرودها به کار میرود.'},
+  {key:'ajam', label:'🎵 عجم', tonic:-2, rel:[0,2,4,5,7,9,11,12], color:'#00838f', jins1End:5, jins1Name:'جنس عجم',
+   structure:'جنس عجم (۱–۵) + جنس عجم/نهاوند تکراری روی درجهی ۵ (۵–۸).',
+   effect:'حسی شاد، روشن و امیدبخش — دقیقاً معادل گام ماژور غربی. شادترین مقام از نظر شنیداری.'},
+  {key:'sikah', label:'🎵 سیکاه (سهگاه)', tonic:3.5, rel:[0,1.5,3.5,5.5,7,8.5,10.5,12], color:'#b71c1c', jins1End:3, jins2End:6, jins1Name:'جنس سیکاه', jins2Name:'جنس راست بالا',
+   structure:'جنس سیکاه (سهنتی، ۱–۳) + جنس راست بالا (۳–۶) + ثلاثی راست (۶–۸).',
+   effect:'حسی درونگرا، متفکرانه و اندکی مرموز — تونیک ربعپردهایاش رنگی کاملاً شرقی میدهد. در تلاوت قرآن محبوب است.'},
+  {key:'hijaz', label:'🎵 حجاز', tonic:2, rel:[0,1,4,5,7,8,11,12], color:'#6d4c41', jins1End:4, jins1Name:'جنس حجاز',
+   structure:'جنس حجاز (۱–۴، با فاصلهی بزرگ ۱1⁄2پرده) + رابط ۱پرده + جنس راست روی درجهی ۵ (۵–۸).',
+   effect:'حسی اگزوتیک، مذهبی و شرقیِ کلاسیک — رایجترین مقام اذان و تلاوت قرآن.'},
+  {key:'bayati', label:'🎵 بیاتی', tonic:2, rel:[0,1.5,3,5,7,8,10,12], color:'#2e7d32', jins1End:4, jins1Name:'جنس بیاتی',
+   structure:'جنس بیاتی (۱–۴) + جنس نهاوند روی درجهی ۴ (۴–۸).',
+   effect:'حسی گرم، صمیمی و فولکلوریک — پرکاربردترین مقام در موسیقی مردمی عربی.'},
+  {key:'kurd', label:'🎵 کرد (حجازکار کرد)', tonic:2, rel:[0,1,3,5,7,8,10,12], color:'#5d4037', jins1End:4, jins1Name:'جنس کرد',
+   structure:'جنس کرد (۱–۴، تتراکورد با فاصلهی ابتدایی نیمپرده) + جنس نهاوند کامل روی درجهی ۴ (۴–۸).',
+   effect:'حسی ساده، فولکلوریک و اندکی سرد/فاصلهدار نسبت به بیاتی.'},
+  {key:'saba', label:'🎵 صبا', tonic:2, rel:[0,1.5,3,4,7,8,10,12], color:'#00695c', jins1End:3, jins1Name:'جنس صبا',
+   structure:'جنس صبا (۱–۳) + جنس حجاز روی درجهی ۳ (۳–۴، همپوشان) + جنس عجم/نکریز روی درجهی ۶ (۶–۸).',
+   effect:'حسی غمگین، دردمند و سوگوارانه — غمانگیزترین مقام شناختهشدهی موسیقی عربی. در مرثیهها رایج است.'},
+];
+
+// ══════════ کیبورد مطلق ثابت (سفید/سیاه)، از -۲ تا +۱۶ نسبت به راست (دو۴) ══════════
+const ABS_MIN=-2, ABS_MAX=16;
+const WHITE_LOCALS=[0,2,4,5,7,9,11];
+const WKEY_W=40, BKEY_W=24;
+let intPositions=[];
+for(let o=ABS_MIN;o<=ABS_MAX;o++){
+  const local=((o%12)+12)%12;
+  intPositions.push({off:o, white:WHITE_LOCALS.includes(local)});
+}
+let whiteIdxByOffset={}, wi=0;
+intPositions.forEach(p=>{ if(p.white){ whiteIdxByOffset[p.off]=wi; wi++; } });
+const totalWhite=wi;
+function centerForInt(o){
+  const p=intPositions.find(x=>x.off===o);
+  if(p.white) return whiteIdxByOffset[o]*WKEY_W+WKEY_W/2;
+  return (whiteIdxByOffset[o-1]+1)*WKEY_W;
+}
+function centerForAbs(o){
+  if(Number.isInteger(o)) return centerForInt(o);
+  return (centerForInt(Math.floor(o))+centerForInt(Math.ceil(o)))/2;
+}
+const CHROM_LBL=['دو','دو#','ر','ر#/میب','می','فا','فا#','سل','سل#/لاب','لا','لا#/سیب','سی'];
+function keyLabel(o){
+  const local=((o%12)+12)%12;
+  return CHROM_LBL[local];
+}
+
+const piano=document.getElementById('piano');
+piano.style.width=(totalWhite*WKEY_W)+'px';
+const keyElByOffset={};
+intPositions.filter(p=>p.white).forEach(p=>{
+  const el=document.createElement('div'); el.className='wkey';
+  el.style.left=(whiteIdxByOffset[p.off]*WKEY_W)+'px';
+  el.innerHTML='<div class="lbl">'+keyLabel(p.off)+'</div><div class="deg-badge"></div>';
+  el.onclick=()=>hitKey(p.off);
+  piano.appendChild(el); keyElByOffset[p.off]=el;
+});
+intPositions.filter(p=>!p.white).forEach(p=>{
+  const el=document.createElement('div'); el.className='bkey';
+  el.style.left=(centerForInt(p.off)-BKEY_W/2)+'px';
+  el.innerHTML='<div class="lbl">'+keyLabel(p.off)+'</div><div class="deg-badge"></div>';
+  el.onclick=(e)=>{ e.stopPropagation(); hitKey(p.off); };
+  piano.appendChild(el); keyElByOffset[p.off]=el;
+});
+for(let o=ABS_MIN+0.5;o<ABS_MAX;o+=1){
+  const el=document.createElement('div'); el.className='qmark'; el.textContent='1⁄4';
+  el.style.left=(centerForAbs(o)-14)+'px';
+  el.onclick=(e)=>{ e.stopPropagation(); hitKey(o); };
+  piano.appendChild(el); keyElByOffset[o]=el;
+}
+
+let activeFamily=null;
+function clearHighlight(){
+  Object.values(keyElByOffset).forEach(el=>{
+    el.classList.remove('used','active','tonic','tonicq');
+    const db=el.querySelector('.deg-badge'); if(db) db.innerHTML='';
+  });
+}
+function applyFamilyHighlight(fam){
+  clearHighlight();
+  fam.rel.forEach((r,i)=>{
+    const abs=fam.tonic+r;
+    const el=keyElByOffset[abs];
+    if(!el) return;
+    if(el.classList.contains('qmark')){
+      el.classList.add(i===0?'tonicq':'active-q');
+      el.style.background = i===0 ? '#f9a825' : '#ff8f00';
+    } else {
+      el.classList.add('used');
+      if(i===0) el.classList.add('tonic');
+    }
+    const db=el.querySelector('.deg-badge');
+    if(db) db.innerHTML='<span class="deg-chip'+(i===0?' tonic-chip':'')+'">'+toFa(i+1)+'</span>';
+  });
+}
+
+function hitKey(abs){
+  playFreq(freqFromAbsOffset(abs));
+  const el=keyElByOffset[abs];
+  if(el){ el.classList.add('active'); setTimeout(()=>el.classList.remove('active'),400); }
+  let degTxt='';
+  if(activeFamily){
+    const relIdx=activeFamily.rel.findIndex(r=>(activeFamily.tonic+r)===abs);
+    if(relIdx>=0) degTxt=' — درجهی '+toFa(relIdx+1)+' از '+activeFamily.label;
+  }
+  updateExplainBox(authName(abs), westName(abs), degTxt, activeFamily && activeFamily.rel.findIndex(r=>(activeFamily.tonic+r)===abs)>=0 ? (activeFamily.rel.findIndex(r=>(activeFamily.tonic+r)===abs)+1) : null);
+}
+function updateExplainBox(auth, west, degTxt, degNum){
+  const box=document.getElementById('explainBox');
+  box.classList.remove('idle');
+  document.getElementById('explainName').innerHTML=(degNum?'<span class="deg">'+toFa(degNum)+'</span>':'')+'<span class="altname">'+auth+'</span>';
+  document.getElementById('explainDesc').textContent=west+degTxt;
+}
+
+// ── پخش صدا ──
+let audioCtx=null;
+function ensureCtx(){
+  if(!audioCtx) audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+  if(audioCtx.state==='suspended') audioCtx.resume();
+  return audioCtx;
+}
+function playFreq(freq){
+  const ctx=ensureCtx();
+  const osc=ctx.createOscillator(); const gain=ctx.createGain();
+  osc.type='triangle'; osc.frequency.value=freq;
+  gain.gain.setValueAtTime(0.0001, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.32, ctx.currentTime+0.01);
+  gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime+1.0);
+  osc.connect(gain); gain.connect(ctx.destination);
+  osc.start(); osc.stop(ctx.currentTime+1.05);
+}
+
+// ══════════ رندر نمودار فواصل + کیبورد + لیست برای مقام انتخابشده ══════════
+const TICK_W=42;
+function renderDiagram(fam){
+  const n = fam.rel.length;
+  document.getElementById('diagTitle').textContent = 'فواصل موسیقایی مقام '+fam.label.replace('🎵 ','');
+  document.getElementById('diagSub').textContent = fam.structure;
+
+  const tickline=document.getElementById('tickline'); tickline.innerHTML='';
+  tickline.parentElement.style.width = ((n-1)*TICK_W)+'px';
+  for(let i=0;i<n;i++){
+    const t=document.createElement('div'); t.className='tick'+(i===0||i===n-1?' end':'');
+    t.style.left=(i*TICK_W)+'px'; tickline.appendChild(t);
+  }
+  const fracrow=document.getElementById('fracrow'); fracrow.innerHTML='';
+  for(let i=0;i<n-1;i++){
+    const diff=Math.round((fam.rel[i+1]-fam.rel[i])*2)/2;
+    const c=document.createElement('div'); c.className='frac-chip';
+    c.style.left=((i+0.5)*TICK_W)+'px'; c.textContent=DIFF_LABELS[diff]||diff;
+    fracrow.appendChild(c);
+  }
+  const numrow=document.getElementById('numrow'); numrow.innerHTML='';
+  for(let i=0;i<n;i++){
+    const s=document.createElement('span'); s.style.left=(i*TICK_W)+'px'; s.textContent=toFa(i+1);
+    numrow.appendChild(s);
+  }
+  const namerow=document.getElementById('namerow'); namerow.innerHTML='';
+  fam.rel.forEach((r,i)=>{
+    const s=document.createElement('span'); s.style.left=(i*TICK_W)+'px';
+    s.textContent=authName(fam.tonic+r);
+    namerow.appendChild(s);
+  });
+  const offrow=document.getElementById('offrow'); offrow.innerHTML='';
+  fam.rel.forEach((r,i)=>{
+    const s=document.createElement('span'); s.style.left=(i*TICK_W)+'px';
+    s.className = i===0?'tonic':'';
+    s.textContent = i===0?'تونیک':(faDec(r/2)+' پرده');
+    offrow.appendChild(s);
+  });
+
+  const layers=document.getElementById('layers'); layers.innerHTML='';
+  const HIER=[];
+  if(fam.jins2End){
+    HIER.push({name:fam.jins1Name, endDeg:fam.jins1End, color:'#7f0000'});
+    HIER.push({name:fam.jins2Name, endDeg:fam.jins2End, color:fam.color});
+  } else {
+    HIER.push({name:fam.jins1Name, endDeg:fam.jins1End, color:'#7f0000'});
+  }
+  HIER.push({name:'مقام '+fam.label.replace('🎵 ','')+' (کامل)', endDeg:n, color:fam.color});
+  HIER.forEach(l=>{
+    const row=document.createElement('div'); row.className='layer-row';
+    const bar=document.createElement('div'); bar.className='layer-bar';
+    bar.style.width=((l.endDeg-1)*TICK_W)+'px'; bar.style.background=l.color; bar.textContent=l.name;
+    row.appendChild(bar); layers.appendChild(row);
+  });
+}
+function renderLegendList(fam){
+  const ul=document.getElementById('legendList'); ul.innerHTML='';
+  fam.rel.forEach((r,i)=>{
+    const abs=fam.tonic+r;
+    const li=document.createElement('li');
+    li.innerHTML='<span><span class="deg-chip">'+toFa(i+1)+'</span><span class="authname">'+authName(abs)+'</span></span><span class="west">'+westName(abs)+'</span>';
+    li.onclick=()=>hitKey(abs);
+    ul.appendChild(li);
+  });
+}
+
+// ── دراپداون خانواده ──
+const sel=document.getElementById('famSelect');
+FAMILIES.forEach((f,i)=>{
+  const opt=document.createElement('option'); opt.value=i; opt.textContent=f.label;
+  sel.appendChild(opt);
+});
+function selectFamily(i){
+  activeFamily=FAMILIES[i];
+  applyFamilyHighlight(activeFamily);
+  document.getElementById('famStructure').textContent=' '+activeFamily.structure;
+  document.getElementById('famEffect').textContent=' '+activeFamily.effect;
+  renderDiagram(activeFamily);
+  renderLegendList(activeFamily);
+  const tonicEl=keyElByOffset[activeFamily.tonic];
+  if(tonicEl && tonicEl.scrollIntoView) tonicEl.scrollIntoView({behavior:'smooth', inline:'center', block:'nearest'});
+}
+sel.onchange=()=>selectFamily(parseInt(sel.value));
+
+// ── پخش گام پیدرپی ──
+let seqTimer=null, looping=false;
+function playFamilyScale(){
+  if(!activeFamily) return;
+  stopSeq();
+  const offs=activeFamily.rel.map(r=>activeFamily.tonic+r);
+  const seq=buildRoundTrip(offs);
+  let i=0;
+  function step(){
+    if(i>=seq.length){ if(looping){ i=0; } else { return; } }
+    hitKey(seq[i]);
+    i++; seqTimer=setTimeout(step,700);
+  }
+  step();
+}
+function stopSeq(){ if(seqTimer){ clearTimeout(seqTimer); seqTimer=null; } }
+document.getElementById('playBtn').onclick=()=>{ ensureCtx(); playFamilyScale(); };
+document.getElementById('loopBtn').onclick=(e)=>{ looping=!looping; e.target.classList.toggle('on',looping); };
+
+// ── جدول خلاصه ──
+const tbl=document.getElementById('famTable');
+let th='<tr><th>مقام</th><th>تونیک اصیل</th><th>حس کلی</th></tr>';
+const EFFECT_SHORT=['غمگین/جلیل','عاشقانه','درخشان/جشنگونه','شاد/روشن','درونگرا/روحانی','اگزوتیک/مذهبی','گرم/فولکلوریک','ساده/فولکلوریک','غمگین/سوگوارانه'];
+FAMILIES.forEach((f,i)=>{
+  th+='<tr><td class="name">'+f.label+'</td><td>'+authName(f.tonic)+'</td><td class="eff">'+EFFECT_SHORT[i]+'</td></tr>';
+});
+tbl.innerHTML=th;
+
+selectFamily(0);
+sel.value=0;
+</script>
+</body>
+</html>

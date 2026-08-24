@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=0.5, maximum-scale=3.0, user-scalable=yes">
+<title>مقام راست — آلهٔ ربعپردهای ایدهآل (نمونه)</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin:0; padding:0; background:#12141c; color:#eee;
+    font-family: 'Tahoma','Vazirmatn',sans-serif; direction:rtl;
+  }
+  .container { max-width:900px; margin:0 auto; padding:16px 14px 60px; }
+  h1 { font-size:1.5em; color:#f2c94c; margin-bottom:4px; }
+  h1 .sub { display:block; font-size:0.55em; color:#9aa; margin-top:4px; font-weight:normal; }
+  h2 { font-size:1.15em; color:#7fd9c4; margin:22px 0 8px; border-right:4px solid #7fd9c4; padding-right:8px; }
+  section { background:#1a1d29; border-radius:10px; padding:14px 16px; margin-bottom:16px; box-shadow:0 2px 6px rgba(0,0,0,.3); }
+  p { line-height:1.9; font-size:0.98em; color:#ccc; margin:6px 0; }
+  .family { color:#f2c94c; font-size:0.9em; }
+  .note { color:#9ab; font-size:0.88em; background:#10202080; padding:8px 10px; border-radius:6px; }
+
+  /* --- 24-tone instrument --- */
+  #keyboard {
+    display:flex; direction:ltr; margin:16px 0 6px; height:150px;
+    border:2px solid #333; border-radius:8px; overflow:hidden; background:#0c0d12;
+  }
+  .key {
+    flex:1; position:relative; display:flex; flex-direction:column;
+    justify-content:flex-end; align-items:center; cursor:pointer;
+    border-left:1px solid #2a2d3a; transition:transform .08s, background .15s;
+    padding-bottom:6px;
+  }
+  .key:hover { transform:translateY(-4px); }
+  .key.active { transform:translateY(-6px); filter:brightness(1.4); }
+  .micro-note { background:#232735; }
+  .micro-note .lbl { font-size:0.6em; color:#666; }
+  .scale-note { background:linear-gradient(#3a8f7c,#276b5c); }
+  .scale-note .lbl { font-size:0.72em; color:#fff; font-weight:bold; }
+  .root-note, .octave-note { background:linear-gradient(#f2c94c,#c99b1f) !important; }
+  .root-note .lbl, .octave-note .lbl { color:#222; }
+  .deg-num { font-size:0.6em; color:#fff8; margin-bottom:2px; }
+
+  .controls { display:flex; gap:10px; flex-wrap:wrap; margin-top:10px; }
+  button {
+    background:#2d3348; color:#eee; border:1px solid #445; border-radius:6px;
+    padding:8px 16px; font-size:0.92em; cursor:pointer;
+  }
+  button:hover { background:#3d4560; }
+
+  /* --- interval bar --- */
+  #intervalBar { display:flex; direction:ltr; height:60px; border-radius:6px; overflow:hidden; margin:10px 0; }
+  .seg { display:flex; align-items:center; justify-content:center; cursor:pointer;
+    font-size:0.78em; color:#fff; text-align:center; border-left:1px solid #0006; padding:2px; }
+  .seg:hover { filter:brightness(1.25); }
+  .seg-whole { background:#3465c7; }
+  .seg-3q    { background:#8a4fc9; }
+  .seg-half  { background:#d17a2f; }
+  .seg-q     { background:#666; }
+  .legend { font-size:0.85em; color:#ccc; }
+
+  .structure p { color:#ddd; }
+  #infoPanel {
+    margin-top:10px; min-height:44px; background:#0c0d12; border:1px dashed #445;
+    border-radius:6px; padding:10px; font-size:0.92em; color:#7fd9c4;
+  }
+  .jins-row { display:flex; direction:ltr; gap:2px; margin-top:8px; }
+  .jins-tag { flex:1; text-align:center; padding:6px 2px; border-radius:5px; font-size:0.78em; color:#fff; }
+  .jins1 { background:#2b6f5f; }
+  .jins2 { background:#5f3d8f; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <h1>🎼 مقام راست
+    <span class="sub">نمونهٔ آموزشی — منبع: «مقامیة الموسیقا العربیة» محمد قدری دلال (maaber.org) + دادهٔ فاصلهای تأییدشدهٔ پروژه</span>
+  </h1>
+
+  <section class="desc">
+    <h2>📖 توضیح ساده</h2>
+    <p>
+      مقام راست یکی از مهمترین و پرکاربردترین مقامات موسیقی شرقی و عربی است.
+      اثر آن غمگین، جلیل و متوازن توصیف شده و یکی از سه مقام اصلیِ آغازِ مراسم ذکر اسلامی است.
+      آثار بیشماری — آلاتی و آوازی — بر پایهٔ این مقام ساخته شدهاند، و انتقال از مقامات دیگر به سوی آن
+      همیشه زیبایی خاصی به اثر میبخشد.
+    </p>
+    <p class="family">
+      🔗 همخانواده (اشتراک در عقد/جنس اول) با: سوزناک، ماهور، نوروز سلطانی، دلنشین، رهاوی، سوزدلارا، یکاه (روی درجهٔ سل)
+    </p>
+  </section>
+
+  <section class="instrument">
+    <h2>🎹 آلهٔ ربعپردهای ایدهآل (۲۴ پرده در هر اکتاو)</h2>
+    <p class="note">
+      پیانوی معمولی هر اکتاو را به ۱۲ نیمپرده تقسیم میکند و فاصلههای ربعپردهای (مثل سهربعپرده در مقام راست)
+      روی آن اصلاً وجود ندارند. این آلهٔ فرضی هر اکتاو را به <b>۲۴ بخش مساوی</b> تقسیم میکند —
+      هر بخش دقیقاً یک «ربعپرده» است — تا تمام درجات مقام راست، از جمله فاصلههای ربعپردهای آن،
+      قابل شنیدن و نواختن باشد. کلیدهای <span style="color:#7fd9c4">سبز/طلایی</span> درجات واقعی مقام راست هستند؛
+      کلیدهای <span style="color:#888">خاکستری</span> ربعپردههای میانیاند که در مقام راست استفاده نمیشوند
+      ولی برای شنیدن دقیق «فاصله»ها در دسترساند.
+    </p>
+    <div id="keyboard"></div>
+    <div class="controls">
+      <button onclick="playScale(false)">▶ نواختن گام صعودی</button>
+      <button onclick="playScale(true)">◀ نواختن گام نزولی</button>
+      <button onclick="stopAll()">⏹ توقف</button>
+    </div>
+    <div id="infoPanel">برای شنیدن هر پرده، روی کلید مربوطه کلیک کنید...</div>
+  </section>
+
+  <section class="intervals">
+    <h2>📏 ترسیم فاصلههای موسیقیایی مقام راست</h2>
+    <p>عرض هر بخش متناسب با اندازهٔ واقعی فاصله (بر حسب ربعپرده) است. روی هر بخش کلیک کنید تا آن فاصلهٔ خاص را بشنوید.</p>
+    <div id="intervalBar"></div>
+    <p class="legend">
+      🔵 پرده کامل (۴ ربعپرده = یک تون کامل) &nbsp;&nbsp;
+      🟣 سهربعپرده (۳ ربعپرده) &nbsp;&nbsp;
+      🟠 نیمپرده (۲ ربعپرده) &nbsp;&nbsp;
+      ⚪ ربعپرده (۱ ربعپرده)
+    </p>
+  </section>
+
+  <section class="structure">
+    <h2>🧩 ساختار مقام (جنسها)</h2>
+    <p>مقام راست از دو بخش (جنس) تشکیل شده که در درجهٔ پنجم به هم میرسند:</p>
+    <div class="jins-row">
+      <div class="jins-tag jins1">جنس راست (درجه ۱ تا ۵)<br>پرده، سهربع، سهربع، پرده</div>
+      <div class="jins-tag jins2">ثلاثی راست (درجه ۵ تا ۸)<br>پرده، سهربع، سهربع</div>
+    </div>
+  </section>
+
+  <p style="color:#666; font-size:0.8em; text-align:center;">
+    نمونهٔ آموزشی — در انتظار تأیید شما پیش از تولید صفحات مشابه برای بقیهٔ مقامات
+  </p>
+</div>
+
+<script>
+// ---- Core data ----
+const TONIC_FREQ = 261.626; // C4 - نت پایهٔ خانوادهٔ راست/نهاوند/نکریز
+const SCALE_STEPS = [0,4,7,10,14,18,21,24]; // quarter-tone steps (24 per octave)
+const SCALE_DEG_LABEL = ['۱','۲','۳','۴','۵','۶','۷','۸'];
+
+function freqForStep(n){ return TONIC_FREQ * Math.pow(2, n/24); }
+
+// ---- Build keyboard (25 keys: step 0..24) ----
+const kb = document.getElementById('keyboard');
+for (let n=0; n<=24; n++){
+  const div = document.createElement('div');
+  const isScale = SCALE_STEPS.includes(n);
+  div.className = 'key ' + (isScale ? 'scale-note' : 'micro-note');
+  if (n===0) div.classList.add('root-note');
+  if (n===24) div.classList.add('octave-note');
+  div.dataset.step = n;
+  let inner = '';
+  if (isScale){
+    const idx = SCALE_STEPS.indexOf(n);
+    inner += `<div class="deg-num">درجه ${SCALE_DEG_LABEL[idx]}</div>`;
+  }
+  inner += `<div class="lbl">${n}</div>`;
+  div.innerHTML = inner;
+  div.onclick = () => { playNote(n); flashKey(div); showInfo(n); };
+  kb.appendChild(div);
+}
+
+function flashKey(div){
+  div.classList.add('active');
+  setTimeout(()=>div.classList.remove('active'), 300);
+}
+
+function showInfo(n){
+  const f = freqForStep(n).toFixed(2);
+  const isScale = SCALE_STEPS.includes(n);
+  const panel = document.getElementById('infoPanel');
+  if (isScale){
+    const idx = SCALE_STEPS.indexOf(n);
+    panel.textContent = `درجه ${SCALE_DEG_LABEL[idx]} از مقام راست — پرده شمارهٔ ${n} از تونیک — فرکانس: ${f} هرتز`;
+  } else {
+    panel.textContent = `ربعپردهٔ میانی (خارج از مقام راست) — پرده شمارهٔ ${n} از تونیک — فرکانس: ${f} هرتز — فقط برای مقایسهٔ شنیداری فاصلهها`;
+  }
+}
+
+// ---- Web Audio playback ----
+let actx = null;
+let activeOscs = [];
+function ctx(){ if(!actx) actx = new (window.AudioContext||window.webkitAudioContext)(); return actx; }
+
+function playNote(n, dur=0.9){
+  const c = ctx();
+  const osc = c.createOscillator();
+  const gain = c.createGain();
+  osc.type = 'sine';
+  osc.frequency.value = freqForStep(n);
+  gain.gain.setValueAtTime(0, c.currentTime);
+  gain.gain.linearRampToValueAtTime(0.28, c.currentTime+0.03);
+  gain.gain.linearRampToValueAtTime(0, c.currentTime+dur);
+  osc.connect(gain).connect(c.destination);
+  osc.start();
+  osc.stop(c.currentTime+dur+0.05);
+  activeOscs.push(osc);
+}
+
+function playInterval(n1, n2){
+  playNote(n1, 1.1);
+  setTimeout(()=>playNote(n2, 1.1), 550);
+}
+
+function stopAll(){
+  activeOscs.forEach(o=>{ try{o.stop();}catch(e){} });
+  activeOscs = [];
+}
+
+let scaleTimer = null;
+function playScale(descending){
+  stopAll();
+  const seq = descending ? [...SCALE_STEPS].reverse() : SCALE_STEPS;
+  seq.forEach((n,i)=>{
+    setTimeout(()=>{
+      playNote(n, 0.55);
+      const keyEl = kb.children[n];
+      flashKey(keyEl);
+      showInfo(n);
+    }, i*420);
+  });
+}
+
+// ---- Interval bar ----
+const bar = document.getElementById('intervalBar');
+for (let i=0; i<SCALE_STEPS.length-1; i++){
+  const a = SCALE_STEPS[i], b = SCALE_STEPS[i+1];
+  const size = b - a; // in quarter-tones
+  const seg = document.createElement('div');
+  seg.className = 'seg ' + (size===4?'seg-whole': size===3?'seg-3q': size===2?'seg-half':'seg-q');
+  seg.style.flex = size;
+  const label = size===4 ? 'پرده کامل' : size===3 ? 'سهربعپرده' : size===2 ? 'نیمپرده' : 'ربعپرده';
+  seg.innerHTML = `${label}<br>(درجه ${SCALE_DEG_LABEL[i]}→${SCALE_DEG_LABEL[i+1]})`;
+  seg.onclick = () => { playInterval(a,b); showInfo(a); setTimeout(()=>showInfo(b), 550); };
+  bar.appendChild(seg);
+}
+</script>
+</body>
+</html>
