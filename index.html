@@ -464,6 +464,9 @@
         <option value="">🎓 همه قاریان</option>
       </select>
     </div>
+    <div id="maqamSearchWrap" style="margin-top:12px">
+      <input type="text" id="maqamSearchInput" placeholder="🔍 جستجوی مقام… (مثل نیشابورک، رهاوی)" oninput="filterMaqamGrid()" style="width:100%;max-width:280px;padding:10px 14px;border-radius:12px;border:none;font-size:.9em;text-align:right;direction:rtl;background:rgba(255,255,255,.95);color:#1a1a2e;font-family:inherit">
+    </div>
   </div>
   <div class="maq-grid" id="maqamGrid"></div>
 </div>
@@ -3997,6 +4000,7 @@ function openMaqamPage(){
   document.getElementById("maqamDetailPage").style.display="none";
   document.getElementById("bBtn").style.display="block";
   maqamFilterQari=null;
+  const _mqSearchEl=document.getElementById("maqamSearchInput"); if(_mqSearchEl) _mqSearchEl.value="";
   document.getElementById("hTitle").textContent="🎓 آموزش مقامات";
   document.getElementById("hSub").textContent=curQari?curQari.name+" — مقامات":"همه قاریان — مقامات";
   document.querySelector(".header").style.background="linear-gradient(135deg,#1a1a2e,#16213e)";
@@ -4020,6 +4024,33 @@ function onMaqamQariFilterChange(val){
   renderMaqamGrid();
 }
 
+function filterMaqamGrid(){
+  const searchEl=document.getElementById("maqamSearchInput");
+  const q=(searchEl?searchEl.value:"").trim();
+  const cards=document.querySelectorAll("#maqamGrid .maq-card");
+  let any=false;
+  cards.forEach(card=>{
+    const nmEl=card.querySelector(".maq-name");
+    const nm=nmEl?nmEl.textContent:"";
+    const match=!q||nm.indexOf(q)>-1;
+    card.style.display=match?"":"none";
+    if(match) any=true;
+  });
+  const grid=document.getElementById("maqamGrid");
+  let noRes=document.getElementById("maqamNoResults");
+  if(q && !any){
+    if(!noRes){
+      noRes=document.createElement("div");
+      noRes.id="maqamNoResults";
+      noRes.style.cssText="grid-column:span 2;text-align:center;padding:30px;color:#bbb";
+      noRes.textContent="مقامی با این نام پیدا نشد";
+      grid.appendChild(noRes);
+    }
+    noRes.style.display="";
+  } else if(noRes){
+    noRes.style.display="none";
+  }
+}
 function renderMaqamGrid(){
   const cnt={};
   let grandTotal=0;
@@ -4050,6 +4081,7 @@ function renderMaqamGrid(){
     d.onclick=()=>openMaqamDetail(nm,col);
     el.appendChild(d);
   });
+  filterMaqamGrid();
 }
 
 function openMaqamDetail(maqam, color){
