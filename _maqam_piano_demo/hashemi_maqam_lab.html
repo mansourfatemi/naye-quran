@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>آموزش تعاملی مقامات — نامهای اصیل (استاد هاشمی)</title>
+<title>آموزش تعاملی مقامات — نام‌های اصیل (استاد هاشمی)</title>
 <style>
   *{box-sizing:border-box;font-family:Tahoma,"Segoe UI",sans-serif}
   body{margin:0;background:#0f0f1a;color:#eee;min-height:100vh;display:flex;justify-content:center}
@@ -47,7 +47,7 @@
   .layer-row{position:relative;height:28px}
   .layer-bar{position:absolute;top:0;left:0;height:28px;border-radius:6px;color:#fff;font-weight:bold;font-size:.72em;display:flex;align-items:center;padding-left:8px;box-shadow:0 2px 6px rgba(0,0,0,.15);white-space:nowrap}
 
-  /* ── کیبورد پیانو واقعی (سفید/سیاه)، محدودهی مطلق ثابت برای همهی مقامات ── */
+  /* ── کیبورد پیانو واقعی (سفید/سیاه)، محدودههٔ مطلق ثابت برای همههٔ مقامات ── */
   .explain-box{background:#ffebee;border:1.5px solid #ef5350;border-radius:12px;padding:14px;margin-top:14px;min-height:70px;transition:.2s}
   .explain-box .deg{display:inline-block;background:#1e88c9;color:#fff;font-weight:bold;border-radius:50%;width:26px;height:26px;text-align:center;line-height:26px;font-size:.85em;margin-left:8px}
   .explain-box .name{font-weight:bold;font-size:1.1em;color:#0d47a1}
@@ -102,13 +102,24 @@
   .note-box{background:#e3f2fd;color:#01579b;font-size:.76em;padding:12px 14px;border-radius:10px;margin:16px;line-height:1.8}
   .src-box{background:#fff8e1;border:1.5px solid #ffca28;color:#5d4200;font-size:.7em;padding:10px 12px;border-radius:10px;margin:16px;line-height:1.7}
   .safe-box{background:#e8f5e9;border:1.5px solid #66bb6a;color:#1b5e20;font-size:.72em;padding:10px 12px;border-radius:10px;margin:16px;line-height:1.7}
+
+  .btn-fullscreen{background:#e0e0e0;color:#455a64}
+  .card.fs-active{position:fixed;top:0;left:0;right:0;bottom:0;width:100%;height:100%;
+    z-index:9999;border-radius:0;margin:0;max-height:none;overflow-y:auto;background:#16213e;
+    display:flex;flex-direction:column;align-items:center;padding:18px 10px 40px}
+  .card.fs-active h2{color:#fff}
+  .card.fs-active .sub{color:#ccc}
+  .card.fs-active .piano-wrap{margin:14px auto;overflow:visible;display:flex;justify-content:center}
+  .card.fs-active .explain-box{width:auto;max-width:90vw}
+  .card.fs-active .controls{flex-wrap:wrap}
+  .card.fs-active .legend-title{color:#fff}
 </style>
 </head>
 <body>
 <div class="app">
   <div class="header">
     <h1>🎼 آموزش تعاملی مقامات</h1>
-    <div class="sub">نمودار فواصل + کیبورد واقعی + نامهای اصیل درجات<br>ویژهٔ صفحهٔ استاد سید حمیدالله هاشمی</div>
+    <div class="sub">نمودار فواصل + کیبورد واقعی + نام‌های اصیل درجات<br>ویژهٔ صفحهٔ استاد سید حمیدالله هاشمی</div>
     <div class="badge">🆕 طراحی نهایی — سبک کلاسیک پروژه</div>
   </div>
 
@@ -134,7 +145,7 @@
 
   <div class="card">
     <h2>۲. نواختن این مقام روی کیبورد</h2>
-    <div class="sub">کلید طلایی=تونیک، کلید آبی=درجهی مقام، دایرهی نارنجی=ربعپرده — کیبورد ثابت است، فقط رنگآمیزی با هر مقام تغییر میکند</div>
+    <div class="sub">کلید طلایی=تونیک، کلید آبی=درجههٔ مقام، دایرههٔ نارنجی=ربع‌پرده — کیبورد ثابت است، فقط رنگ‌آمیزی با هر مقام تغییر میکند</div>
     <div class="explain-box idle" id="explainBox">
       <div class="name" id="explainName">برای شروع، پخش را بزنید</div>
       <div class="desc" id="explainDesc">هر نُت که نواخته شود، اینجا توضیح آن نمایش داده میشود.</div>
@@ -143,29 +154,30 @@
     <div class="controls">
       <button class="btn btn-play" id="playBtn">▶ پخش پیدرپی</button>
       <button class="btn btn-loop" id="loopBtn">🔁 تکرار</button>
+      <button class="btn btn-fullscreen" id="fsBtn">⛶ تمامصفحه</button>
     </div>
 
-    <div class="legend-title">📋 لیست ۸ درجهی این مقام (نام اصیل)</div>
+    <div class="legend-title">📋 لیست ۸ درجههٔ این مقام (نام اصیل)</div>
     <ul class="legend-list" id="legendList"></ul>
   </div>
 
   <div class="card">
     <h2>📖 مرجع کامل سُلم موسیقی عربی</h2>
-    <div class="sub">تمام ۴۹ پرده/ربعپرده، از یکاه تا جواب نوا — این جدول برای همهی مقامات یکسان و ثابت است</div>
-    <button class="btn btn-diwan" onclick="window.location.href='diwan_reference.html'">📖 مشاهدهی جدول کامل دیوان (۲ اکتاو)</button>
+    <div class="sub">تمام ۴۹ پرده/ربع‌پرده، از یکاه تا جواب نوا — این جدول برای همههٔ مقامات یکسان و ثابت است</div>
+    <button class="btn btn-diwan" onclick="window.location.href='diwan_reference.html'">📖 مشاهدههٔ جدول کامل دیوان (۲ اکتاو)</button>
   </div>
 
   <div class="card">
-    <h2>📋 جدول خلاصهی ۹ خانواده</h2>
+    <h2>📋 جدول خلاصههٔ ۹ خانواده</h2>
     <table class="famtbl" id="famTable"></table>
   </div>
 
   <div class="note-box">
-    🎼 <b>راهنما:</b> کیبورد یک آلهی ثابت است که همهی ۹ مقام از همان محدودهی صداییِ مشترک استفاده میکنند — با انتخاب مقام، فقط رنگآمیزی کلیدهای فعال (آبی/طلایی) و نمودار فواصل تغییر میکند.
+    🎼 <b>راهنما:</b> کیبورد یک آلههٔ ثابت است که همههٔ ۹ مقام از همان محدودههٔ صداییِ مشترک استفاده میکنند — با انتخاب مقام، فقط رنگ‌آمیزی کلیدهای فعال (آبی/طلایی) و نمودار فواصل تغییر میکند.
   </div>
   <div class="src-box">
-    🔎 <b>منبع نامهای اصیل:</b> جدول تاریخی دکتر میخائیل مشاقّه، نقلشده در مقالهی محمد قدری دلال (maaber.org).<br>
-    🔎 <b>منبع فاصلهها:</b> دادههای عددیِ تأییدشدهی همین پروژه (اپ Maqamat + maqamworld.com).
+    🔎 <b>منبع نام‌های اصیل:</b> جدول تاریخی دکتر میخائیل مشاقّه، نقلشده در مقالههٔ محمد قدری دلال (maaber.org).<br>
+    🔎 <b>منبع فاصله‌ها:</b> داده‌های عددیِ تأییدشدههٔ همین پروژه (اپ Maqamat + maqamworld.com).
   </div>
   <div class="safe-box">
     ✅ این صفحه کاملاً مستقل است. هیچکدام از صفحات قدیمی «آموزش تعاملی مقامات» تغییر نکردهاند.
@@ -201,39 +213,39 @@ const WEST_BASE = ['دو','دو#/ربمل','ر','ر#/میبمل','می','فا','
 function westName(absOff){
   const oct = Math.floor(absOff/12), local=((absOff%12)+12)%12;
   if(Number.isInteger(local)) return WEST_BASE[local]+(oct!==0?(oct>0?'+'+oct:oct):'');
-  return 'ربعپرده نزدیک '+WEST_BASE[Math.floor(local)];
+  return 'ربع‌پرده نزدیک '+WEST_BASE[Math.floor(local)];
 }
 const DIFF_LABELS={1:'1⁄2',1.5:'3⁄4',2:'1',3:'1 1⁄2'};
 
-// ══════════ ۹ خانوادهی مقام ══════════
+// ══════════ ۹ خانوادههٔ مقام ══════════
 const FAMILIES = [
   {key:'rast', label:'🎵 راست', tonic:0, rel:[0,2,3.5,5,7,9,10.5,12], color:'#1e88c9', jins1End:5, jins1Name:'جنس راست',
-   structure:'جنس راست (۱–۵) + جنس راست تکراری روی درجهی ۵ (۵–۸). فاصلهها: ۱، 3⁄4، 3⁄4، ۱ — دوبار.',
+   structure:'جنس راست (۱–۵) + جنس راست تکراری روی درجههٔ ۵ (۵–۸). فاصله‌ها: ۱، 3⁄4، 3⁄4، ۱ — دوبار.',
    effect:'احساسی غمگین، جلیل و متوازن. یکی از سه مقام اصلیِ آغازِ مراسم ذکر اسلامی. رایجترین و پرکاربردترین مقام موسیقی عربی/شرقی.'},
   {key:'nahawand', label:'🎵 نهاوند', tonic:0, rel:[0,2,3,5,7,8,11,12], color:'#c99b1f', jins1End:5, jins1Name:'جنس نهاوند',
-   structure:'جنس نهاوند (۱–۵) + جنس حجاز روی درجهی ۵ (۵–۸).',
-   effect:'حسی عاشقانه، عاطفی و اندکی غمانگیز — نزدیک به گام مینور غربی. در تصنیفهای عاشقانه بسیار پرکاربرد است.'},
+   structure:'جنس نهاوند (۱–۵) + جنس حجاز روی درجههٔ ۵ (۵–۸).',
+   effect:'حسی عاشقانه، عاطفی و اندکی غم‌انگیز — نزدیک به گام مینور غربی. در تصنیفهای عاشقانه بسیار پرکاربرد است.'},
   {key:'nikriz', label:'🎵 نکریز', tonic:0, rel:[0,2,3,6,7,9,10,12], color:'#8e44ad', jins1End:5, jins1Name:'جنس نکریز',
-   structure:'جنس نکریز (۱–۵، با فاصلهی بزرگ ۱1⁄2پرده) + جنس نهاوند (۳ فاصلهی اول) روی درجهی ۵.',
+   structure:'جنس نکریز (۱–۵، با فاصلههٔ بزرگ ۱1⁄2پرده) + جنس نهاوند (۳ فاصلههٔ اول) روی درجههٔ ۵.',
    effect:'حسی درخشان، جشنگونه و پرشور. در آثار رسمی/تشریفاتی و سرودها به کار میرود.'},
   {key:'ajam', label:'🎵 عجم', tonic:-2, rel:[0,2,4,5,7,9,11,12], color:'#00838f', jins1End:5, jins1Name:'جنس عجم',
-   structure:'جنس عجم (۱–۵) + جنس عجم/نهاوند تکراری روی درجهی ۵ (۵–۸).',
+   structure:'جنس عجم (۱–۵) + جنس عجم/نهاوند تکراری روی درجههٔ ۵ (۵–۸).',
    effect:'حسی شاد، روشن و امیدبخش — دقیقاً معادل گام ماژور غربی. شادترین مقام از نظر شنیداری.'},
   {key:'sikah', label:'🎵 سیکاه (سهگاه)', tonic:3.5, rel:[0,1.5,3.5,5.5,7,8.5,10.5,12], color:'#b71c1c', jins1End:3, jins2End:6, jins1Name:'جنس سیکاه', jins2Name:'جنس راست بالا',
-   structure:'جنس سیکاه (سهنتی، ۱–۳) + جنس راست بالا (۳–۶) + ثلاثی راست (۶–۸).',
-   effect:'حسی درونگرا، متفکرانه و اندکی مرموز — تونیک ربعپردهایاش رنگی کاملاً شرقی میدهد. در تلاوت قرآن محبوب است.'},
+   structure:'جنس سیکاه (سه‌نتی، ۱–۳) + جنس راست بالا (۳–۶) + ثلاثی راست (۶–۸).',
+   effect:'حسی درونگرا، متفکرانه و اندکی مرموز — تونیک ربع‌پردهایاش رنگی کاملاً شرقی میدهد. در تلاوت قرآن محبوب است.'},
   {key:'hijaz', label:'🎵 حجاز', tonic:2, rel:[0,1,4,5,7,8,11,12], color:'#6d4c41', jins1End:4, jins1Name:'جنس حجاز',
-   structure:'جنس حجاز (۱–۴، با فاصلهی بزرگ ۱1⁄2پرده) + رابط ۱پرده + جنس راست روی درجهی ۵ (۵–۸).',
+   structure:'جنس حجاز (۱–۴، با فاصلههٔ بزرگ ۱1⁄2پرده) + رابط ۱پرده + جنس راست روی درجههٔ ۵ (۵–۸).',
    effect:'حسی اگزوتیک، مذهبی و شرقیِ کلاسیک — رایجترین مقام اذان و تلاوت قرآن.'},
   {key:'bayati', label:'🎵 بیاتی', tonic:2, rel:[0,1.5,3,5,7,8,10,12], color:'#2e7d32', jins1End:4, jins1Name:'جنس بیاتی',
-   structure:'جنس بیاتی (۱–۴) + جنس نهاوند روی درجهی ۴ (۴–۸).',
+   structure:'جنس بیاتی (۱–۴) + جنس نهاوند روی درجههٔ ۴ (۴–۸).',
    effect:'حسی گرم، صمیمی و فولکلوریک — پرکاربردترین مقام در موسیقی مردمی عربی.'},
   {key:'kurd', label:'🎵 کرد (حجازکار کرد)', tonic:2, rel:[0,1,3,5,7,8,10,12], color:'#5d4037', jins1End:4, jins1Name:'جنس کرد',
-   structure:'جنس کرد (۱–۴، تتراکورد با فاصلهی ابتدایی نیمپرده) + جنس نهاوند کامل روی درجهی ۴ (۴–۸).',
+   structure:'جنس کرد (۱–۴، تتراکورد با فاصلههٔ ابتدایی نیم‌پرده) + جنس نهاوند کامل روی درجههٔ ۴ (۴–۸).',
    effect:'حسی ساده، فولکلوریک و اندکی سرد/فاصلهدار نسبت به بیاتی.'},
   {key:'saba', label:'🎵 صبا', tonic:2, rel:[0,1.5,3,4,7,8,10,12], color:'#00695c', jins1End:3, jins1Name:'جنس صبا',
-   structure:'جنس صبا (۱–۳) + جنس حجاز روی درجهی ۳ (۳–۴، همپوشان) + جنس عجم/نکریز روی درجهی ۶ (۶–۸).',
-   effect:'حسی غمگین، دردمند و سوگوارانه — غمانگیزترین مقام شناختهشدهی موسیقی عربی. در مرثیهها رایج است.'},
+   structure:'جنس صبا (۱–۳) + جنس حجاز روی درجههٔ ۳ (۳–۴، هم‌پوشان) + جنس عجم/نکریز روی درجههٔ ۶ (۶–۸).',
+   effect:'حسی غمگین، دردمند و سوگوارانه — غم‌انگیزترین مقام شناختهشدههٔ موسیقی عربی. در مرثیه‌ها رایج است.'},
 ];
 
 // ══════════ کیبورد مطلق ثابت (سفید/سیاه)، از -۲ تا +۱۶ نسبت به راست (دو۴) ══════════
@@ -319,7 +331,7 @@ function hitKey(abs){
   let degTxt='';
   if(activeFamily){
     const relIdx=activeFamily.rel.findIndex(r=>(activeFamily.tonic+r)===abs);
-    if(relIdx>=0) degTxt=' — درجهی '+toFa(relIdx+1)+' از '+activeFamily.label;
+    if(relIdx>=0) degTxt=' — درجههٔ '+toFa(relIdx+1)+' از '+activeFamily.label;
   }
   updateExplainBox(authName(abs), westName(abs), degTxt, activeFamily && activeFamily.rel.findIndex(r=>(activeFamily.tonic+r)===abs)>=0 ? (activeFamily.rel.findIndex(r=>(activeFamily.tonic+r)===abs)+1) : null);
 }
@@ -462,6 +474,48 @@ tbl.innerHTML=th;
 
 selectFamily(0);
 sel.value=0;
+
+// ── دکمه تمامصفحه (کیبورد) — CSS overlay + محاسبهی زندهی مقیاس برای جاشدن کامل در صفحه ──
+var fsActiveCard = null;
+function fitPianoToScreen(card){
+  var wrap = card.querySelector('.piano-wrap');
+  var pianoEl = wrap ? wrap.querySelector('.piano') : null;
+  if(!wrap || !pianoEl) return;
+  wrap.style.transform = 'none';
+  var naturalW = pianoEl.offsetWidth || 300;
+  var naturalH = pianoEl.offsetHeight || 180;
+  var otherH = 0;
+  Array.prototype.forEach.call(card.children, function(ch){
+    if(ch !== wrap) otherH += ch.getBoundingClientRect().height;
+  });
+  var availH = window.innerHeight - otherH - 40;
+  var availW = window.innerWidth - 24;
+  var scale = Math.min(availW / naturalW, availH / naturalH);
+  if(!isFinite(scale) || scale <= 0) scale = 1;
+  scale = Math.max(0.5, Math.min(scale, 2.4));
+  wrap.style.transform = 'scale(' + scale + ')';
+  wrap.style.transformOrigin = 'center center';
+}
+function refitActiveFullscreen(){
+  if(fsActiveCard) fitPianoToScreen(fsActiveCard);
+}
+window.addEventListener('resize', refitActiveFullscreen);
+window.addEventListener('orientationchange', function(){ setTimeout(refitActiveFullscreen, 250); });
+document.getElementById('fsBtn').addEventListener('click', function(){
+  var card = this.closest('.card');
+  if(!card) return;
+  var active = card.classList.toggle('fs-active');
+  this.textContent = active ? '✕ خروج از تمام‌صفحه' : '⛶ تمام‌صفحه';
+  document.body.style.overflow = active ? 'hidden' : '';
+  if(active){
+    fsActiveCard = card;
+    requestAnimationFrame(function(){ fitPianoToScreen(card); });
+  } else {
+    if(fsActiveCard === card) fsActiveCard = null;
+    var wrap = card.querySelector('.piano-wrap');
+    if(wrap){ wrap.style.transform = 'none'; }
+  }
+});
 </script>
 </body>
 </html>
