@@ -246,7 +246,7 @@ for(let i=0;i<8;i++){
   numrow.appendChild(s);
 }
 function faDec(n){ return n.toString().replace('.', '٫').replace(/[0-9]/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]); }
-const AJAM_NOTE_NAMES=['راست','دوکاه','سیکاه','جهارکاه','نوا','حسینی','أوج','کردان']; // نام‌های دیوان موسیقی عربی از Bb3
+const AJAM_NOTE_NAMES=['راست','دوکاه','کردی','چهارگاه','نوا','حسینی','عجم','عجم عشیران']; // نام‌های دیوان موسیقی عربی از Bb3
 const namerow=document.getElementById('namerow');
 AJAM_NOTE_NAMES.forEach((nm,i)=>{
   const s=document.createElement('span'); s.style.left=(i*TICK_W)+'px'; s.textContent=nm;
