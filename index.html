@@ -2992,7 +2992,7 @@ function renderQariList(){
     const d=document.createElement("div");d.className="qari-card";
     d.style.setProperty('--qcolor',q.color);
     d.style.borderRightColor=q.color;
-    d.innerHTML=`<div class="qari-avatar" style="background:linear-gradient(135deg,${q.color},${q.color}99)"><img src="avatar_${q.id}.jpg" alt="${q.name}" style="width:100%;height:100%;object-fit:cover;border-radius:50%" onerror="this.style.display='none';this.parentNode.innerHTML='<span style="font-size:1.6em">${q.icon||q.name[0]}</span>'"></div>
+    d.innerHTML=`<div class="qari-avatar" style="background:linear-gradient(135deg,${q.color},${q.color}bb)"><img src="avatar_${q.id}.jpg" alt="${q.name}" style="width:56px;height:56px;object-fit:cover;border-radius:50%;position:absolute;top:0;left:0" onerror="this.remove()"></div>
       <div class="qari-info">
         <div class="qari-name">${q.name}</div>
         <div class="qari-desc">${q.desc}</div>
