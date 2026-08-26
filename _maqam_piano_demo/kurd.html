@@ -212,7 +212,7 @@ for(let i=0;i<8;i++){
   numrow.appendChild(s);
 }
 function faDec(n){ return n.toString().replace('.', '٫').replace(/[0-9]/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]); }
-const KURD_NOTE_NAMES=['دوکاه','کردی','رهاوی','نوا','حسینی','عجم مستعار','کردان','محیّر']; // نام‌های دیوان عربی از D4
+const KURD_NOTE_NAMES=['دوکاه','کردی','چهارگاه','نوا','حسینی','عجمی','کردان','محیّر']; // نام‌های دیوان عربی از D4
 const namerow=document.getElementById('namerow');
 KURD_NOTE_NAMES.forEach((nm,i)=>{
   const s=document.createElement('span'); s.style.left=(i*TICK_W)+'px'; s.textContent=nm;
