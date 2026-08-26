@@ -133,6 +133,18 @@
   </div>
 
   <div class="card">
+    <h2>درجات مقام سیکاه و نغمات آن</h2>
+    <div class="sub">ساختار دو جنس سازنده + نام درجات</div>
+    <div class="diagwrap-scroll"><div class="diagwrap" id="diagwrap2">
+      <div class="tickline" id="tickline2"></div>
+      <div class="fracrow" id="fracrow2"></div>
+      <div class="layers" id="layers2" style="margin-top:10px"></div>
+      <div class="numrow2" id="numrow2" style="position:relative;height:18px;margin-top:6px;font-weight:bold;color:#333;font-size:.8em"></div>
+      <div class="degnames" id="degnames" style="position:relative;height:20px;margin-top:4px;font-size:.68em;color:#666"></div>
+    </div></div>
+  </div>
+
+  <div class="card">
     <h2>سیکاه — از می‌بمل (Eb) شروع می‌شود</h2>
     <div class="sub">روی «پخش پی‌در‌پی» بزنید یا خودتان روی هر کلید ضربه بزنید</div>
 
@@ -230,9 +242,10 @@ const SIKAH_SCALE = [
 const SIKAH_INTERVALS=['3⁄4','1','1','3⁄4','3⁄4','1','3⁄4'];
 
 const HIER_LAYERS = [
-  {name:'جنس سهگاه (۱–۳)', endDeg:3, color:'#6a1b9a'},
-  {name:'جنس راستِ بالا (۳–۶)', endDeg:6, color:'#1e88c9'},
-  {name:'مقام سیکاه (کامل، تا غماز دوم)', endDeg:8, color:'#00695c'},
+  {name:'ثلاثی سیکاه', endDeg:3, color:'#7a1f1f'},
+  {name:'جنس سیکاه',   endDeg:4, color:'#6a1b9a'},
+  {name:'عقد سیکاه',   endDeg:5, color:'#f4a300'},
+  {name:'مقام سیکاه',  endDeg:8, color:'#1e88c9'},
 ];
 const tickline = document.getElementById('tickline');
 for(let i=0;i<8;i++){
@@ -272,6 +285,50 @@ HIER_LAYERS.forEach(l=>{
   bar.style.width=((l.endDeg-1)*TICK_W)+'px'; bar.style.background=l.color; bar.textContent=l.name;
   row.appendChild(bar); layers.appendChild(row);
 });
+
+// ── نمودار دوم: دو جنس سازنده ──
+const TWO_JINS_SIKAH = [
+  {name:'جنس سیکاه', startDeg:1, endDeg:3, color:'#6a1b9a'},
+  {name:'جنس راست', startDeg:3, endDeg:8, color:'#1e88c9'},
+];
+const tickline2=document.getElementById('tickline2');
+if(tickline2){
+  const dw2=document.getElementById('diagwrap2');
+  dw2.style.width=(7*TICK_W+20)+'px';
+  for(let i=0;i<8;i++){
+    const t=document.createElement('div'); t.className='tick'+(i===0||i===7?' end':'');
+    t.style.left=(i*TICK_W)+'px'; tickline2.appendChild(t);
+  }
+  const fr2=document.getElementById('fracrow2');
+  SIKAH_INTERVALS.forEach((f,i)=>{
+    const chip=document.createElement('div'); chip.className='frac-chip';
+    chip.style.left=((i+0.5)*TICK_W)+'px'; chip.textContent=f;
+    fr2.appendChild(chip);
+  });
+  const layers2=document.getElementById('layers2');
+  TWO_JINS_SIKAH.forEach(j=>{
+    const row=document.createElement('div'); row.className='layer2-row'; row.style.position='relative'; row.style.height='28px';
+    const bar=document.createElement('div'); bar.className='layer2-bar';
+    bar.style.cssText='position:absolute;top:0;height:28px;border-radius:6px;color:#fff;font-weight:bold;font-size:.72em;display:flex;align-items:center;padding-right:8px;box-shadow:0 2px 6px rgba(0,0,0,.15);white-space:nowrap';
+    bar.style.left=((j.startDeg-1)*TICK_W)+'px';
+    bar.style.width=((j.endDeg-j.startDeg)*TICK_W)+'px';
+    bar.style.background=j.color; bar.textContent=j.name;
+    row.appendChild(bar); layers2.appendChild(row);
+  });
+  const numrow2=document.getElementById('numrow2');
+  for(let i=0;i<8;i++){
+    const s=document.createElement('span'); s.style.cssText='position:absolute;transform:translateX(-50%)';
+    s.style.left=(i*TICK_W)+'px'; s.textContent=toFa(i+1);
+    numrow2.appendChild(s);
+  }
+  const DEG_NAMES_SIKAH=[{deg:1,name:'قرار مقام'},{deg:5,name:'غماز مقام'},{deg:8,name:'اکتاو مقام'}];
+  const degnames=document.getElementById('degnames');
+  DEG_NAMES_SIKAH.forEach(d=>{
+    const s=document.createElement('span'); s.style.cssText='position:absolute;transform:translateX(-50%)';
+    s.style.left=((d.deg-1)*TICK_W)+'px'; s.textContent=d.name;
+    degnames.appendChild(s);
+  });
+}
 
 // ── رسم پیانوی اصلی ──
 const piano=document.getElementById('piano');
