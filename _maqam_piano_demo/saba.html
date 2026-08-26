@@ -32,11 +32,8 @@
   .numrow{position:relative;height:18px;margin-top:2px;font-weight:bold;color:#333;font-size:.8em}
   .numrow span{position:absolute;transform:translateX(-50%)}
   .layers{margin-top:14px;display:flex;flex-direction:column;gap:6px}
-  .layer-row{position:relative;height:22px}
-  .layer-bar{position:absolute;top:0;left:0;height:22px;border-radius:6px;box-shadow:0 2px 6px rgba(0,0,0,.15)}
-  .layer-legend{margin-top:12px;display:flex;flex-direction:column;gap:7px;direction:rtl}
-  .layer-legend .litem{display:flex;align-items:center;gap:8px;font-size:.78em;color:#444;font-weight:600}
-  .layer-legend .lswatch{width:16px;height:16px;border-radius:4px;flex-shrink:0;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+  .layer-row{position:relative;height:28px}
+  .layer-bar{position:absolute;top:0;left:0;height:28px;border-radius:6px;color:#fff;font-weight:bold;font-size:.66em;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,.15);white-space:nowrap;overflow:hidden;padding:0 4px}
 
   .degnames{position:relative;height:34px;margin-top:8px}
   .degnames span{position:absolute;width:60px;transform:translateX(-50%);text-align:center;font-size:.66em;color:#555;line-height:1.3}
@@ -241,14 +238,14 @@ const ZAMZAM_SCALE = buildScale(ZAMZAM_OFFSETS,
   ], []);
 
 const SABA_HIER = [
-  {name:'جنس صبا (۱–۳)',            start:0, end:3, color:'#00838f'},
-  {name:'جنس حجاز (۳–۶، هم‌پوشان)', start:2, end:6, color:'#1e88c9'},
-  {name:'ثلاثی عجم (۶–۸، هم‌پوشان)', start:5, end:8, color:'#c62828'},
+  {name:'جنس صبا',   start:0, end:3, color:'#00838f'},
+  {name:'جنس حجاز',  start:2, end:6, color:'#1e88c9'},
+  {name:'ثلاثی عجم', start:5, end:8, color:'#c62828'},
 ];
 const ZAMZAM_HIER = [
-  {name:'جنس زمزم (۱–۳)',           start:0, end:3, color:'#6d4c41'},
-  {name:'جنس حجاز (۳–۶، هم‌پوشان)', start:2, end:6, color:'#1e88c9'},
-  {name:'ثلاثی عجم (۶–۸، هم‌پوشان)', start:5, end:8, color:'#c62828'},
+  {name:'جنس زمزم',  start:0, end:3, color:'#6d4c41'},
+  {name:'جنس حجاز',  start:2, end:6, color:'#1e88c9'},
+  {name:'ثلاثی عجم', start:5, end:8, color:'#c62828'},
 ];
 
 // ── سلسلهمراتب ثلاثی/جنس/عقد/مقام (مطابق الگوی بیات و راست) ──
@@ -335,7 +332,7 @@ function renderDegNames(containerEl, degNamesArr){
     containerEl.appendChild(s);
   });
 }
-// ── رندر عمومی نمودار فاصله + سلسله‌مراتب ──
+// ── رندر عمومی نمودار فاصله + سلسلهمراتب ──
 function renderDiagram(containerEl, offsets, hierLayers){
   containerEl.innerHTML = '';
   const tickline=document.createElement('div'); tickline.className='tickline';
@@ -368,22 +365,10 @@ function renderDiagram(containerEl, offsets, hierLayers){
     const row=document.createElement('div'); row.className='layer-row';
     const bar=document.createElement('div'); bar.className='layer-bar';
     bar.style.left=(l.start*TICK_W)+'px'; bar.style.width=((l.end-1-l.start)*TICK_W)+'px';
-    bar.style.background=l.color;
+    bar.style.background=l.color; bar.textContent=l.name;
     row.appendChild(bar); layers.appendChild(row);
   });
   containerEl.appendChild(layers);
-
-  if(hierLayers.length){
-    const legend=document.createElement('div'); legend.className='layer-legend';
-    hierLayers.forEach(l=>{
-      const item=document.createElement('div'); item.className='litem';
-      const sw=document.createElement('div'); sw.className='lswatch'; sw.style.background=l.color;
-      const txt=document.createElement('span'); txt.textContent=l.name;
-      item.appendChild(sw); item.appendChild(txt);
-      legend.appendChild(item);
-    });
-    containerEl.appendChild(legend);
-  }
 }
 
 // ── پخش صدا ──
