@@ -153,7 +153,7 @@
   <div class="src-box">
     🔎 <b>منبع:</b> ساختار کلی هر ۵ ترکیب از <b>maqamworld.com</b> (متن دقیق هر صفحه) و فاصله‌های عددی از تصویر اپ <b>Maqamat</b> (صفحه‌ی «Sikah Family») استخراج و تطبیق داده شدند — تطابق تقریباً کامل بین دو منبع.
     <br><br>
-    i️ طبق maqamworld، «حزام» و «راحت‌الارواح» دقیقاً یک ساختار دارند و فقط در پردهی مطلق شروع (نه فاصله‌های نسبی) فرق می‌کنند؛ چون این دمو همیشه از یک نُت ثابت شروع می‌شود، هر دو در این صفحه یکسان شنیده می‌شوند و فقط یک بار ساخته شده‌اند.
+    ℹ️ طبق maqamworld، «حزام» و «راحت‌الارواح» دقیقاً یک ساختار دارند و فقط در پرده‌ی مطلق شروع (نه فاصله‌های نسبی) فرق می‌کنند؛ چون این دمو همیشه از یک نُت ثابت شروع می‌شود، هر دو در این صفحه یکسان شنیده می‌شوند و فقط یک بار ساخته شده‌اند.
     <br><br>
     ✅ ساختار اصلی سهگاه (سهگاه+راست+ثلاثی راست) با تصویر دقیق و شفاف اپ «مدرسه تلاوت» به‌طور کامل و پیکسل‌به‌پیکسل تأیید شد. دو ترکیب «اوشار» و «فرحناک» هم از همان اپ اضافه شدند (بر اساس الگوی تکراری خانواده: سهگاه + جنس دوم کوتاهشده + ثلاثی راست).
     <br><br>
@@ -185,15 +185,15 @@ const WHITE_KEYS = [
 const BLACK_KEYS = [
   {name:'Ds4', label:'می‌بمل', afterWhiteIdx:-1, deg:1, isTonic:true},
   {name:'Fs4', label:'فا#', afterWhiteIdx:1},
-  {name:'Gs4', label:'لابمل', afterWhiteIdx:2},
-  {name:'As4', label:'سیبمل', afterWhiteIdx:3, deg:5, isTonic:false},
+  {name:'Gs4', label:'لا‌بمل', afterWhiteIdx:2},
+  {name:'As4', label:'سی‌بمل', afterWhiteIdx:3, deg:5, isTonic:false},
   {name:'Cs5', label:'دو#', afterWhiteIdx:5},
   {name:'Ds5', label:'می‌بمل (اکتاو)', afterWhiteIdx:6, deg:8, isTonic:false}
 ];
 const WKEY_W = 44, BKEY_W = 26, TICK_W = 44;
 const KEY_SEMI={Ds4:3,E4:4,F4:5,Fs4:6,G4:7,Gs4:8,A4:9,As4:10,B4:11,C5:12,Cs5:13,D5:14,Ds5:15};
 function freqFromSemi(s){return 261.626*Math.pow(2,s/12);}
-const CHROM_NAMES = ['می‌بمل','می','فا','فا# / سلبمل','سل','سل# / لابمل','لا','لا# / سیبمل','سی','دو','دو# / ربمل','ر','می‌بمل (اکتاو)'];
+const CHROM_NAMES = ['می‌بمل','می','فا','فا# / سل‌بمل','سل','سل# / لا‌بمل','لا','لا# / سی‌بمل','سی','دو','دو# / ر‌بمل','ر','می‌بمل (اکتاو)'];
 const OFFSET_CENTER_PX = [22,41,66,110,129,154,173,198,217,242,286,305,330];
 function chromName(offset){
   if(Number.isInteger(offset)) return CHROM_NAMES[offset];
@@ -211,12 +211,12 @@ const DIFF_LABELS={1:'1⁄2',1.5:'3⁄4',2:'1',2.5:'1 1⁄4',3:'1 1⁄2'};
 const SIKAH_OFFSETS = [0,1.5,3.5,5.5,7,8.5,10.5,12];
 const SIKAH_SCALE = [
   {deg:1, offset:0,   label:'می‌بمل',                       desc:'نُت شروع — استقرار (تونیک) اصلی مقام سهگاه'},
-  {deg:2, offset:1.5, label:'فا نیمبمل (ربعپرده)',    desc:'3⁄4 پرده بالاتر — دومین نُت «جنس سهگاه»، رنگ خاص و شرقی'},
-  {deg:3, offset:3.5, label:'سل نیمبمل (ربعپرده)',   desc:'یک پرده بالاتر — پایان «جنس سهگاه» و شروع «جنس راستِ بالا»'},
-  {deg:4, offset:5.5, label:'لا نیمبمل (ربعپرده)',    desc:'یک پرده بالاتر — دومین نُت جنس راستِ بالا'},
-  {deg:5, offset:7,   label:'سیبمل (غماز اول)',           desc:'3⁄4 پرده بالاتر — پایان جنس راستِ بالا و شروع «جنس راست» (غماز دوم)'},
-  {deg:6, offset:8.5, label:'دو نیمبمل (ربعپرده)',    desc:'3⁄4 پرده بالاتر — دومین نُت جنس راست'},
-  {deg:7, offset:10.5,label:'ر نیمبمل (ربعپرده)',    desc:'یک پرده بالاتر — سومین نُت جنس راست'},
+  {deg:2, offset:1.5, label:'فا نیم‌بمل (ربع‌پرده)',    desc:'3⁄4 پرده بالاتر — دومین نُت «جنس سهگاه»، رنگ خاص و شرقی'},
+  {deg:3, offset:3.5, label:'سل نیم‌بمل (ربع‌پرده)',   desc:'یک پرده بالاتر — پایان «جنس سهگاه» و شروع «جنس راستِ بالا»'},
+  {deg:4, offset:5.5, label:'لا نیم‌بمل (ربع‌پرده)',    desc:'یک پرده بالاتر — دومین نُت جنس راستِ بالا'},
+  {deg:5, offset:7,   label:'سی‌بمل (غماز اول)',           desc:'3⁄4 پرده بالاتر — پایان جنس راستِ بالا و شروع «جنس راست» (غماز دوم)'},
+  {deg:6, offset:8.5, label:'دو نیم‌بمل (ربع‌پرده)',    desc:'3⁄4 پرده بالاتر — دومین نُت جنس راست'},
+  {deg:7, offset:10.5,label:'ر نیم‌بمل (ربع‌پرده)',    desc:'یک پرده بالاتر — سومین نُت جنس راست'},
   {deg:8, offset:12,  label:'می‌بمل (اکتاو)',                desc:'3⁄4 پرده بالاتر — رسیدن به اکتاو، پایان مقام سهگاه'},
 ];
 const SIKAH_INTERVALS=['3⁄4','1','1','3⁄4','3⁄4','1','3⁄4'];
@@ -358,7 +358,7 @@ function buildComboScale(combo){
     const range=combo.jinsRanges.find(r=>i < r.end);
     const jinsIdx = range ? range.idx : combo.jinsRanges[combo.jinsRanges.length-1].idx;
     const jinsLabel = combo.jinsSegs[jinsIdx];
-    const desc = i===0 ? 'نُت شروع — استقرار (تونیک) مقام '+combo.name : 'این نُت بخشی از «'+jinsLabel+'» است و رنگ ویژهی «'+combo.name+'» را می‌سازد.'+(isQuarter?' (ربع‌پرده)':'');
+    const desc = i===0 ? 'نُت شروع — استقرار (تونیک) مقام '+combo.name : 'این نُت بخشی از «'+jinsLabel+'» است و رنگ ویژه‌ی «'+combo.name+'» را می‌سازد.'+(isQuarter?' (ربع‌پرده)':'');
     return { deg:i+1, offset:o, freq:freqFromOffset(o), label:chromName(o)+(i===0?' (شروع)':''), desc:desc, isQuarter:isQuarter, jins: jinsLabel };
   });
 }
