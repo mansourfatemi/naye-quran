@@ -22,7 +22,7 @@
   .card .sub{font-size:.8em;color:#888;text-align:center;margin-bottom:14px}
 
   .diagwrap-scroll{overflow-x:auto;direction:ltr;-webkit-overflow-scrolling:touch;margin-top:10px}
-  .diagwrap{width:308px;margin:0;direction:ltr}
+  .diagwrap{width:448px;margin:0;direction:ltr}
   .tickline{position:relative;height:14px;border-bottom:2px solid #999}
   .tickline .tick{position:absolute;bottom:0;width:2px;height:12px;background:#999}
   .tickline .tick.end{height:18px;background:#333;width:2px}
@@ -97,9 +97,9 @@
 
   .note-box{background:#e3f2fd;color:#01579b;font-size:.78em;padding:12px 14px;border-radius:10px;margin:16px;line-height:1.8}
   .src-box{background:#fff8e1;border:1.5px solid #ffca28;color:#5d4200;font-size:.72em;padding:10px 12px;border-radius:10px;margin:16px;line-height:1.7}
-  .namerow{position:relative;height:20px;margin-top:6px;font-size:.62em;color:#6a1b9a;font-weight:bold}
+  .namerow{position:relative;height:22px;margin-top:6px;font-size:.56em;color:#6a1b9a;font-weight:bold;font-family:'Amiri',Tahoma,serif}
   .namerow span{position:absolute;transform:translateX(-50%);white-space:nowrap}
-  .offrow{position:relative;height:16px;margin-top:2px;font-size:.62em;color:#777}
+  .offrow{position:relative;height:16px;margin-top:2px;font-size:.58em;color:#777}
   .offrow span{position:absolute;transform:translateX(-50%)}
   .offrow span.tonic{color:#c99b1f;font-weight:bold}
 </style>
@@ -209,9 +209,9 @@ const BLACK_KEYS = [
   {name:'Gs4', label:'لا‌بمل', afterWhiteIdx:2, offset:5},
   {name:'As4', label:'سی‌بمل', afterWhiteIdx:3, deg:5, isTonic:false, offset:7},
   {name:'Cs5', label:'دو#', afterWhiteIdx:5, offset:10},
-  {name:'Ds5', label:'می‌بمل (اکتاو)', afterWhiteIdx:6, deg:8, isTonic:false, offset:12}
+  {name:'Ds5', label:'می‌بمل’', afterWhiteIdx:6, deg:8, isTonic:false, offset:12}
 ];
-const WKEY_W = 44, BKEY_W = 26, TICK_W = 44;
+const WKEY_W = 44, BKEY_W = 26, TICK_W = 56;
 const KEY_SEMI={Ds4:3,E4:4,F4:5,Fs4:6,G4:7,Gs4:8,A4:9,As4:10,B4:11,C5:12,Cs5:13,D5:14,Ds5:15};
 function freqFromSemi(s){return NOTE_FREQ_EB4*Math.pow(2,(s-3)/12);}
 const CHROM_NAMES = ['می‌بمل','می','فا','فا# / سل‌بمل','سل','سل# / لا‌بمل','لا','لا# / سی‌بمل','سی','دو','دو# / ر‌بمل','ر','می‌بمل (اکتاو)'];
