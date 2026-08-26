@@ -1,4 +1,4 @@
-const CACHE='mt-mq-v20260826151726';
+const CACHE='mt-mq-v20260826152405';
 const CORE=['./','./index.html','./manifest.json','./icon-192.png','./icon-512.png'];
 const AUDIO=[
   "./qaris/hashemi/audio/01.m4a",
