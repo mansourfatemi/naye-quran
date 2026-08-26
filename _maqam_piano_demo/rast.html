@@ -126,7 +126,7 @@
 
   <div class="card">
     <h2>فواصل موسیقایی مقام راست</h2>
-    <div class="sub">جنس راست (۱–۵، پنتاکورد) + جنس راست تکراری (۵–۸، همپوشان از درجه۵)</div>
+    <div class="sub">ساختار سلسلهمراتبی: ثلاثی ← جنس ← عقد ← مقام کامل</div>
     <div class="diagwrap-scroll"><div class="diagwrap">
       <div class="tickline" id="tickline"></div>
       <div class="fracrow" id="fracrow"></div>
@@ -252,8 +252,10 @@ const RAST_SCALE = [
 const RAST_INTERVALS=['1','3⁄4','3⁄4','1','1','3⁄4','3⁄4'];
 
 const HIER_LAYERS = [
-  {name:'جنس راست (۱–۵)', endDeg:5, color:'#b71c1c'},
-  {name:'مقام راست (کامل)', endDeg:8, color:'#1e88c9'},
+  {name:'ثلاثی راست', endDeg:3, color:'#7a1f1f'},
+  {name:'جنس راست', endDeg:5, color:'#b71c1c'},
+  {name:'عقد راست', endDeg:6, color:'#f4a300'},
+  {name:'مقام راست', endDeg:8, color:'#1e88c9'},
 ];
 const tickline = document.getElementById('tickline');
 for(let i=0;i<8;i++){
