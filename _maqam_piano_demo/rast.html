@@ -21,7 +21,7 @@
   .card h2{font-size:1.05em;margin:0 0 8px;color:#1a1a2e;text-align:center}
   .card .sub{font-size:.8em;color:#888;text-align:center;margin-bottom:14px}
 
-  .diagwrap-scroll{overflow-x:auto;direction:ltr;-webkit-overflow-scrolling:touch;margin-top:10px}
+  .diagwrap-scroll{overflow-x:auto;direction:ltr;-webkit-overflow-scrolling:touch;margin-top:10px;padding:0 22px}
   .diagwrap{width:308px;margin:0;direction:ltr}
   .tickline{position:relative;height:14px;border-bottom:2px solid #999}
   .tickline .tick{position:absolute;bottom:0;width:2px;height:12px;background:#999}
@@ -31,6 +31,11 @@
   .frac-chip.big{background:#4a148c}
   .numrow{position:relative;height:18px;margin-top:2px;font-weight:bold;color:#333;font-size:.8em}
   .numrow span{position:absolute;transform:translateX(-50%)}
+  .namerow{position:relative;height:20px;margin-top:6px;font-size:.58em;color:#a35a00;font-weight:bold;font-family:'Amiri',Tahoma,serif}
+  .namerow span{position:absolute;top:0;transform:translateX(-50%);white-space:nowrap}
+  .offrow{position:relative;height:16px;margin-top:2px;font-size:.64em;color:#777}
+  .offrow span{position:absolute;transform:translateX(-50%);white-space:nowrap}
+  .offrow span.tonic{color:#c99b1f;font-weight:bold}
   .layers{margin-top:14px;display:flex;flex-direction:column;gap:6px}
   .layer-row{position:relative;height:28px}
   .layer-bar{position:absolute;top:0;left:0;height:28px;border-radius:6px;color:#fff;font-weight:bold;font-size:.72em;display:flex;align-items:center;padding-left:8px;box-shadow:0 2px 6px rgba(0,0,0,.15);white-space:nowrap}
@@ -126,8 +131,18 @@
       <div class="tickline" id="tickline"></div>
       <div class="fracrow" id="fracrow"></div>
       <div class="numrow" id="numrow"></div>
+      <div class="namerow" id="namerow"></div>
+      <div class="offrow" id="offrow"></div>
       <div class="layers" id="layers"></div>
     </div></div>
+  </div>
+
+  <div class="card">
+    <h2>📖 جدول کامل سُلم موسیقی عربی (اکتاوخوانی)</h2>
+    <div class="sub">نامهای بالای نمودار (راست، دوکاه، سیکاه، ...) بخشی از جدول تاریخی «دیوان» موسیقی عربی هستند — تمام ۴۹ پرده/ربعپرده در دو اکتاو کامل، از یکاه تا جواب نوا</div>
+    <div style="text-align:center">
+      <button class="btn btn-play" style="width:100%;justify-content:center" onclick="window.location.href='diwan_reference.html'">📖 مشاهدهی جدول کامل دیوان (۲ اکتاو)</button>
+    </div>
   </div>
 
   <div class="card">
@@ -256,6 +271,21 @@ for(let i=0;i<8;i++){
   const s=document.createElement('span'); s.style.left=(i*TICK_W)+'px'; s.textContent=toFa(i+1);
   numrow.appendChild(s);
 }
+function faDec(n){ return n.toString().replace('.', '\u066B').replace(/[0-9]/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]); }
+const RAST_NAMES=['راست','دوکاه','سیکاه','جهارکاه','نوا','حسینی','أوج','کردان']; // نامهای اصیل دیوان موسیقی عربی (منبع: جدول دکتر میخائیل مشاقّه) — راست خودِ نقطهی صفر دیوان است
+const namerow=document.getElementById('namerow');
+RAST_NAMES.forEach((nm,i)=>{
+  const s=document.createElement('span'); s.style.left=(i*TICK_W)+'px'; s.textContent=nm;
+  namerow.appendChild(s);
+});
+const offrow=document.getElementById('offrow');
+RAST_SCALE.forEach((s,i)=>{
+  const el=document.createElement('span'); el.style.left=(i*TICK_W)+'px';
+  const pardeh=s.offset/2;
+  el.className = i===0 ? 'tonic' : '';
+  el.textContent = i===0 ? 'تونیک' : (faDec(pardeh)+' پرده');
+  offrow.appendChild(el);
+});
 const layers=document.getElementById('layers');
 HIER_LAYERS.forEach(l=>{
   const row=document.createElement('div'); row.className='layer-row';
