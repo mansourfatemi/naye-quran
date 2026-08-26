@@ -21,7 +21,7 @@
   .card h2{font-size:1.05em;margin:0 0 8px;color:#1a1a2e;text-align:center}
   .card .sub{font-size:.8em;color:#888;text-align:center;margin-bottom:14px}
 
-  .diagwrap-scroll{overflow-x:auto;direction:ltr;-webkit-overflow-scrolling:touch;margin-top:10px}
+  .diagwrap-scroll{overflow-x:auto;direction:ltr;-webkit-overflow-scrolling:touch;margin-top:10px;padding:0 22px}
   .diagwrap{width:352px;margin:0;direction:ltr}
   .tickline{position:relative;height:14px;border-bottom:2px solid #999}
   .tickline .tick{position:absolute;bottom:0;width:2px;height:12px;background:#999}
@@ -37,6 +37,12 @@
 
   .degnames{position:relative;height:34px;margin-top:8px}
   .degnames span{position:absolute;width:60px;transform:translateX(-50%);text-align:center;font-size:.66em;color:#555;line-height:1.3}
+
+  .namerow{position:relative;height:20px;margin-top:6px;font-size:.58em;color:#a35a00;font-weight:bold;font-family:'Amiri',Tahoma,serif}
+  .namerow span{position:absolute;top:0;transform:translateX(-50%);white-space:nowrap}
+  .offrow{position:relative;height:16px;margin-top:2px;font-size:.64em;color:#777}
+  .offrow span{position:absolute;transform:translateX(-50%);white-space:nowrap}
+  .offrow span.tonic{color:#c99b1f;font-weight:bold}
 
   .about-box{font-size:.85em;color:#333;line-height:2;text-align:justify}
   .about-box p{margin:0 0 12px}
@@ -282,7 +288,13 @@ const ZAMZAM_HIER_MAIN = [
 ];
 const SABA_DEGNAMES = [{deg:1,name:'قرار مقام'},{deg:5,name:'غماز مقام'},{deg:8,name:'اکتاو مقام'}];
 
-function renderHierDiagram(containerEl, offsets, hierLayers){
+// نامهای اصیل دیوان موسیقی عربی (منبع: جدول دکتر میخائیل مشاقّه) — تونیک هر دو مقام «ر» (دوکاه) است
+// محاسبه شده از آفستهای هر مقام نسبت به نقطهی صفر دیوان (راست=دو۴): آفست دوکاه(ر) = ۲ نیمپرده
+const SABA_NAMES   = ['دوکاه','سیکاه','جهارکاه','حجاز / صبا','حسینی','عجم','کردان','محیّر'];
+const ZAMZAM_NAMES = ['دوکاه','کرد','جهارکاه','حجاز / صبا','حسینی','عجم','کردان','محیّر'];
+function faDec(n){ return n.toString().replace('.', '\u066B').replace(/[0-9]/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]); }
+
+function renderHierDiagram(containerEl, offsets, hierLayers, namesArr){
   containerEl.innerHTML = '';
   const tickline=document.createElement('div'); tickline.className='tickline';
   offsets.forEach((o,i)=>{
@@ -308,6 +320,25 @@ function renderHierDiagram(containerEl, offsets, hierLayers){
     numrow.appendChild(s);
   });
   containerEl.appendChild(numrow);
+
+  if(namesArr){
+    const namerow=document.createElement('div'); namerow.className='namerow';
+    namesArr.forEach((nm,i)=>{
+      const s=document.createElement('span'); s.style.left=(i*TICK_W)+'px'; s.textContent=nm;
+      namerow.appendChild(s);
+    });
+    containerEl.appendChild(namerow);
+
+    const offrow=document.createElement('div'); offrow.className='offrow';
+    offsets.forEach((o,i)=>{
+      const s=document.createElement('span'); s.style.left=(i*TICK_W)+'px';
+      const pardeh=o/2;
+      s.className = i===0 ? 'tonic' : '';
+      s.textContent = i===0 ? 'تونیک' : (faDec(pardeh)+' پرده');
+      offrow.appendChild(s);
+    });
+    containerEl.appendChild(offrow);
+  }
 
   const layers=document.createElement('div'); layers.className='layers';
   hierLayers.forEach(l=>{
@@ -450,8 +481,8 @@ function setupMaqamSection(id, scaleArr){
   document.getElementById('loopBtn-'+id).onclick=(e)=>{ looping=!looping; e.target.classList.toggle('on',looping); };
 }
 
-renderHierDiagram(document.getElementById('diag-saba-hier'), SABA_OFFSETS, SABA_HIER_MAIN);
-renderHierDiagram(document.getElementById('diag-zamzam-hier'), ZAMZAM_OFFSETS, ZAMZAM_HIER_MAIN);
+renderHierDiagram(document.getElementById('diag-saba-hier'), SABA_OFFSETS, SABA_HIER_MAIN, SABA_NAMES);
+renderHierDiagram(document.getElementById('diag-zamzam-hier'), ZAMZAM_OFFSETS, ZAMZAM_HIER_MAIN, ZAMZAM_NAMES);
 renderDiagram(document.getElementById('diag-saba'), SABA_OFFSETS, SABA_HIER);
 renderDiagram(document.getElementById('diag-zamzam'), ZAMZAM_OFFSETS, ZAMZAM_HIER);
 renderDegNames(document.getElementById('degnames-saba'), SABA_DEGNAMES);
