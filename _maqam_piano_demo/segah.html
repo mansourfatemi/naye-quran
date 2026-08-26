@@ -244,7 +244,7 @@ const SIKAH_INTERVALS=['3⁄4','1','1','3⁄4','3⁄4','1','3⁄4'];
 const HIER_LAYERS = [
   {name:'ثلاثی سیکاه', endDeg:3, color:'#7a1f1f'},
   {name:'جنس سیکاه',   endDeg:4, color:'#6a1b9a'},
-  {name:'عقد سیکاه',   endDeg:5, color:'#f4a300'},
+  {name:'عقد سیکاه',   endDeg:6, color:'#f4a300'},
   {name:'مقام سیکاه',  endDeg:8, color:'#1e88c9'},
 ];
 const tickline = document.getElementById('tickline');
@@ -294,7 +294,7 @@ const TWO_JINS_SIKAH = [
 const tickline2=document.getElementById('tickline2');
 if(tickline2){
   const dw2=document.getElementById('diagwrap2');
-  dw2.style.width=(7*TICK_W+20)+'px';
+  dw2.style.width=(7*TICK_W+30)+'px'; dw2.style.paddingRight='20px';
   for(let i=0;i<8;i++){
     const t=document.createElement('div'); t.className='tick'+(i===0||i===7?' end':'');
     t.style.left=(i*TICK_W)+'px'; tickline2.appendChild(t);
