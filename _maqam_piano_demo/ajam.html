@@ -20,8 +20,8 @@
   .card h2{font-size:1.05em;margin:0 0 8px;color:#1a1a2e;text-align:center}
   .card .sub{font-size:.8em;color:#888;text-align:center;margin-bottom:14px}
 
-  .diagwrap-scroll{overflow-x:auto;direction:ltr;-webkit-overflow-scrolling:touch;margin-top:10px}
-  .diagwrap{width:308px;margin:0;direction:ltr}
+  .diagwrap-scroll{overflow-x:auto;direction:ltr;-webkit-overflow-scrolling:touch;margin-top:10px;padding:4px 20px 8px}
+  .diagwrap{width:370px;margin:0;direction:ltr}
   .tickline{position:relative;height:14px;border-bottom:2px solid #999}
   .tickline .tick{position:absolute;bottom:0;width:2px;height:12px;background:#999}
   .tickline .tick.end{height:18px;background:#333;width:2px}
@@ -92,6 +92,11 @@
   .legend-list .deg-chip{margin-left:8px}
 
   .note-box{background:#e3f2fd;color:#01579b;font-size:.78em;padding:12px 14px;border-radius:10px;margin:16px;line-height:1.8}
+  .namerow{position:relative;height:20px;margin-top:6px;font-size:.58em;color:#a35a00;font-weight:bold;font-family:'Amiri',Tahoma,serif}
+  .namerow span{position:absolute;transform:translateX(-50%);white-space:nowrap}
+  .offrow{position:relative;height:16px;margin-top:2px;font-size:.58em;color:#777}
+  .offrow span{position:absolute;transform:translateX(-50%)}
+  .offrow span.tonic{color:#c99b1f;font-weight:bold}
 </style>
 </head>
 <body>
@@ -101,6 +106,16 @@
     <div class="sub">آموزش کامل: فواصل، درجات، نواختن، و ترکیبات خانواده‌ی عجم</div>
   </div>
 
+
+  <div class="card">
+    <h2>📜 دربارهٔ مقام عجم</h2>
+    <div class="about-box">
+      <p>مقام عجم را شاید بتوان فصل مشترک تمامی انواع موسیقی دنیا محسوب نمود. از آنجا که این مقام، منسوب به افلاطون فیلسوف یونانی است، آن را به نوعی میتوان قدیمیترین گام موسیقی (۸ صدایی) هم به حساب آورد. این مقام گام آموزشی و کلاسیک در موسیقی است و مابقی گامها براساس آن تعریف میشوند. اساس بسیاری از سازها همچون پیانو براساس این گام تنظیم و کلیدهای آن جاسازی شده است. همانطور که پیشتر اشاره شد این گام به گام ماژور (do) در موسیقی غرب و در موسیقی ایران همواره به گام ماهور شهرت دارد.</p>
+      <p>این مقام از دو جنس عجم به شکل منفصل تشکیل یافته است. مقام عجم بهطور معمولی در بیشتر تلاوتهای قاریان دیگر از جمله نهاوند، صبا و چهارگاه مورد استفاده قرار گرفته است، اما در برخی تلاوتها هم بهطور مستقل دیده میشود. درجه رکوز آن درجهی طبیعی Si است و به همین سبب بیشتر از عجم عشیران آن را آموزش میدهند.</p>
+      <p>درجهی استقرار (تونیک) این مقام دو مقام مرکب مهم به نامهای چهارگاه و شوق افزا را دارد. سیر صعودی و نزولی این مقام یکسان است.</p>
+    </div>
+  </div>
+
   <div class="card">
     <h2>فواصل موسیقایی مقام عجم</h2>
     <div class="sub">جنس عجم (۱–۵، پنتاکورد) + جنس عجم تکراری (۵–۸، هم‌پوشان از درجه۵)</div>
@@ -108,6 +123,8 @@
       <div class="tickline" id="tickline"></div>
       <div class="fracrow" id="fracrow"></div>
       <div class="numrow" id="numrow"></div>
+      <div class="namerow" id="namerow"></div>
+      <div class="offrow" id="offrow"></div>
       <div class="layers" id="layers"></div>
     </div></div>
   </div>
@@ -176,7 +193,7 @@ const BLACK_KEYS = [
   {name:'Gs4', label:'لابمل', afterWhiteIdx:5},
   {name:'As4', label:'سیبمل (اکتاو)', afterWhiteIdx:6, deg:8, isTonic:false}
 ];
-const WKEY_W = 44, BKEY_W = 26, TICK_W = 44;
+const WKEY_W = 44, BKEY_W = 26, TICK_W = 48;
 const KEY_SEMI={B3:-1,C4:0,D4:2,E4:4,F4:5,G4:7,A4:9,As3:-2,Cs4:1,Ds4:3,Fs4:6,Gs4:8,As4:10};
 function freqFromSemi(s){return 261.626*Math.pow(2,s/12);}
 const CHROM_NAMES = ['سیبمل','سی','دو','دو# / ربمل','ر','ر# / می‌بمل','می','فا','فا# / سلبمل','سل','سل# / لابمل','لا','سیبمل (اکتاو)'];
@@ -226,6 +243,21 @@ for(let i=0;i<8;i++){
   const s=document.createElement('span'); s.style.left=(i*TICK_W)+'px'; s.textContent=toFa(i+1);
   numrow.appendChild(s);
 }
+function faDec(n){ return n.toString().replace('.', '٫').replace(/[0-9]/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]); }
+const AJAM_NOTE_NAMES=['راست','دوکاه','سیکاه','جهارکاه','نوا','حسینی','أوج','کردان']; // نام‌های دیوان موسیقی عربی از Bb3
+const namerow=document.getElementById('namerow');
+AJAM_NOTE_NAMES.forEach((nm,i)=>{
+  const s=document.createElement('span'); s.style.left=(i*TICK_W)+'px'; s.textContent=nm;
+  namerow.appendChild(s);
+});
+const offrow=document.getElementById('offrow');
+AJAM_SCALE.forEach((s,i)=>{
+  const el=document.createElement('span'); el.style.left=(i*TICK_W)+'px';
+  const pardeh=s.offset/2;
+  el.className = i===0 ? 'tonic' : '';
+  el.textContent = i===0 ? 'تونیک' : (faDec(pardeh)+' پرده');
+  offrow.appendChild(el);
+});
 const layers=document.getElementById('layers');
 HIER_LAYERS.forEach(l=>{
   const row=document.createElement('div'); row.className='layer-row';
