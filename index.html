@@ -4126,6 +4126,20 @@ function renderMaqamGrid(){
     d.onclick=()=>openMaqamDetail(nm,col);
     el.appendChild(d);
   });
+  // کارت‌های demo-only — مقاماتی که demo دارند اما فراز ندارند
+  Object.keys(MAQAM_DEMO_LINKS).forEach(nm=>{
+    if(cnt[nm]) return;
+    const info=MAQAM_INFO[nm]||{icon:"🎵",desc:""};
+    const col=MCOLORS[nm]||"#999";
+    const d=document.createElement("div"); d.className="maq-card";
+    d.style.borderTopColor=col; d.style.opacity="0.75";
+    d.innerHTML=`<div class="maq-icon">${info.icon}</div>
+      <div class="maq-name">${nm}</div>
+      <div class="maq-cnt" style="color:#aaa">۰ فراز · demo موجود</div>
+      <div class="maq-bar-bg"><div class="maq-bar" style="width:0%;background:${col}"></div></div>`;
+    d.onclick=()=>{ stopCurrentAudio(); openMaqamDetail(nm, col); };
+    el.appendChild(d);
+  });
   filterMaqamGrid();
 }
 
