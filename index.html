@@ -392,16 +392,6 @@
 
 
 </style>
-<script>
-// Force SW update - added 20260826
-if("serviceWorker" in navigator){
-  navigator.serviceWorker.getRegistrations().then(function(regs){
-    regs.forEach(function(reg){
-      reg.update();
-    });
-  });
-}
-</script>
 </head><body>
 
 <div class="header">
@@ -4147,7 +4137,7 @@ function renderMaqamGrid(){
       <div class="maq-name">${nm}</div>
       <div class="maq-cnt" style="color:#aaa">۰ فراز · demo موجود</div>
       <div class="maq-bar-bg"><div class="maq-bar" style="width:0%;background:${col}"></div></div>`;
-    d.onclick=()=>{ stopCurrentAudio();
+    d.onclick=()=>{ if(typeof stopCurrentAudio==="function") stopCurrentAudio();
       const demoUrl=MAQAM_DEMO_LINKS[nm];
       if(demoUrl){ if(typeof Android!=="undefined"&&Android.openAsset){ Android.openAsset(demoUrl); } else { window.location.href=demoUrl; } }
       else { openMaqamDetail(nm, col); }
