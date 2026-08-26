@@ -188,25 +188,25 @@ const NOTE_FREQ_EB4 = 311.127; // نت استقرار مقام سهگاه = می
 function freqFromOffset(offset){ return NOTE_FREQ_EB4 * Math.pow(2, offset/12); }
 
 const WHITE_KEYS = [
-  {name:'E4', label:'می'},
-  {name:'F4', label:'فا'},
-  {name:'G4', label:'سل'},
-  {name:'A4', label:'لا'},
-  {name:'B4', label:'سی'},
-  {name:'C5', label:'دو'},
-  {name:'D5', label:'ر'}
+  {name:'E4', label:'می', offset:1},
+  {name:'F4', label:'فا', offset:2},
+  {name:'G4', label:'سل', offset:4},
+  {name:'A4', label:'لا', offset:6},
+  {name:'B4', label:'سی', offset:8},
+  {name:'C5', label:'دو', offset:9},
+  {name:'D5', label:'ر', offset:11}
 ];
 const BLACK_KEYS = [
-  {name:'Ds4', label:'می‌بمل', afterWhiteIdx:-1, deg:1, isTonic:true},
-  {name:'Fs4', label:'فا#', afterWhiteIdx:1},
-  {name:'Gs4', label:'لا‌بمل', afterWhiteIdx:2},
-  {name:'As4', label:'سی‌بمل', afterWhiteIdx:3, deg:5, isTonic:false},
-  {name:'Cs5', label:'دو#', afterWhiteIdx:5},
-  {name:'Ds5', label:'می‌بمل (اکتاو)', afterWhiteIdx:6, deg:8, isTonic:false}
+  {name:'Ds4', label:'می‌بمل', afterWhiteIdx:-1, deg:1, isTonic:true, offset:0},
+  {name:'Fs4', label:'فا#', afterWhiteIdx:1, offset:3},
+  {name:'Gs4', label:'لا‌بمل', afterWhiteIdx:2, offset:5},
+  {name:'As4', label:'سی‌بمل', afterWhiteIdx:3, deg:5, isTonic:false, offset:7},
+  {name:'Cs5', label:'دو#', afterWhiteIdx:5, offset:10},
+  {name:'Ds5', label:'می‌بمل (اکتاو)', afterWhiteIdx:6, deg:8, isTonic:false, offset:12}
 ];
 const WKEY_W = 44, BKEY_W = 26, TICK_W = 44;
 const KEY_SEMI={Ds4:3,E4:4,F4:5,Fs4:6,G4:7,Gs4:8,A4:9,As4:10,B4:11,C5:12,Cs5:13,D5:14,Ds5:15};
-function freqFromSemi(s){return 261.626*Math.pow(2,s/12);}
+function freqFromSemi(s){return NOTE_FREQ_EB4*Math.pow(2,(s-3)/12);}
 const CHROM_NAMES = ['می‌بمل','می','فا','فا# / سل‌بمل','سل','سل# / لا‌بمل','لا','لا# / سی‌بمل','سی','دو','دو# / ر‌بمل','ر','می‌بمل (اکتاو)'];
 const OFFSET_CENTER_PX = [22,41,66,110,129,154,173,198,217,242,286,305,330];
 function chromName(offset){
@@ -270,21 +270,19 @@ const keyElements={};
 function findScaleNote(offset){ return SIKAH_SCALE.find(s=>Number.isInteger(s.offset) && s.offset===offset); }
 WHITE_KEYS.forEach((k,i)=>{
   const el=document.createElement('div');
-  const semi=KEY_SEMI[k.name];
   el.className='wkey'+(k.deg?' used':'')+(k.isTonic?' tonic':'');
   el.style.left=(i*WKEY_W)+'px';
   el.innerHTML='<div class="lbl">'+k.label+'</div>'+(k.deg?'<div class="deg-badge"><span class="deg-chip'+(k.isTonic?' tonic-chip':'')+'">'+toFa(k.deg)+'</span></div>':'');
-  el.onclick=()=>playMainNote({freq:freqFromSemi(semi),label:k.label,desc:''}, el);
-  piano.appendChild(el); keyElements['s'+semi]=el;
+  el.onclick=()=>playMainNote({freq:freqFromOffset(k.offset),label:k.label,desc:''}, el);
+  piano.appendChild(el); keyElements['o'+k.offset]=el;
 });
 BLACK_KEYS.forEach(k=>{
   const el=document.createElement('div');
-  const semi=KEY_SEMI[k.name];
   el.className='bkey'+(k.deg?' used':'')+(k.isTonic?' tonic':'');
   el.style.left=((k.afterWhiteIdx+1)*WKEY_W-BKEY_W/2-3)+'px';
   el.innerHTML='<div class="lbl">'+k.label+'</div>'+(k.deg?'<div class="deg-badge"><span class="deg-chip'+(k.isTonic?' tonic-chip':'')+'">'+toFa(k.deg)+'</span></div>':'');
-  el.onclick=(e)=>{e.stopPropagation(); playMainNote({freq:freqFromSemi(semi),label:k.label,desc:''}, el);};
-  piano.appendChild(el); keyElements['s'+semi]=el;
+  el.onclick=(e)=>{e.stopPropagation(); playMainNote({freq:freqFromOffset(k.offset),label:k.label,desc:''}, el);};
+  piano.appendChild(el); keyElements['o'+k.offset]=el;
 });
 SIKAH_SCALE.filter(s=>!Number.isInteger(s.offset)).forEach(s=>{
   const el=document.createElement('div');
@@ -448,8 +446,8 @@ function renderDetailPiano(container, scaleArr){
     el.style.left=(i*WKEY_W)+'px';
     el.className='wkey'+(k.deg?' used':'')+(k.isTonic?' tonic':'');
     el.innerHTML='<div class="lbl">'+k.label+'</div>'+(k.deg?'<div class="deg-badge"><span class="deg-chip'+(k.isTonic?' tonic-chip':'')+'">'+toFa(k.deg)+'</span></div>':'');
-    el.onclick=()=>playDetailNote({freq:freqFromSemi(KEY_SEMI[k.name]),label:k.label,desc:''}, el);
-    container.appendChild(el); detailKeyElements['s'+KEY_SEMI[k.name]]=el;
+    el.onclick=()=>playDetailNote({freq:freqFromOffset(k.offset),label:k.label,desc:''}, el);
+    container.appendChild(el); detailKeyElements['o'+k.offset]=el;
   });
   BLACK_KEYS.forEach(k=>{
     const note=findNote(k.offset);
@@ -458,8 +456,8 @@ function renderDetailPiano(container, scaleArr){
     el.style.left=((k.afterWhiteIdx+1)*WKEY_W-BKEY_W/2-3)+'px';
     el.className='bkey'+(k.deg?' used':'')+(k.isTonic?' tonic':'');
     el.innerHTML='<div class="lbl">'+k.label+'</div>'+(k.deg?'<div class="deg-badge"><span class="deg-chip'+(k.isTonic?' tonic-chip':'')+'">'+toFa(k.deg)+'</span></div>':'');
-    el.onclick=(e)=>{e.stopPropagation(); playDetailNote({freq:freqFromSemi(KEY_SEMI[k.name]),label:k.label,desc:''}, el);};
-    container.appendChild(el); detailKeyElements['s'+KEY_SEMI[k.name]]=el;
+    el.onclick=(e)=>{e.stopPropagation(); playDetailNote({freq:freqFromOffset(k.offset),label:k.label,desc:''}, el);};
+    container.appendChild(el); detailKeyElements['o'+k.offset]=el;
   });
   scaleArr.filter(s=>s.isQuarter).forEach(s=>{
     const el=document.createElement('div'); el.className='qmark';
