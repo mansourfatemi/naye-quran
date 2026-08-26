@@ -392,6 +392,16 @@
 
 
 </style>
+<script>
+// Force SW update - added 20260826
+if("serviceWorker" in navigator){
+  navigator.serviceWorker.getRegistrations().then(function(regs){
+    regs.forEach(function(reg){
+      reg.update();
+    });
+  });
+}
+</script>
 </head><body>
 
 <div class="header">
