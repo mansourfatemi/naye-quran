@@ -59,7 +59,7 @@
   </div>
 
   <div class="card">
-    <h2>راهنمای رنگها</h2>
+    <h2>راهنمای رنگ‌ها</h2>
     <div class="legend-conf">
       <span class="lc-high">🟢 نام استاندارد و پرکاربرد — اطمینان بالا</span>
       <span class="lc-low">🔴 ⚠️ نیاز به بازبینی مجدد با تصویر بهتر</span>
@@ -68,7 +68,7 @@
 
   <div class="card">
     <h2>🎼 نمایش تقریبی نتنویسی — دیوان اول</h2>
-    <div class="sub">این یک شبیهسازی ساده است (نه نتنویسی دقیق حرفهای) — فقط برای درک بصری موقعیت نسبی هر پرده</div>
+    <div class="sub">این یک شبیهسازی ساده است (نه نتنویسی دقیق حرفه‌ای) — فقط برای درک بصری موقعیت نسبی هر پرده</div>
     <div class="staffwrap"><svg id="staff1" height="170"></svg></div>
   </div>
 
@@ -140,7 +140,7 @@ function playFreq(freq){
   const now=ctx.currentTime;
 
   const osc=ctx.createOscillator();
-  osc.type='sawtooth'; // هارمونیکهای بیشتر نسبت به triangle، نزدیکتر به تار صوتی انسان
+  osc.type='sawtooth'; // هارمونیک‌های بیشتر نسبت به triangle، نزدیکتر به تار صوتی انسان
   osc.frequency.value=freq;
 
   // وایبراتوی طبیعی (لرزش خفیف صدا)
@@ -148,7 +148,7 @@ function playFreq(freq){
   const vibratoGain=ctx.createGain(); vibratoGain.gain.value=4;
   vibrato.connect(vibratoGain); vibratoGain.connect(osc.frequency);
 
-  // فرمنتهای صدای مرد برای واکهی «آ» (F1≈730هرتز، F2≈1090هرتز)
+  // فرمنت‌های صدای مرد برای واکهی «آ» (F1≈730هرتز، F2≈1090هرتز)
   const f1=ctx.createBiquadFilter(); f1.type='bandpass'; f1.frequency.value=730;  f1.Q.value=9;
   const f2=ctx.createBiquadFilter(); f2.type='bandpass'; f2.frequency.value=1090; f2.Q.value=11;
   const g1=ctx.createGain(); g1.gain.value=1.0;
@@ -187,10 +187,10 @@ renderDiwan('diwan1', 0, 23);
 renderDiwan('diwan2', 24, 48);
 
 // ══════════ نمایش تقریبی نتنویسی (SVG) ══════════
-// این یک شبیهسازی ساده است: فاصلهی عمودی هر نُت متناسب با فاصلهی نیمپردهایاش از خط سوم حامل (فرض: راست/کردان روی خط سوم)
+// این یک شبیهسازی ساده است: فاصلهی عمودی هر نُت متناسب با فاصلهی نیم‌پرده‌ای‌اش از خط سوم حامل (فرض: راست/کردان روی خط سوم)
 function drawStaff(svgId, fromIdx, toIdx, refOffset){
   const svg = document.getElementById(svgId);
-  const stepPx = 5; // فاصلهی عمودی هر نیمپرده (px) — تقریبی، نه دقیق حرفهای
+  const stepPx = 5; // فاصلهی عمودی هر نیمپرده (px) — تقریبی، نه دقیق حرفه‌ای
   const startX = 30, gapX = 34;
   const width = startX + (toIdx-fromIdx+1)*gapX + 20;
   svg.setAttribute('width', width);
