@@ -21,7 +21,7 @@
   .card h2{font-size:1.05em;margin:0 0 8px;color:#1a1a2e;text-align:center}
   .card .sub{font-size:.8em;color:#888;text-align:center;margin-bottom:14px}
 
-  .diagwrap-scroll{overflow-x:auto;direction:ltr;-webkit-overflow-scrolling:touch;margin-top:10px}
+  .diagwrap-scroll{overflow-x:auto;direction:ltr;-webkit-overflow-scrolling:touch;margin-top:10px;padding:0 22px}
   .diagwrap{width:308px;margin:0;direction:ltr}
   .tickline{position:relative;height:14px;border-bottom:2px solid #999}
   .tickline .tick{position:absolute;bottom:0;width:2px;height:12px;background:#999}
@@ -30,9 +30,8 @@
   .frac-chip{position:absolute;top:0;transform:translateX(-50%);background:#2e7d32;color:#fff;font-weight:bold;font-size:.68em;border-radius:50%;width:28px;height:22px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 4px rgba(0,0,0,.15)}
   .numrow{position:relative;height:18px;margin-top:2px;font-weight:bold;color:#333;font-size:.8em}
   .numrow span{position:absolute;transform:translateX(-50%)}
-  .namerow{position:relative;height:32px;margin-top:6px;font-size:.7em;color:#a35a00;font-weight:bold;font-family:'Amiri',Tahoma,serif}
+  .namerow{position:relative;height:20px;margin-top:6px;font-size:.58em;color:#a35a00;font-weight:bold;font-family:'Amiri',Tahoma,serif}
   .namerow span{position:absolute;top:0;transform:translateX(-50%);white-space:nowrap}
-  .namerow span.stag{top:15px}
   .offrow{position:relative;height:16px;margin-top:2px;font-size:.64em;color:#777}
   .offrow span{position:absolute;transform:translateX(-50%);white-space:nowrap}
   .offrow span.tonic{color:#c99b1f;font-weight:bold}
@@ -290,7 +289,6 @@ const BAYATI_NAMES=['دوکاه','سیکاه','جهارکاه','نوا','حسی�
 const namerow=document.getElementById('namerow');
 BAYATI_NAMES.forEach((nm,i)=>{
   const s=document.createElement('span'); s.style.left=(i*TICK_W)+'px'; s.textContent=nm;
-  if(i%2===1) s.classList.add('stag'); // چیدمان زیگزاگ برای جلوگیری از چسبیدن نامهای بلند به هم
   namerow.appendChild(s);
 });
 const offrow=document.getElementById('offrow');
