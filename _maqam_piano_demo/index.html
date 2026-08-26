@@ -21,8 +21,8 @@
   .card .sub{font-size:.8em;color:#888;text-align:center;margin-bottom:14px}
 
   /* ── نمودار فواصل و سلسله‌مراتب (ثلاثی/جنس/عقد/مقام) ── */
-  .diagwrap-scroll{overflow-x:auto;direction:ltr;-webkit-overflow-scrolling:touch;margin-top:10px}
-  .diagwrap{width:308px;margin:0;direction:ltr}
+  .diagwrap-scroll{overflow-x:auto;direction:ltr;-webkit-overflow-scrolling:touch;margin-top:10px;padding:4px 20px 8px}
+  .diagwrap{width:370px;margin:0;direction:ltr}
   .tickline{position:relative;height:14px;border-bottom:2px solid #999}
   .tickline .tick{position:absolute;bottom:0;width:2px;height:12px;background:#999}
   .tickline .tick.end{height:18px;background:#333;width:2px}
@@ -242,7 +242,7 @@ const HIJAZ_SCALE = [
 ];
 
 // ══════════ نمودار ۱: فواصل + سلسله‌مراتب (ثلاثی/جنس/عقد/مقام) ══════════
-const TICK_W = 44; // px per degree step (هماهنگ با عرض کلید پیانو)
+const TICK_W = 48; // px per degree step (هماهنگ با عرض کلید پیانو)
 const HIJAZ_INTERVALS = ['1⁄2','1 1⁄2','1⁄2','1','3⁄4','3⁄4','1']; // بین درجات ۱-۲ ... ۷-۸
 const HIER_LAYERS = [
   {name:'ثلاثی حجاز', endDeg:3, color:'#7a1f1f'},
@@ -280,10 +280,11 @@ HIJAZ_NOTE_NAMES.forEach((nm,i)=>{
   const s=document.createElement('span'); s.style.left=(i*TICK_W)+'px'; s.textContent=nm;
   namerow.appendChild(s);
 });
+const HIJAZ_OFFSETS=[0,1,4,5,7,8.5,10,12]; // آفست نیمپرده از تونیک
 const offrow=document.getElementById('offrow');
-HIJAZ_SCALE.forEach((s,i)=>{
+HIJAZ_OFFSETS.forEach((off,i)=>{
   const el=document.createElement('span'); el.style.left=(i*TICK_W)+'px';
-  const pardeh=s.offset/2;
+  const pardeh=off/2;
   el.className = i===0 ? 'tonic' : '';
   el.textContent = i===0 ? 'تونیک' : (faDec(pardeh)+' پرده');
   offrow.appendChild(el);
