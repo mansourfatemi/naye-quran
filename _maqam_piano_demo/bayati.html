@@ -5,7 +5,11 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>مقام بیات — دمو</title>
 <style>
-  *{box-sizing:border-box;font-family:Tahoma,"Segoe UI",sans-serif}
+  @font-face{font-family:'Vazirmatn';src:url('fonts/Vazirmatn-arabic.woff2') format('woff2'),url('fonts/Vazirmatn-latin.woff2') format('woff2');font-weight:400 700;font-style:normal;font-display:swap}
+  @font-face{font-family:'Amiri';src:url('fonts/Amiri-Regular-arabic.woff2') format('woff2'),url('fonts/Amiri-Regular-latin.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap}
+  @font-face{font-family:'Amiri';src:url('fonts/Amiri-Bold-arabic.woff2') format('woff2'),url('fonts/Amiri-Bold-latin.woff2') format('woff2');font-weight:700;font-style:normal;font-display:swap}
+
+  *{box-sizing:border-box;font-family:'Vazirmatn',Tahoma,"Segoe UI",sans-serif}
   body{margin:0;background:#0f0f1a;color:#eee;min-height:100vh;display:flex;justify-content:center}
   .app{width:100%;max-width:420px;background:#16213e;min-height:100vh;padding-bottom:24px}
   .header{background:linear-gradient(135deg,#1a1a2e,#16213e);color:#fff;padding:18px 20px;text-align:center;box-shadow:0 3px 12px rgba(0,0,0,.3)}
@@ -26,6 +30,12 @@
   .frac-chip{position:absolute;top:0;transform:translateX(-50%);background:#2e7d32;color:#fff;font-weight:bold;font-size:.68em;border-radius:50%;width:28px;height:22px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 4px rgba(0,0,0,.15)}
   .numrow{position:relative;height:18px;margin-top:2px;font-weight:bold;color:#333;font-size:.8em}
   .numrow span{position:absolute;transform:translateX(-50%)}
+  .namerow{position:relative;height:32px;margin-top:6px;font-size:.7em;color:#a35a00;font-weight:bold;font-family:'Amiri',Tahoma,serif}
+  .namerow span{position:absolute;top:0;transform:translateX(-50%);white-space:nowrap}
+  .namerow span.stag{top:15px}
+  .offrow{position:relative;height:16px;margin-top:2px;font-size:.64em;color:#777}
+  .offrow span{position:absolute;transform:translateX(-50%);white-space:nowrap}
+  .offrow span.tonic{color:#c99b1f;font-weight:bold}
   .layers{margin-top:14px;display:flex;flex-direction:column;gap:6px}
   .layer-row{position:relative;height:28px}
   .layer-bar{position:absolute;top:0;left:0;height:28px;border-radius:6px;color:#fff;font-weight:bold;font-size:.72em;display:flex;align-items:center;padding-left:8px;box-shadow:0 2px 6px rgba(0,0,0,.15);white-space:nowrap}
@@ -97,6 +107,9 @@
 
   .note-box{background:#e3f2fd;color:#01579b;font-size:.78em;padding:12px 14px;border-radius:10px;margin:16px;line-height:1.8}
   .src-box{background:#fff8e1;border:1.5px solid #ffca28;color:#5d4200;font-size:.72em;padding:10px 12px;border-radius:10px;margin:16px;line-height:1.7}
+  .about-box{font-size:.85em;color:#333;line-height:2;text-align:justify}
+  .about-box p{margin:0 0 12px}
+  .about-box p:last-child{margin-bottom:0}
 </style>
 </head>
 <body>
@@ -104,7 +117,16 @@
   <div class="header">
     <h1>🎵 مقام بیات</h1>
     <div class="sub">آموزش کامل: فواصل، درجات، نواختن، و ترکیبات مقام بیات</div>
-    <div class="badge-complete">✅ نسخه اول — بر اساس منبع maqamworld.com</div>
+  </div>
+
+  <div class="card">
+    <h2>📜 دربارهٔ مقام بیات</h2>
+    <div class="about-box">
+      <p>مقام بیات یا بیاتی را میتوان مهمترین مقام در تلاوت قرآن و دومین مقام مهم در موسیقی عرب به شمار آورد. هر چند این مقام روی دیوان اساسی موسیقی عرب در جایگاه دوم قرار دارد، اما از آنجا که بیش از ۹۰٪ تلاوتهای قاریان مصری بزرگ و صاحبشیوه با این مقام آغاز و پایان یافته و بسیاری از آنان دستکم یکچهارم تلاوت خود را به این مقام اختصاص دادهاند، میتوان آن را مهمترین مقام در هنر تلاوت قرآن کریم دانست.</p>
+      <p>برخی به این مقام «امّ النغمات» (مادر نغمهها) هم گفتهاند؛ زیرا فواصل آن به گونهای است که هم درجات اول تا سوم آن با مقام سیکاه، هم درجات دوم تا پنجم آن با مقام راست، درجات دوم تا چهارم آن (مشابه ثلاثی سیکاه)، و هم درجات اول تا سوم آن با مقام صبا اشتراک دارد.</p>
+      <p>علاوه بر این، در بالای این مقام هم جنس نهاوند و هم جنس کرد دیده میشود که ارتباط نزدیکی را بین این مقام و دو مقام یادشده پدید آورده. به همین سبب، این مقام هم مانند مقام راست، تعامل زیادی با بسیاری از مقامات دیگر داشته و دارد.</p>
+      <p>این مقام از دو جنس — بیات در پایین و نهاوند در بالا — بهصورت متصل تشکیل یافته و درجهٔ استقرار (تونیک) آن روی نت «ر» (Re) میباشد. این مقام، مانند مقام راست، دارای مقامهای فرعی و مرکب زیادی است که در ادامه با آنها آشنا خواهید شد. این مقام دارای یک شکل ثابت، بهصورت صعودی و نزولی یکسان، است.</p>
+    </div>
   </div>
 
   <div class="card">
@@ -114,8 +136,18 @@
       <div class="tickline" id="tickline"></div>
       <div class="fracrow" id="fracrow"></div>
       <div class="numrow" id="numrow"></div>
+      <div class="namerow" id="namerow"></div>
+      <div class="offrow" id="offrow"></div>
       <div class="layers" id="layers"></div>
     </div></div>
+  </div>
+
+  <div class="card">
+    <h2>📖 جدول کامل سُلم موسیقی عربی (اکتاوخوانی)</h2>
+    <div class="sub">نامهای بالای نمودار (دوکاه، سیکاه، جهارکاه، ...) بخشی از جدول تاریخی «دیوان» موسیقی عربی هستند — تمام ۴۹ پرده/ربعپرده در دو اکتاو کامل، از یکاه تا جواب نوا</div>
+    <div style="text-align:center">
+      <button class="btn btn-play" style="width:100%;justify-content:center" onclick="window.location.href='diwan_reference.html'">📖 مشاهدهی جدول کامل دیوان (۲ اکتاو)</button>
+    </div>
   </div>
 
   <div class="card">
@@ -155,9 +187,7 @@
   <div class="card">
     <div class="sub">همه از «جنس بیات» روی درجه‌ی ۱ ساخته میشوند؛ فقط جنس دوم فرق میکند</div>
     <div id="comboList"></div>
-    <div class="combo-note">🔈 روی دکمه‌ی ▶ کنار هر مقام بزنید تا صدای آن پخش شود؛ روی خود کارت بزنید تا صفحه‌ی جزئیات (با پیانوی مستقل) باز شود.
-    <br><br>⚠️ <b>«حسینی عشیران»</b> در اپ منبع دیده شد اما بهعنوان مقام مجزا اضافه نشد — بهنظر میرسد نسخهی جابهجاشده (transposition) همان «حسینی فرم۲» باشد، نه ساختار فاصلهای جدید.
-    <br>⚠️ در ترکیب <b>«بیات فرم۲»</b>، اپ منبع آن را «جنس کرد» نامیده اما فاصلههای عددی نمایش دادهشده (۱،1⁄2،۱،۱ — ۴ فاصله) با تعریف استاندارد جنس کرد در maqamworld.com (۴‌نتی، فقط ۳ فاصله: 1⁄2،۱،۱) مطابقت ندارد. عددها را همانطور که در تصویر آمده اجرا کردیم، ولی نامگذاری «کرد» را نامطمئن علامتگذاری کردیم.</div>
+    <div class="combo-note">🔈 روی دکمهی ▶ کنار هر مقام بزنید تا صدای آن پخش شود؛ روی خود کارت بزنید تا صفحهی جزئیات (با پیانوی مستقل) باز شود.</div>
   </div>
 
   <div class="note-box">
@@ -255,6 +285,22 @@ for(let i=0;i<8;i++){
   const s=document.createElement('span'); s.style.left=(i*TICK_W)+'px'; s.textContent=toFa(i+1);
   numrow.appendChild(s);
 }
+function faDec(n){ return n.toString().replace('.', '\u066B').replace(/[0-9]/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]); }
+const BAYATI_NAMES=['دوکاه','سیکاه','جهارکاه','نوا','حسینی','عجم','کردان','محیّر']; // نامهای اصیل دیوان موسیقی عربی (منبع: جدول دکتر میخائیل مشاقّه)
+const namerow=document.getElementById('namerow');
+BAYATI_NAMES.forEach((nm,i)=>{
+  const s=document.createElement('span'); s.style.left=(i*TICK_W)+'px'; s.textContent=nm;
+  if(i%2===1) s.classList.add('stag'); // چیدمان زیگزاگ برای جلوگیری از چسبیدن نامهای بلند به هم
+  namerow.appendChild(s);
+});
+const offrow=document.getElementById('offrow');
+BAYATI_SCALE.forEach((s,i)=>{
+  const el=document.createElement('span'); el.style.left=(i*TICK_W)+'px';
+  const pardeh=s.offset/2;
+  el.className = i===0 ? 'tonic' : '';
+  el.textContent = i===0 ? 'تونیک' : (faDec(pardeh)+' پرده');
+  offrow.appendChild(el);
+});
 const layers=document.getElementById('layers');
 HIER_LAYERS.forEach(l=>{
   const row=document.createElement('div'); row.className='layer-row';
@@ -281,7 +327,7 @@ for(let i=0;i<8;i++){
   const s=document.createElement('span'); s.style.left=(i*TICK_W)+'px'; s.textContent=toFa(i+1);
   numrow2.appendChild(s);
 }
-const DEG_NAMES=[{deg:1,name:'قرار مقام'},{deg:4,name:'غماز مقام'},{deg:8,name:'اکتاو مقام'}];
+const DEG_NAMES=[{deg:1,name:'قرار مقام'},{deg:5,name:'غماز مقام'},{deg:8,name:'اکتاو مقام'}];
 const degnames=document.getElementById('degnames');
 DEG_NAMES.forEach(d=>{
   const s=document.createElement('span'); s.style.left=((d.deg-1)*TICK_W)+'px'; s.textContent=d.name;
@@ -333,10 +379,10 @@ function playNote(freq, el){
   osc.type='triangle'; osc.frequency.value=freq;
   gain.gain.setValueAtTime(0.0001, ctx.currentTime);
   gain.gain.exponentialRampToValueAtTime(0.35, ctx.currentTime+0.01);
-  gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime+1.1);
+  gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime+1.8);
   osc.connect(gain); gain.connect(ctx.destination);
-  osc.start(); osc.stop(ctx.currentTime+1.15);
-  if(el){ el.classList.add('active'); setTimeout(()=>el.classList.remove('active'),550); }
+  osc.start(); osc.stop(ctx.currentTime+1.85);
+  if(el){ el.classList.add('active'); setTimeout(()=>el.classList.remove('active'),900); }
 }
 function playMainNote(note, el){
   playNote(note.freq!==undefined?note.freq:freqFromOffset(note.offset), el);
@@ -387,11 +433,8 @@ const JINS_PATTERNS={
 };
 const BAYATI_COMBOS=[
   {name:'مقام بیات (اصلی — با نهاوند)',                    jins2:'جنس نهاوند',        jins2Label:'جنس نهاوند',              color2:'#f4a300'},
-  {name:'حسینی طاهر / بیات با راست (Husayni / Bayati-Rast)', jins2:'جنس راست',        jins2Label:'جنس راست',                color2:'#c62828'},
-  {name:'حسینی (فرم ۲)',                                    jins2:'جنس بیات (تکراری)', jins2Label:'جنس بیات (تکراری)',       color2:'#00838f'},
-  {name:'حسینی (فرم ۳)',                                    jins2:'ثلاثی سهگاه',       jins2Label:'ثلاثی سهگاه',             color2:'#455a64'},
-  {name:'بیات (فرم ۲) — ⚠️ نام «کرد» تأییدنشده',            jins2:'جنس کرد (طبق اپ ایرانی بیاتفرم۲)', jins2Label:'جنس کرد (؟)', color2:'#8e24aa'},
-  {name:'بیات شوری / قرجغار (Bayati Shuri / Qarjighar)',    jins2:'جنس حجاز+تکمیل۸ام', jins2Label:'جنس حجاز (+ نُت تکمیلی)', color2:'#6d4c41'},
+  {name:'حسینی',                                             jins2:'جنس راست',        jins2Label:'جنس راست',                color2:'#c62828'},
+  {name:'بیات شوری',                                         jins2:'جنس حجاز+تکمیل۸ام', jins2Label:'جنس حجاز (+ نُت تکمیلی)', color2:'#6d4c41'},
   {name:'نهفت (Nahoft)',                                    jins2:'جنس عجم',           jins2Label:'جنس عجم',                 color2:'#c62828'},
 ];
 function buildComboScale(combo){
@@ -408,7 +451,7 @@ function buildComboScale(combo){
     return { deg:i+1, offset:o, freq:freqFromOffset(o), label:chromName(o)+(i===0?' (شروع)':''), desc:desc, isQuarter:isQuarter, jins: i<4?'جنس بیات':combo.jins2Label };
   });
 }
-function renderIntervalDiagramGeneric(containerEl, offsetsArr){
+function renderIntervalDiagramGeneric(containerEl, offsetsArr, color2, splitIdx){
   containerEl.innerHTML=''; containerEl.className='diagwrap';
   containerEl.style.width=((offsetsArr.length-1)*TICK_W)+'px';
   const tl=document.createElement('div'); tl.className='tickline';
@@ -423,6 +466,7 @@ function renderIntervalDiagramGeneric(containerEl, offsetsArr){
     const diff=Math.round((offsetsArr[idx+1]-offsetsArr[idx])*2)/2;
     const chip=document.createElement('div'); chip.className='frac-chip';
     chip.style.left=((idx+0.5)*TICK_W)+'px'; chip.textContent=DIFF_LABELS[diff]||diff;
+    if(color2 && splitIdx!==undefined && idx>=splitIdx){ chip.style.background=color2; }
     fr.appendChild(chip);
   }
   containerEl.appendChild(fr);
@@ -467,7 +511,7 @@ BAYATI_COMBOS.forEach((c,idx)=>{
   btn.onclick=(e)=>{ e.stopPropagation(); if(activeComboBtn===btn){ stopComboSequence(); return; } playComboSequence(c, btn); };
   item.onclick=()=>{ stopComboSequence(); openComboDetail(c); };
   comboList.appendChild(item);
-  renderIntervalDiagramGeneric(item.querySelector('#combodiag-'+idx), buildComboScale(c).map(s=>s.offset));
+  renderIntervalDiagramGeneric(item.querySelector('#combodiag-'+idx), buildComboScale(c).map(s=>s.offset), c.color2, 3);
 });
 
 // ══════════ صفحه‌ی جزئیات هر ترکیب ══════════
@@ -552,7 +596,7 @@ function openComboDetail(combo){
     '<div class="legend-title">📋 لیست کامل نُت‌های '+combo.name+'</div>'+
     '<ul class="legend-list" id="detailLegendList"></ul>';
 
-  renderIntervalDiagramGeneric(document.getElementById('detailDiag'), detailScale.map(s=>s.offset));
+  renderIntervalDiagramGeneric(document.getElementById('detailDiag'), detailScale.map(s=>s.offset), combo.color2, 3);
   renderDetailPiano(document.getElementById('detailPiano'), detailScale);
   const legendList=document.getElementById('detailLegendList');
   detailScale.forEach(s=>{

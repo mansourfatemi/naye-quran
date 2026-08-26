@@ -5,7 +5,11 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>مقام راست — دمو</title>
 <style>
-  *{box-sizing:border-box;font-family:Tahoma,"Segoe UI",sans-serif}
+  @font-face{font-family:'Vazirmatn';src:url('fonts/Vazirmatn-arabic.woff2') format('woff2'),url('fonts/Vazirmatn-latin.woff2') format('woff2');font-weight:400 700;font-style:normal;font-display:swap}
+  @font-face{font-family:'Amiri';src:url('fonts/Amiri-Regular-arabic.woff2') format('woff2'),url('fonts/Amiri-Regular-latin.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap}
+  @font-face{font-family:'Amiri';src:url('fonts/Amiri-Bold-arabic.woff2') format('woff2'),url('fonts/Amiri-Bold-latin.woff2') format('woff2');font-weight:700;font-style:normal;font-display:swap}
+
+  *{box-sizing:border-box;font-family:'Vazirmatn',Tahoma,"Segoe UI",sans-serif}
   body{margin:0;background:#0f0f1a;color:#eee;min-height:100vh;display:flex;justify-content:center}
   .app{width:100%;max-width:420px;background:#16213e;min-height:100vh;padding-bottom:24px}
   .header{background:linear-gradient(135deg,#1a1a2e,#16213e);color:#fff;padding:18px 20px;text-align:center;box-shadow:0 3px 12px rgba(0,0,0,.3)}
@@ -292,10 +296,10 @@ function playNote(freq, el){
   osc.type='triangle'; osc.frequency.value=freq;
   gain.gain.setValueAtTime(0.0001, ctx.currentTime);
   gain.gain.exponentialRampToValueAtTime(0.35, ctx.currentTime+0.01);
-  gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime+1.1);
+  gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime+1.8);
   osc.connect(gain); gain.connect(ctx.destination);
-  osc.start(); osc.stop(ctx.currentTime+1.15);
-  if(el){ el.classList.add('active'); setTimeout(()=>el.classList.remove('active'),550); }
+  osc.start(); osc.stop(ctx.currentTime+1.85);
+  if(el){ el.classList.add('active'); setTimeout(()=>el.classList.remove('active'),900); }
 }
 function playMainNote(note, el){
   playNote(note.freq!==undefined?note.freq:freqFromOffset(note.offset), el);

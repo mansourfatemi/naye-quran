@@ -5,7 +5,11 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>جدول کامل دیوان — ۲ اکتاو سُلم موسیقی عربی</title>
 <style>
-  *{box-sizing:border-box;font-family:Tahoma,"Segoe UI",sans-serif}
+  @font-face{font-family:'Vazirmatn';src:url('fonts/Vazirmatn-arabic.woff2') format('woff2'),url('fonts/Vazirmatn-latin.woff2') format('woff2');font-weight:400 700;font-style:normal;font-display:swap}
+  @font-face{font-family:'Amiri';src:url('fonts/Amiri-Regular-arabic.woff2') format('woff2'),url('fonts/Amiri-Regular-latin.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap}
+  @font-face{font-family:'Amiri';src:url('fonts/Amiri-Bold-arabic.woff2') format('woff2'),url('fonts/Amiri-Bold-latin.woff2') format('woff2');font-weight:700;font-style:normal;font-display:swap}
+
+  *{box-sizing:border-box;font-family:'Vazirmatn',Tahoma,"Segoe UI",sans-serif}
   body{margin:0;background:#0f0f1a;color:#eee;min-height:100vh;display:flex;justify-content:center}
   .app{width:100%;max-width:440px;background:#16213e;min-height:100vh;padding-bottom:30px}
   .header{background:linear-gradient(135deg,#3d2b00,#5d4200);color:#fff;padding:18px 20px;text-align:center;box-shadow:0 3px 12px rgba(0,0,0,.3)}
@@ -17,7 +21,7 @@
   .card h2{font-size:1em;margin:0 0 8px;color:#1a1a2e;text-align:center}
   .card .sub{font-size:.78em;color:#888;text-align:center;margin-bottom:10px;line-height:1.7}
 
-  .diwan-title{font-size:.9em;font-weight:bold;color:#1a1a2e;background:#f5f0e0;padding:8px 12px;border-radius:8px 8px 0 0;text-align:center}
+  .diwan-title{font-size:.9em;font-weight:bold;color:#1a1a2e;background:#f5f0e0;padding:8px 12px;border-radius:8px 8px 0 0;text-align:center;font-family:'Amiri',Tahoma,serif}
   ul.fulllist{margin:0;padding:0;list-style:none;font-size:.82em;border-radius:0 0 10px 10px;overflow:hidden;border:1px solid #eee}
   ul.fulllist li{display:flex;align-items:center;justify-content:space-between;padding:7px 10px;background:#fafafa;border-bottom:1px solid #f0f0f0}
   ul.fulllist li:nth-child(even){background:#fff}
@@ -26,7 +30,7 @@
   ul.fulllist li.is-rast .nm{color:#c99b1f}
   ul.fulllist li.low-conf{background:#ffebee}
   ul.fulllist .idxchip{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:#ddd;color:#555;font-size:.7em;margin-left:8px}
-  ul.fulllist .nm{font-weight:bold;color:#1a1a2e}
+  ul.fulllist .nm{font-weight:bold;color:#1a1a2e;font-family:'Amiri',Tahoma,serif}
   ul.fulllist .west{color:#999;font-size:.85em}
   ul.fulllist .flag{color:#c62828;font-size:.85em;margin-right:4px}
 
@@ -130,15 +134,38 @@ function ensureCtx(){
   if(audioCtx.state==='suspended') audioCtx.resume();
   return audioCtx;
 }
+// ── سنتز شبیه صدای انسان (مرد) — ارتعاش پایه + دو فرمنت واکهی «آ» + پاکت طبیعی ──
 function playFreq(freq){
   const ctx=ensureCtx();
-  const osc=ctx.createOscillator(); const gain=ctx.createGain();
-  osc.type='triangle'; osc.frequency.value=freq;
-  gain.gain.setValueAtTime(0.0001, ctx.currentTime);
-  gain.gain.exponentialRampToValueAtTime(0.3, ctx.currentTime+0.01);
-  gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime+1.0);
-  osc.connect(gain); gain.connect(ctx.destination);
-  osc.start(); osc.stop(ctx.currentTime+1.05);
+  const now=ctx.currentTime;
+
+  const osc=ctx.createOscillator();
+  osc.type='sawtooth'; // هارمونیکهای بیشتر نسبت به triangle، نزدیکتر به تار صوتی انسان
+  osc.frequency.value=freq;
+
+  // وایبراتوی طبیعی (لرزش خفیف صدا)
+  const vibrato=ctx.createOscillator(); vibrato.frequency.value=5.3;
+  const vibratoGain=ctx.createGain(); vibratoGain.gain.value=4;
+  vibrato.connect(vibratoGain); vibratoGain.connect(osc.frequency);
+
+  // فرمنتهای صدای مرد برای واکهی «آ» (F1≈730هرتز، F2≈1090هرتز)
+  const f1=ctx.createBiquadFilter(); f1.type='bandpass'; f1.frequency.value=730;  f1.Q.value=9;
+  const f2=ctx.createBiquadFilter(); f2.type='bandpass'; f2.frequency.value=1090; f2.Q.value=11;
+  const g1=ctx.createGain(); g1.gain.value=1.0;
+  const g2=ctx.createGain(); g2.gain.value=0.55;
+
+  const master=ctx.createGain();
+  master.gain.setValueAtTime(0.0001, now);
+  master.gain.exponentialRampToValueAtTime(0.5, now+0.07);
+  master.gain.exponentialRampToValueAtTime(0.38, now+0.35);
+  master.gain.exponentialRampToValueAtTime(0.0001, now+1.3);
+
+  osc.connect(f1); f1.connect(g1); g1.connect(master);
+  osc.connect(f2); f2.connect(g2); g2.connect(master);
+  master.connect(ctx.destination);
+
+  osc.start(); vibrato.start();
+  osc.stop(now+1.35); vibrato.stop(now+1.35);
 }
 
 function renderDiwan(containerId, fromIdx, toIdx){
