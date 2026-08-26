@@ -102,6 +102,11 @@
   .legend-list .deg-chip{margin-left:8px}
 
   .note-box{background:#e3f2fd;color:#01579b;font-size:.78em;padding:12px 14px;border-radius:10px;margin:16px;line-height:1.8}
+  .namerow{position:relative;height:20px;margin-top:6px;font-size:.58em;color:#a35a00;font-weight:bold;font-family:'Amiri',Tahoma,serif}
+  .namerow span{position:absolute;transform:translateX(-50%);white-space:nowrap}
+  .offrow{position:relative;height:16px;margin-top:2px;font-size:.58em;color:#777}
+  .offrow span{position:absolute;transform:translateX(-50%)}
+  .offrow span.tonic{color:#c99b1f;font-weight:bold}
 </style>
 </head>
 <body>
@@ -129,6 +134,8 @@
       <div class="tickline" id="tickline"></div>
       <div class="fracrow" id="fracrow"></div>
       <div class="numrow" id="numrow"></div>
+      <div class="namerow" id="namerow"></div>
+      <div class="offrow" id="offrow"></div>
       <div class="layers" id="layers"></div>
     </div></div>
   </div>
@@ -266,6 +273,21 @@ for(let deg=1; deg<=8; deg++){
   s.textContent = toFa(deg);
   numrow.appendChild(s);
 }
+function faDec(n){ return n.toString().replace('.', '٫').replace(/[0-9]/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]); }
+const HIJAZ_NOTE_NAMES=['دوکاه','سیکاه','جهارکاه','نوا','حسینی','عجم','کردان','محیّر']; // نام‌های اصیل دیوان موسیقی عربی
+const namerow=document.getElementById('namerow');
+HIJAZ_NOTE_NAMES.forEach((nm,i)=>{
+  const s=document.createElement('span'); s.style.left=(i*TICK_W)+'px'; s.textContent=nm;
+  namerow.appendChild(s);
+});
+const offrow=document.getElementById('offrow');
+HIJAZ_SCALE.forEach((s,i)=>{
+  const el=document.createElement('span'); el.style.left=(i*TICK_W)+'px';
+  const pardeh=s.offset/2;
+  el.className = i===0 ? 'tonic' : '';
+  el.textContent = i===0 ? 'تونیک' : (faDec(pardeh)+' پرده');
+  offrow.appendChild(el);
+});
 const layers = document.getElementById('layers');
 HIER_LAYERS.forEach(l=>{
   const row = document.createElement('div');
