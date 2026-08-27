@@ -4054,7 +4054,6 @@ const MAQAM_COMPOSITE_PRIMARY = {
 };
 function maqamPrimary(m){ return MAQAM_COMPOSITE_PRIMARY[m]||m; }
 let maqamFilterQari=null;
-  const _mqSearchEl=document.getElementById("maqamSearchInput"); if(_mqSearchEl) _mqSearchEl.value="";
 let cameFromMaqamDetail=null;
 let mqdPreviewActive=false;
 let mqdQueue=[];
@@ -4069,6 +4068,7 @@ function openMaqamPage(){
   document.getElementById("maqamDetailPage").style.display="none";
   document.getElementById("bBtn").style.display="block";
   maqamFilterQari=null;
+  const _mqSearchEl=document.getElementById("maqamSearchInput"); if(_mqSearchEl) _mqSearchEl.value="";
   document.getElementById("hTitle").textContent="🎓 آموزش مقامات";
   document.getElementById("hSub").textContent=curQari?curQari.name+" — مقامات":"همه قاریان — مقامات";
   document.querySelector(".header").style.background="linear-gradient(135deg,#1a1a2e,#16213e)";
