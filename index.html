@@ -467,7 +467,13 @@
       </select>
     </div>
   </div>
+    <div id="maqamSearchWrap" style="margin-top:12px">
+      <input type="text" id="maqamSearchInput" placeholder="🔍 جستجوی مقام… (مثل نیشابورک، رهاوی)" oninput="filterMaqamGrid()" style="width:100%;max-width:280px;padding:10px 14px;border-radius:12px;border:none;font-size:.9em;text-align:right;direction:rtl;background:rgba(255,255,255,.95);color:#1a1a2e;font-family:inherit">
+    </div>
+  </div>
   <div class="maq-grid" id="maqamGrid"></div>
+  <div id="maqamDetailSearchResults" style="display:none;padding:0 16px 16px"></div>
+  <div id="maqamNoResults" style="display:none;text-align:center;padding:30px;color:#bbb"></div>
 </div>
 
 <div id="maqamDetailPage">
@@ -3998,6 +4004,7 @@ const MAQAM_COMPOSITE_PRIMARY = {
 };
 function maqamPrimary(m){ return MAQAM_COMPOSITE_PRIMARY[m]||m; }
 let maqamFilterQari=null;
+  const _mqSearchEl=document.getElementById("maqamSearchInput"); if(_mqSearchEl) _mqSearchEl.value="";
 let cameFromMaqamDetail=null;
 let mqdPreviewActive=false;
 let mqdQueue=[];
@@ -4034,6 +4041,66 @@ function onMaqamQariFilterChange(val){
   document.getElementById("hSub").textContent = maqamFilterQari?maqamFilterQari.name+" — مقامات":"همه قاریان — مقامات";
   renderMaqamGrid();
 }
+
+function searchMaqamDetails(q){
+  const activeQari=curQari||maqamFilterQari;
+  const source=activeQari?[activeQari]:QARIS;
+  const results=[];
+  source.forEach(qr=>qr.tilawat.forEach(t=>t.faraz.forEach((f,i)=>{
+    if((f.d||"").indexOf(q)>-1) results.push({qari:qr, til:t, idx:i, faraz:f});
+  })));
+  return results;
+}
+function filterMaqamGrid(){
+  const searchEl=document.getElementById("maqamSearchInput");
+  const q=(searchEl?searchEl.value:"").trim();
+  const cards=document.querySelectorAll("#maqamGrid .maq-card");
+  let any=false;
+  cards.forEach(card=>{
+    const nmEl=card.querySelector(".maq-name");
+    const nm=nmEl?nmEl.textContent:"";
+    const match=!q||nm.indexOf(q)>-1;
+    card.style.display=match?"":"none";
+    if(match) any=true;
+  });
+  const grid=document.getElementById("maqamGrid");
+  const detailWrap=document.getElementById("maqamDetailSearchResults");
+  const noRes=document.getElementById("maqamNoResults");
+  if(!q || any){
+    grid.style.display="";
+    if(detailWrap){detailWrap.style.display="none"; detailWrap.innerHTML="";}
+    if(noRes) noRes.style.display="none";
+    return;
+  }
+  grid.style.display="none";
+  const results=searchMaqamDetails(q);
+  if(results.length===0){
+    if(detailWrap){detailWrap.style.display="none"; detailWrap.innerHTML="";}
+    if(noRes){
+      noRes.textContent="نتیجه‌ای برای «"+q+"» پیدا نشد";
+      noRes.style.display="";
+    }
+    return;
+  }
+  if(noRes) noRes.style.display="none";
+  if(detailWrap){
+    detailWrap.style.display="";
+    detailWrap.innerHTML="";
+    const header=document.createElement("div");
+    header.style.cssText="padding:10px 4px;color:#888;font-size:.85em";
+    header.textContent="نتایج در جزئیات نقمه‌ها ("+results.length+" مورد):";
+    detailWrap.appendChild(header);
+    results.slice(0,50).forEach(r=>{
+      const primaryM=maqamPrimary(r.faraz.m||"");
+      const col=MCOLORS[primaryM]||"#999";
+      const hit=document.createElement("div");
+      hit.className="maq-detail-hit";
+      hit.style.cssText="border-right:4px solid "+col+";background:#fff;border-radius:10px;padding:10px 14px;margin-bottom:8px;cursor:pointer";
+      hit.innerHTML='<div style="font-weight:bold;color:#1a1a2e">'+(r.faraz.d||"")+'</div><div style="font-size:.8em;color:#888;margin-top:3px">'+r.qari.name+' · '+r.til.name+' · فراز '+r.faraz.n+'</div>';
+      hit.onclick=()=>jumpToFaraz(r.qari, r.til, r.idx, primaryM, col);
+      detailWrap.appendChild(hit);
+    });
+  }
 
 function renderMaqamGrid(){
   const cnt={};
