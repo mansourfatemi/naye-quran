@@ -1,4 +1,4 @@
-const CACHE='mt-mq-v20260827140121';
+const CACHE='mt-mq-v20260830121942';
 const CORE=['./','./index.html','./manifest.json','./icon-192.png','./icon-512.png'];
 const AUDIO=[
   "./qaris/manshawy/audio/01.mp3",
@@ -3315,6 +3315,18 @@ self.addEventListener('activate',e=>{
 });
 self.addEventListener('fetch',e=>{
   if(e.request.method!=='GET')return;
+  if(e.request.url.includes('archive.org')){
+    e.respondWith(caches.open('nq-offline-v1').then(async c=>{
+      const hit=await c.match(e.request);
+      if(hit)return hit;
+      try{
+        const resp=await fetch(e.request);
+        if(resp&&resp.ok)c.put(e.request,resp.clone());
+        return resp;
+      }catch(err){return new Response('',{status:503});}
+    }));
+    return;
+  }
   e.respondWith(caches.match(e.request).then(c=>{
     if(c)return c;
     return fetch(e.request).then(r=>{

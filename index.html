@@ -37,7 +37,7 @@
 
 .til-num{width:52px;height:52px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1.1em;font-weight:bold;color:#fff;margin:0 8px 0 0;clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);background:#2e7d32}
 .til-info{flex:1;text-align:right;padding:16px 4px 16px 0}
-.til-name{font-size:1.0em;font-weight:bold;color:#1a1a1a;margin-bottom:0}.til-meta{display:none}
+.til-name{font-size:1.0em;font-weight:bold;color:#1a1a1a;margin-bottom:0}.til-dl-btn{border:none;background:none;cursor:pointer;font-size:1.1em;padding:4px 8px;flex-shrink:0;opacity:.7;transition:.15s}.til-dl-btn:active{transform:scale(.9)}.til-dl-btn.done{opacity:1;color:#2e7d32}.til-dl-btn.loading{opacity:.5;cursor:default}.til-dl-progress{font-size:.65em;color:#888;text-align:center;padding:2px 0;display:none}.til-dl-progress.show{display:block}.til-meta{display:none}
 .til-arrow{display:none}.til-card.maqamat-btn{border-radius:0;padding:0;overflow:visible;background:transparent;box-shadow:none}.til-card.maqamat-btn::before{background-image:radial-gradient(circle at 0% 50%,transparent 6px,var(--mbg,#fff) 6px)}.til-card.maqamat-btn::after{background-image:radial-gradient(circle at 100% 50%,transparent 6px,var(--mbg,#fff) 6px)}.maqamat-btn-inner{flex:1;display:flex;align-items:center;gap:14px;padding:15px 14px;min-width:0}.maqamat-btn-icon{width:54px;height:54px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1.5em;clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);background:rgba(255,255,255,.25)}.maqamat-btn-info{flex:1;text-align:right}.maqamat-btn-name{font-size:1.05em;font-weight:bold;color:#fff;margin-bottom:3px}.maqamat-btn-meta{font-size:.8em;color:rgba(255,255,255,.8)}.maqamat-btn-arrow{color:rgba(255,255,255,.6);font-size:1.3em;flex-shrink:0}
 
 /* صفحه پخش */
@@ -2971,6 +2971,67 @@ let curQari=null, cT=null, cI=0, pl=false, rp=false;
 let favs={};
 let playlists={}, plMode=null, curPlId=null;
 let autoTimer=false, countdownId=null, countdownVal=20;
+
+// ── آفلاین: cache تلاوت ──
+const AUDIO_BASE='https://archive.org/download/naye-quran-audio/qaris/';
+const OFFLINE_CACHE='nq-offline-v1';
+
+async function getTilawatCacheKey(qariId, tilId){
+  return 'til_'+qariId+'_'+tilId;
+}
+
+async function isTilawatCached(qariId, tilId){
+  try{
+    const cache=await caches.open(OFFLINE_CACHE);
+    const keys=await cache.keys();
+    const prefix=AUDIO_BASE+qariId+'/';
+    return keys.some(k=>k.url.startsWith(prefix));
+  }catch(e){return false;}
+}
+
+async function cacheTilawat(qariId, tilAudioFiles, onProgress, onDone, onError){
+  try{
+    const cache=await caches.open(OFFLINE_CACHE);
+    let done=0;
+    const total=tilAudioFiles.length;
+    for(const au of tilAudioFiles){
+      const url=AUDIO_BASE+qariId+'/'+au;
+      try{
+        const cached=await cache.match(url);
+        if(!cached){
+          const resp=await fetch(url,{mode:'cors'});
+          if(resp.ok) await cache.put(url,resp);
+        }
+        done++;
+        if(onProgress) onProgress(done,total);
+      }catch(e){ /* skip failed */ done++; if(onProgress) onProgress(done,total); }
+    }
+    if(onDone) onDone();
+  }catch(e){ if(onError) onError(e); }
+}
+
+async function uncacheTilawat(qariId, tilAudioFiles){
+  try{
+    const cache=await caches.open(OFFLINE_CACHE);
+    for(const au of tilAudioFiles){
+      await cache.delete(AUDIO_BASE+qariId+'/'+au);
+    }
+  }catch(e){}
+}
+
+async function updateDlBtn(btn, progressEl, qariId, audioFiles){
+  const cached=await isTilawatCached(qariId, audioFiles[0]?AUDIO_BASE+qariId+'/'+audioFiles[0]:null);
+  if(cached){
+    btn.textContent='✅';
+    btn.classList.add('done');
+    btn.title='دانلود شده — برای حذف بزنید';
+  } else {
+    btn.textContent='⬇️';
+    btn.classList.remove('done');
+    btn.title='دانلود برای پخش آفلاین';
+  }
+}
+
 const au=document.getElementById("au");
 
 function setColor(c){document.documentElement.style.setProperty('--qcolor',c);}
@@ -3116,8 +3177,40 @@ btn.onclick=()=>{ if(typeof Android!=="undefined"&&Android.openAsset){ Android.o
     const d=document.createElement("div");d.className="til-card";
     d.style.setProperty('--qcolor',curQari.color);
     d.className='til-card';
-    d.innerHTML='<div class="til-num">'+(i+1)+'</div><div class="til-info"><div class="til-name">'+t.name+'</div><div class="til-meta">'+t.faraz.length+' فراز — '+wa+' صوت</div></div><div class="til-arrow">&#8250;</div>'
+    d.innerHTML='<div class="til-num">'+(i+1)+'</div>'+'<div class="til-info"><div class="til-name">'+t.name+'</div><div class="til-meta">'+t.faraz.length+' فراز — '+wa+' صوت</div><div class="til-dl-progress" id="dlprog_'+curQari.id+'_'+t.id+'"></div></div>'+'<button class="til-dl-btn" id="dlbtn_'+curQari.id+'_'+t.id+'" title="دانلود">⬇️</button>'
     d.onclick=()=>openTilawat(i);el.appendChild(d);
+    // setup download button
+    const dlBtn=document.getElementById('dlbtn_'+curQari.id+'_'+t.id);
+    const dlProg=document.getElementById('dlprog_'+curQari.id+'_'+t.id);
+    const audioFiles=t.faraz.filter(f=>f.au).map(f=>f.au);
+    if(dlBtn&&audioFiles.length>0){
+      (async()=>{
+        const cache=await caches.open(OFFLINE_CACHE);
+        const firstUrl=AUDIO_BASE+curQari.id+'/'+audioFiles[0];
+        const cached=await cache.match(firstUrl);
+        if(cached){dlBtn.textContent='✅';dlBtn.classList.add('done');}
+      })();
+      dlBtn.onclick=(e)=>{
+        e.stopPropagation();
+        if(dlBtn.classList.contains('done')){
+          if(confirm('حذف از حافظه؟')){
+            uncacheTilawat(curQari.id,audioFiles);
+            dlBtn.textContent='⬇️';dlBtn.classList.remove('done');
+          }
+          return;
+        }
+        if(dlBtn.classList.contains('loading')) return;
+        dlBtn.textContent='⏳';dlBtn.classList.add('loading');
+        dlProg.className='til-dl-progress show';
+        dlProg.textContent='در حال دانلود...';
+        cacheTilawat(curQari.id,audioFiles,
+          (done,total)=>{ dlProg.textContent=done+'/'+total; },
+          ()=>{ dlBtn.textContent='✅';dlBtn.classList.remove('loading');dlBtn.classList.add('done');dlProg.className='til-dl-progress'; },
+          ()=>{ dlBtn.textContent='⬇️';dlBtn.classList.remove('loading');dlProg.className='til-dl-progress'; }
+        );
+      };
+    } else if(dlBtn){ dlBtn.style.display='none'; }
+
   });
 }
 
