@@ -32,13 +32,13 @@
 .qari-arrow{color:#ddd;font-size:1.4em;flex-shrink:0}
 
 /* صفحه قاری — لیست تلاوت‌ها */
-#tilawatListPage{display:none;padding:16px}
-.til-card{background:#fff;border-radius:14px;padding:16px 18px;margin:9px 0;display:flex;align-items:center;gap:14px;cursor:pointer;border-right:5px solid transparent;box-shadow:0 2px 10px rgba(0,0,0,.07);transition:.2s}
-.til-card:active{background:#fff5f5;border-right-color:var(--qcolor)}
-.til-num{width:46px;height:46px;border-radius:50%;color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.15em;font-weight:bold;flex-shrink:0}
-.til-info{flex:1;text-align:right}
+#tilawatListPage{display:none;padding:16px;background:#efefef;min-height:100vh}
+.til-card{background:#fff;margin:12px 4px;display:flex;align-items:center;gap:0;cursor:pointer;position:relative;border-radius:0;box-shadow:0 2px 8px rgba(0,0,0,.10);transition:.18s;overflow:visible}.til-card::before,.til-card::after{content:"";display:block;width:14px;flex-shrink:0;align-self:stretch;background-image:radial-gradient(circle at 0% 50%,transparent 6px,#fff 6px);background-size:14px 14px;background-color:#efefef}.til-card::after{background-image:radial-gradient(circle at 100% 50%,transparent 6px,#fff 6px)}.til-card:active{opacity:.82}
+
+.til-num{width:54px;height:54px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1.15em;font-weight:bold;color:#fff;margin:0 10px 0 0;clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%)}
+.til-info{flex:1;text-align:right;padding:14px 4px 14px 0}
 .til-name{font-size:1.02em;font-weight:bold;color:#222;margin-bottom:3px}.til-meta{font-size:.8em;color:#999}
-.til-arrow{color:#ddd;font-size:1.3em;flex-shrink:0}
+.til-arrow{color:#ccc;font-size:1.3em;flex-shrink:0;padding-left:8px}
 
 /* صفحه پخش */
 #playerPage{display:none}
@@ -3116,7 +3116,11 @@ function renderTilawatList(){
     const wa=t.faraz.filter(f=>f.au).length;
     const d=document.createElement("div");d.className="til-card";
     d.style.setProperty('--qcolor',curQari.color);
-    d.innerHTML='<div class="til-num" style="background:'+curQari.color+'">'+(i+1)+'</div><div class="til-info"><div class="til-name">'+t.name+'</div><div class="til-meta">'+t.faraz.length+' فراز · 🎵 '+wa+' صوت</div></div><div class="til-arrow">&#8250;</div>';
+    const clrs=[['#2e7d32','#66bb6a'],['#00695c','#26a69a'],['#1565c0','#42a5f5'],['#6a1b9a','#ab47bc'],['#e65100','#ffa726'],['#b71c1c','#ef5350'],['#283593','#5c6bc0'],['#4a148c','#7b1fa2'],['#00838f','#26c6da'],['#33691e','#8bc34a']];
+    const cl=clrs[i%clrs.length];
+    d.className='til-card';
+    d.style.setProperty('--qcolor',cl[0]);
+    d.innerHTML='<div class="til-num" style="background:linear-gradient(135deg,'+cl[0]+','+cl[1]+')">'+(i+1)+'</div><div class="til-info"><div class="til-name">'+t.name+'</div><div class="til-meta">'+t.faraz.length+' فراز — '+wa+' صوت</div></div><div class="til-arrow">&#8250;</div>'
     d.onclick=()=>openTilawat(i);el.appendChild(d);
   });
 }
@@ -4346,10 +4350,10 @@ function mqdPlayAt(idx){
 
 function jumpToFaraz(qari, til, idx, maqam, color){
   mqdPreviewActive=false;
+  au.onended=null;
   cameFromMaqamDetail = maqam ? {maqam:maqam, color:color, qId:qari.id, tId:til.id} : null;
   document.getElementById("maqamDetailPage").style.display="none";
   document.getElementById("maqamPage").style.display="none";
-  au.onended=null;
   au.pause(); pl=false;
   curQari=qari; cT=til; cI=idx; plMode=null;
   setColor(curQari.color);
