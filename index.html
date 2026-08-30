@@ -38,7 +38,7 @@
 .til-num{width:54px;height:54px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1.15em;font-weight:bold;color:#fff;margin:0 10px 0 0;clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%)}
 .til-info{flex:1;text-align:right;padding:14px 4px 14px 0}
 .til-name{font-size:1.02em;font-weight:bold;color:#222;margin-bottom:3px}.til-meta{font-size:.8em;color:#999}
-.til-arrow{color:#ccc;font-size:1.3em;flex-shrink:0;padding-left:8px}
+.til-arrow{color:#ccc;font-size:1.3em;flex-shrink:0;padding-left:8px}.til-card.maqamat-btn{border-radius:0;padding:0;overflow:visible;background:transparent;box-shadow:none}.til-card.maqamat-btn::before{background-image:radial-gradient(circle at 0% 50%,transparent 6px,var(--mbg,#fff) 6px)}.til-card.maqamat-btn::after{background-image:radial-gradient(circle at 100% 50%,transparent 6px,var(--mbg,#fff) 6px)}.maqamat-btn-inner{flex:1;display:flex;align-items:center;gap:14px;padding:15px 14px;min-width:0}.maqamat-btn-icon{width:54px;height:54px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1.5em;clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);background:rgba(255,255,255,.25)}.maqamat-btn-info{flex:1;text-align:right}.maqamat-btn-name{font-size:1.05em;font-weight:bold;color:#fff;margin-bottom:3px}.maqamat-btn-meta{font-size:.8em;color:rgba(255,255,255,.8)}.maqamat-btn-arrow{color:rgba(255,255,255,.6);font-size:1.3em;flex-shrink:0}
 
 /* صفحه پخش */
 #playerPage{display:none}
@@ -3089,21 +3089,19 @@ function renderTilawatList(){
   if(curQari.id==="hashemi"){
     const lBtn=document.createElement("div");
     lBtn.className="til-card maqamat-btn";
-    lBtn.style.background="linear-gradient(135deg,#00695C,#00897B)";
-    lBtn.style.color="#fff";
-    lBtn.style.marginBottom="15px";
-    lBtn.innerHTML='<div style="font-size:1.8em;margin-left:12px">🎧</div><div class="til-info"><div class="til-name" style="color:#fff">دروس صوت و لحن استاد هاشمی</div><div class="til-meta" style="color:#fff9">'+HASHEMI_LESSONS.length+' درس آموزشی</div></div><div class="til-arrow" style="color:#fff">&#8250;</div>';
-    lBtn.onclick=()=>openHashemiLessons();
+    lBtn.style.cssText="--mbg:#efefef;margin-bottom:12px;margin:12px 4px";
+    lBtn.innerHTML='<div class="maqamat-btn-inner" style="background:linear-gradient(135deg,#00695C,#00897B);border-radius:0">'+'<div class="maqamat-btn-icon">🎧</div>'+'<div class="maqamat-btn-info"><div class="maqamat-btn-name">دروس صوت و لحن استاد هاشمی</div><div class="maqamat-btn-meta">'+HASHEMI_LESSONS.length+' درس آموزشی</div></div>'+'<div class="maqamat-btn-arrow">&#8250;</div></div>';
+lBtn.onclick=()=>openHashemiLessons();
     el.appendChild(lBtn);
     const secLbl=document.createElement("div");
-    secLbl.style.cssText="padding:14px 16px 6px;font-size:.82em;font-weight:bold;color:#eee;opacity:.7";
+    secLbl.style.cssText="padding:14px 16px 6px;font-size:.82em;font-weight:bold;color:#555;opacity:1";
     secLbl.textContent="آموزش تعاملی مقامات";
     el.appendChild(secLbl);
     [{n:"بیات",i:"🎶",c:"#2e7d32",u:"_maqam_piano_demo/bayati.html"},{n:"راست",i:"🎼",c:"#1565c0",u:"_maqam_piano_demo/rast.html"},{n:"صبا",i:"🎵",c:"#00838f",u:"_maqam_piano_demo/saba.html"},{n:"نهاوند",i:"🎹",c:"#e65100",u:"_maqam_piano_demo/nahawand.html"},{n:"سه گاه",i:"🎷",c:"#6a1b9a",u:"_maqam_piano_demo/segah.html"},{n:"حجاز",i:"🎺",c:"#c62828",u:"_maqam_piano_demo/index.html"},{n:"عجم",i:"🎻",c:"#00695c",u:"_maqam_piano_demo/ajam.html"},{n:"کرد",i:"🎤",c:"#37474f",u:"_maqam_piano_demo/kurd.html"}].forEach(m=>{
       const btn=document.createElement("div"); btn.className="til-card maqamat-btn";
-      btn.style.cssText="background:linear-gradient(135deg,"+m.c+"cc,"+m.c+");color:#fff;margin-bottom:10px";
-      btn.innerHTML='<div style="font-size:1.6em;margin-left:12px">'+m.i+'</div><div class="til-info"><div class="til-name" style="color:#fff">مقام '+m.n+'</div><div class="til-meta" style="color:#fff9">آموزش تعاملی · پیانوی</div></div><div class="til-arrow" style="color:#fff">&#8250;</div>';
-      btn.onclick=()=>{ if(typeof Android!=="undefined"&&Android.openAsset){ Android.openAsset(m.u); } else { window.location.href=m.u; } };
+      btn.style.cssText="--mbg:#efefef;margin:12px 4px";
+      btn.innerHTML='<div class="maqamat-btn-inner" style="background:linear-gradient(135deg,'+m.c+'cc,'+m.c+');border-radius:0">'+'<div class="maqamat-btn-icon">'+m.i+'</div>'+'<div class="maqamat-btn-info"><div class="maqamat-btn-name">مقام '+m.n+'</div><div class="maqamat-btn-meta">آموزش تعاملی · پیانو</div></div>'+'<div class="maqamat-btn-arrow">&#8250;</div></div>';
+btn.onclick=()=>{ if(typeof Android!=="undefined"&&Android.openAsset){ Android.openAsset(m.u); } else { window.location.href=m.u; } };
       el.appendChild(btn);
     });
   }
