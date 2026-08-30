@@ -3101,7 +3101,6 @@ lBtn.onclick=()=>openHashemiLessons();
       const btn=document.createElement("div"); btn.className="til-card";
       btn.style.cssText="margin:10px 6px";
       const mIdx=['۱','۲','۳','۴','۵','۶','۷','۸'];
-      const mIdx=['۱','۲','۳','۴','۵','۶','۷','۸'];
       btn.innerHTML='<div class="til-num" style="background:'+m.c+'">'+mIdx[maqamIdx]+'</div>'+'<div class="til-info"><div class="til-name">مقام '+m.n+'</div></div>';
 btn.onclick=()=>{ if(typeof Android!=="undefined"&&Android.openAsset){ Android.openAsset(m.u); } else { window.location.href=m.u; } };
       el.appendChild(btn);
