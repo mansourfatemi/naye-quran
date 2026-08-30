@@ -3088,20 +3088,21 @@ function renderTilawatList(){
   // Add Lessons button for Hashemi
   if(curQari.id==="hashemi"){
     const lBtn=document.createElement("div");
-    lBtn.className="til-card maqamat-btn";
-    lBtn.style.cssText="--mbg:#efefef;margin-bottom:12px;margin:12px 4px";
-    lBtn.innerHTML='<div class="maqamat-btn-inner" style="background:linear-gradient(135deg,#00695C,#00897B);border-radius:0">'+'<div class="maqamat-btn-icon">🎧</div>'+'<div class="maqamat-btn-info"><div class="maqamat-btn-name">دروس صوت و لحن استاد هاشمی</div><div class="maqamat-btn-meta">'+HASHEMI_LESSONS.length+' درس آموزشی</div></div>'+'<div class="maqamat-btn-arrow">&#8250;</div></div>';
+    lBtn.className="til-card";
+    lBtn.style.cssText="margin:10px 6px";
+    lBtn.innerHTML='<div class="til-num" style="background:#2e7d32">۱</div>'+'<div class="til-info"><div class="til-name">دروس صوت و لحن استاد هاشمی</div></div>';
 lBtn.onclick=()=>openHashemiLessons();
     el.appendChild(lBtn);
     const secLbl=document.createElement("div");
-    secLbl.style.cssText="padding:14px 16px 6px;font-size:.82em;font-weight:bold;color:#555;opacity:1";
+    secLbl.style.cssText="padding:10px 8px 4px;font-size:.78em;font-weight:bold;color:#777";
     secLbl.textContent="آموزش تعاملی مقامات";
     el.appendChild(secLbl);
     [{n:"بیات",i:"🎶",c:"#2e7d32",u:"_maqam_piano_demo/bayati.html"},{n:"راست",i:"🎼",c:"#1565c0",u:"_maqam_piano_demo/rast.html"},{n:"صبا",i:"🎵",c:"#00838f",u:"_maqam_piano_demo/saba.html"},{n:"نهاوند",i:"🎹",c:"#e65100",u:"_maqam_piano_demo/nahawand.html"},{n:"سه گاه",i:"🎷",c:"#6a1b9a",u:"_maqam_piano_demo/segah.html"},{n:"حجاز",i:"🎺",c:"#c62828",u:"_maqam_piano_demo/index.html"},{n:"عجم",i:"🎻",c:"#00695c",u:"_maqam_piano_demo/ajam.html"},{n:"کرد",i:"🎤",c:"#37474f",u:"_maqam_piano_demo/kurd.html"}].forEach((m,maqamIdx)=>{
-      const btn=document.createElement("div"); btn.className="til-card maqamat-btn";
-      btn.style.cssText="--mbg:#efefef;margin:12px 4px";
+      const btn=document.createElement("div"); btn.className="til-card";
+      btn.style.cssText="margin:10px 6px";
       const mIdx=['۱','۲','۳','۴','۵','۶','۷','۸'];
-      btn.innerHTML='<div class="maqamat-btn-inner" style="background:linear-gradient(135deg,'+m.c+'cc,'+m.c+');border-radius:0">'+'<div class="maqamat-btn-icon" style="font-size:1.3em;font-weight:bold">'+mIdx[maqamIdx]+'</div>'+'<div class="maqamat-btn-info"><div class="maqamat-btn-name">مقام '+m.n+'</div></div>'+'<div class="maqamat-btn-arrow">&#8250;</div></div>';
+      const mIdx=['۱','۲','۳','۴','۵','۶','۷','۸'];
+      btn.innerHTML='<div class="til-num" style="background:'+m.c+'">'+mIdx[maqamIdx]+'</div>'+'<div class="til-info"><div class="til-name">مقام '+m.n+'</div></div>';
 btn.onclick=()=>{ if(typeof Android!=="undefined"&&Android.openAsset){ Android.openAsset(m.u); } else { window.location.href=m.u; } };
       el.appendChild(btn);
     });
