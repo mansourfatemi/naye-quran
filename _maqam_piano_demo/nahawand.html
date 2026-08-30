@@ -29,7 +29,7 @@
   .frac-chip{position:absolute;top:0;transform:translateX(-50%);background:#e65100;color:#fff;font-weight:bold;font-size:.68em;border-radius:50%;width:28px;height:22px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 4px rgba(0,0,0,.15)}
   .frac-chip.big{background:#c62828;width:40px;border-radius:11px;font-size:.6em;white-space:nowrap}
   .numrow{position:relative;height:18px;margin-top:2px;font-weight:bold;color:#333;font-size:.8em}
-  .numrow span{position:absolute;transform:translateX(-50%)}
+  .numrow span{position:absolute;transform:translateX(-50%)}.namerow{position:relative;height:20px;margin-top:6px;font-size:.58em;color:#a35a00;font-weight:bold;font-family:'Amiri',Tahoma,serif}.namerow span{position:absolute;top:0;transform:translateX(-50%);white-space:nowrap}
   .layers{margin-top:14px;display:flex;flex-direction:column;gap:6px}
   .layer-row{position:relative;height:28px}
   .layer-bar{position:absolute;top:0;left:0;height:28px;border-radius:6px;color:#fff;font-weight:bold;font-size:.66em;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,.15);white-space:nowrap;overflow:hidden;padding:0 4px}
@@ -125,6 +125,7 @@
       <div class="tickline" id="tickline"></div>
       <div class="fracrow" id="fracrow"></div>
       <div class="numrow" id="numrow"></div>
+      <div class="namerow" id="namerow"></div>
       <div class="layers" id="layers"></div>
     </div></div>
     <div class="diagwrap-scroll"><div class="degnames" id="degnames"></div></div>
@@ -256,6 +257,12 @@ for(let i=0;i<8;i++){
   const s=document.createElement('span'); s.style.left=(i*TICK_W)+'px'; s.textContent=toFa(i+1);
   numrow.appendChild(s);
 }
+const NAHAWAND_NAMES=['راست','دوکاه','سه‌گاه','چهارگاه','نوا','حسینی','اوج','کردان']; // نام‌های دیوان موسیقی عربی از نت دو (Do/C)
+const namerow=document.getElementById('namerow');
+NAHAWAND_NAMES.forEach((nm,i)=>{
+  const s=document.createElement('span'); s.style.left=(i*TICK_W)+'px'; s.textContent=nm;
+  namerow.appendChild(s);
+});
 const layers=document.getElementById('layers');
 HIER_LAYERS.forEach(l=>{
   const row=document.createElement('div'); row.className='layer-row';
