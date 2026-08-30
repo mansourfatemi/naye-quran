@@ -4326,9 +4326,21 @@ function mqdPlayAt(idx){
   item.btn.innerHTML="⏹";
   au.onended=()=>{
     item.btn.innerHTML="▶";
-    const next=mqdQueue.slice(idx+1).find(x=>x.has);
-    if(!next){ mqdPreviewActive=false; }
-    mqdPlayAt(idx+1);
+    if(rp){
+      au.currentTime=0;
+      mqdPreviewActive=true;
+      au.play().catch(()=>{mqdPreviewActive=false;});
+      item.btn.innerHTML="⏹";
+    } else {
+      const next=mqdQueue.slice(idx+1).find(x=>x.has);
+      if(!next){ mqdPreviewActive=false; }
+      if(autoTimer && next){
+        mqdPreviewActive=false;
+        startCountdown();
+      } else {
+        mqdPlayAt(idx+1);
+      }
+    }
   };
 }
 
