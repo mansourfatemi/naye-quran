@@ -3097,10 +3097,11 @@ lBtn.onclick=()=>openHashemiLessons();
     secLbl.style.cssText="padding:14px 16px 6px;font-size:.82em;font-weight:bold;color:#555;opacity:1";
     secLbl.textContent="آموزش تعاملی مقامات";
     el.appendChild(secLbl);
-    [{n:"بیات",i:"🎶",c:"#2e7d32",u:"_maqam_piano_demo/bayati.html"},{n:"راست",i:"🎼",c:"#1565c0",u:"_maqam_piano_demo/rast.html"},{n:"صبا",i:"🎵",c:"#00838f",u:"_maqam_piano_demo/saba.html"},{n:"نهاوند",i:"🎹",c:"#e65100",u:"_maqam_piano_demo/nahawand.html"},{n:"سه گاه",i:"🎷",c:"#6a1b9a",u:"_maqam_piano_demo/segah.html"},{n:"حجاز",i:"🎺",c:"#c62828",u:"_maqam_piano_demo/index.html"},{n:"عجم",i:"🎻",c:"#00695c",u:"_maqam_piano_demo/ajam.html"},{n:"کرد",i:"🎤",c:"#37474f",u:"_maqam_piano_demo/kurd.html"}].forEach(m=>{
+    [{n:"بیات",i:"🎶",c:"#2e7d32",u:"_maqam_piano_demo/bayati.html"},{n:"راست",i:"🎼",c:"#1565c0",u:"_maqam_piano_demo/rast.html"},{n:"صبا",i:"🎵",c:"#00838f",u:"_maqam_piano_demo/saba.html"},{n:"نهاوند",i:"🎹",c:"#e65100",u:"_maqam_piano_demo/nahawand.html"},{n:"سه گاه",i:"🎷",c:"#6a1b9a",u:"_maqam_piano_demo/segah.html"},{n:"حجاز",i:"🎺",c:"#c62828",u:"_maqam_piano_demo/index.html"},{n:"عجم",i:"🎻",c:"#00695c",u:"_maqam_piano_demo/ajam.html"},{n:"کرد",i:"🎤",c:"#37474f",u:"_maqam_piano_demo/kurd.html"}].forEach((m,maqamIdx)=>{
       const btn=document.createElement("div"); btn.className="til-card maqamat-btn";
       btn.style.cssText="--mbg:#efefef;margin:12px 4px";
-      btn.innerHTML='<div class="maqamat-btn-inner" style="background:linear-gradient(135deg,'+m.c+'cc,'+m.c+');border-radius:0">'+'<div class="maqamat-btn-icon">'+m.i+'</div>'+'<div class="maqamat-btn-info"><div class="maqamat-btn-name">مقام '+m.n+'</div><div class="maqamat-btn-meta">آموزش تعاملی · پیانو</div></div>'+'<div class="maqamat-btn-arrow">&#8250;</div></div>';
+      const mIdx=['۱','۲','۳','۴','۵','۶','۷','۸'];
+      btn.innerHTML='<div class="maqamat-btn-inner" style="background:linear-gradient(135deg,'+m.c+'cc,'+m.c+');border-radius:0">'+'<div class="maqamat-btn-icon" style="font-size:1.3em;font-weight:bold">'+mIdx[maqamIdx]+'</div>'+'<div class="maqamat-btn-info"><div class="maqamat-btn-name">مقام '+m.n+'</div></div>'+'<div class="maqamat-btn-arrow">&#8250;</div></div>';
 btn.onclick=()=>{ if(typeof Android!=="undefined"&&Android.openAsset){ Android.openAsset(m.u); } else { window.location.href=m.u; } };
       el.appendChild(btn);
     });
