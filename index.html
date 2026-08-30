@@ -4349,6 +4349,7 @@ function jumpToFaraz(qari, til, idx, maqam, color){
   cameFromMaqamDetail = maqam ? {maqam:maqam, color:color, qId:qari.id, tId:til.id} : null;
   document.getElementById("maqamDetailPage").style.display="none";
   document.getElementById("maqamPage").style.display="none";
+  au.onended=null;
   au.pause(); pl=false;
   curQari=qari; cT=til; cI=idx; plMode=null;
   setColor(curQari.color);
