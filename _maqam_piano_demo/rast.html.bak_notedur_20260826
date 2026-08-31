@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>مقام راست — دمو</title>
+<style>
+  *{box-sizing:border-box;font-family:Tahoma,"Segoe UI",sans-serif}
+  body{margin:0;background:#0f0f1a;color:#eee;min-height:100vh;display:flex;justify-content:center}
+  .app{width:100%;max-width:420px;background:#16213e;min-height:100vh;padding-bottom:24px}
+  .header{background:linear-gradient(135deg,#1a1a2e,#16213e);color:#fff;padding:18px 20px;text-align:center;box-shadow:0 3px 12px rgba(0,0,0,.3)}
+  .header h1{font-size:1.15em;margin:0}
+  .header .sub{font-size:.78em;opacity:.6;margin-top:4px}
+  .badge-complete{display:inline-block;background:#4CAF50;color:#fff;font-size:.68em;font-weight:bold;padding:2px 10px;border-radius:10px;margin-top:6px}
+
+  .card{background:#fff;color:#222;border-radius:16px;margin:16px;padding:18px;box-shadow:0 8px 26px rgba(0,0,0,.35)}
+  .card h2{font-size:1.05em;margin:0 0 8px;color:#1a1a2e;text-align:center}
+  .card .sub{font-size:.8em;color:#888;text-align:center;margin-bottom:14px}
+
+  .diagwrap-scroll{overflow-x:auto;direction:ltr;-webkit-overflow-scrolling:touch;margin-top:10px}
+  .diagwrap{width:308px;margin:0;direction:ltr}
+  .tickline{position:relative;height:14px;border-bottom:2px solid #999}
+  .tickline .tick{position:absolute;bottom:0;width:2px;height:12px;background:#999}
+  .tickline .tick.end{height:18px;background:#333;width:2px}
+  .fracrow{position:relative;height:26px;margin-top:6px}
+  .frac-chip{position:absolute;top:0;transform:translateX(-50%);background:#b71c1c;color:#fff;font-weight:bold;font-size:.68em;border-radius:50%;width:28px;height:22px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 4px rgba(0,0,0,.15)}
+  .frac-chip.big{background:#4a148c}
+  .numrow{position:relative;height:18px;margin-top:2px;font-weight:bold;color:#333;font-size:.8em}
+  .numrow span{position:absolute;transform:translateX(-50%)}
+  .layers{margin-top:14px;display:flex;flex-direction:column;gap:6px}
+  .layer-row{position:relative;height:28px}
+  .layer-bar{position:absolute;top:0;left:0;height:28px;border-radius:6px;color:#fff;font-weight:bold;font-size:.72em;display:flex;align-items:center;padding-left:8px;box-shadow:0 2px 6px rgba(0,0,0,.15);white-space:nowrap}
+
+  .combo-item{background:#fafafa;border:1px solid #eee;border-radius:10px;padding:10px 12px;margin-bottom:10px;cursor:pointer}
+  .combo-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+  .combo-name{font-weight:bold;color:#1a1a2e;font-size:.92em}
+  .combo-playbtn{border:none;cursor:pointer;background:#1a1a2e;color:#fff;border-radius:50%;width:28px;height:28px;font-size:.75em;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,.2);transition:.15s}
+  .combo-playbtn:active{transform:scale(.9)}
+  .combo-playbtn.playing{background:#4CAF50}
+  .combo-bar{display:flex;direction:ltr;border-radius:6px;overflow:hidden;height:26px}
+  .combo-seg{flex:1;display:flex;align-items:center;justify-content:center;color:#fff;font-size:.68em;font-weight:bold}
+  .seg1{background:#b71c1c}
+  .combo-note{font-size:.75em;color:#999;text-align:center;margin:6px 16px 0;line-height:1.6}
+
+  .explain-box{background:#ffebee;border:1.5px solid #ef5350;border-radius:12px;padding:14px;margin:14px 16px;min-height:70px;transition:.2s}
+  .explain-box .deg{display:inline-block;background:#b71c1c;color:#fff;font-weight:bold;border-radius:50%;width:26px;height:26px;text-align:center;line-height:26px;font-size:.85em;margin-left:8px}
+  .explain-box .name{font-weight:bold;font-size:1.15em;color:#7f0000}
+  .explain-box .desc{font-size:.85em;color:#4e0000;margin-top:6px;line-height:1.6}
+  .explain-box.idle{background:#f5f5f5;border-color:#ddd}
+  .explain-box.idle .name{color:#999}
+
+  .piano-wrap{margin:18px 16px;overflow-x:auto;padding-bottom:6px}
+  .piano{position:relative;height:180px;width:352px;margin:0 auto;direction:ltr}
+  .wkey{position:absolute;top:0;width:44px;height:180px;background:#fefefe;border:1px solid #ccc;border-radius:0 0 6px 6px;cursor:pointer;box-shadow:inset 0 -6px 10px -6px rgba(0,0,0,.15);transition:background .12s}
+  .wkey.used{box-shadow:inset 0 -6px 10px -6px rgba(183,28,28,.4)}
+  .wkey .lbl{position:absolute;bottom:8px;left:0;right:0;text-align:center;font-size:.68em;color:#999}
+  .wkey .deg-badge{position:absolute;top:8px;left:0;right:0;text-align:center}
+  .wkey.active{background:#ffcdd2}
+  .wkey.tonic{border:2px solid #f9a825 !important;background:#fffde7 !important}
+  .bkey.tonic{background:#f9a825 !important}
+  .tonic-chip{background:#f9a825 !important;color:#333 !important}
+  .bkey{position:absolute;top:0;width:26px;height:110px;background:#1a1a1a;border-radius:0 0 4px 4px;cursor:pointer;z-index:5;box-shadow:0 3px 6px rgba(0,0,0,.4);transition:background .12s}
+  .bkey .lbl{position:absolute;bottom:6px;left:0;right:0;text-align:center;font-size:.6em;color:#ccc}
+  .bkey .deg-badge{position:absolute;top:6px;left:0;right:0;text-align:center}
+  .bkey.active{background:#b71c1c}
+  .deg-chip{display:inline-block;background:#b71c1c;color:#fff;font-weight:bold;border-radius:50%;width:18px;height:18px;line-height:18px;font-size:.62em}
+  .bkey .deg-chip{background:#ef9a9a;color:#1a1a2e}
+
+  .qmark{position:absolute;top:-26px;width:30px;height:30px;border-radius:50%;background:#ff8f00;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:.72em;cursor:pointer;z-index:10;box-shadow:0 3px 8px rgba(0,0,0,.3);border:2px solid #fff}
+  .qmark.active{background:#e65100;transform:scale(1.15)}
+  .qmark::after{content:"";position:absolute;bottom:-14px;right:50%;width:2px;height:14px;background:#ff8f00}
+
+  .controls{display:flex;justify-content:center;gap:12px;margin:16px}
+  .btn{border:none;cursor:pointer;border-radius:50px;display:flex;align-items:center;justify-content:center;gap:8px;padding:0 20px;height:46px;font-size:.9em;font-weight:bold;box-shadow:0 2px 10px rgba(0,0,0,.15);transition:.15s}
+  .btn:active{transform:scale(.95)}
+  .btn-play{background:#1a1a2e;color:#fff}
+  .btn-loop{background:#f0f0f0;color:#555}
+  .btn-loop.on{background:#4CAF50;color:#fff}
+  .btn-fullscreen{background:#e0e0e0;color:#455a64}
+  .card.fs-active{position:fixed;top:0;left:0;right:0;bottom:0;width:100%;height:100%;
+    z-index:9999;border-radius:0;margin:0;max-height:none;overflow-y:auto;background:#16213e;
+    display:flex;flex-direction:column;align-items:center;padding:18px 10px 40px}
+  .card.fs-active h2,.card.fs-active .sub{color:#fff}
+  .card.fs-active .piano-wrap{margin:14px auto;overflow:visible;display:flex;justify-content:center}
+  .card.fs-active .explain-box{width:auto;max-width:90vw}
+  .card.fs-active .controls{flex-wrap:wrap}
+
+  .legend-title{font-size:.85em;font-weight:bold;color:#eee;margin:20px 16px 6px}
+  .legend-list{margin:0 16px;padding:0;list-style:none;font-size:.8em;color:#ccc;background:#1e2a4a;border-radius:12px;overflow:hidden}
+  .legend-list li{display:flex;justify-content:space-between;padding:8px 12px;border-bottom:1px solid rgba(255,255,255,.06)}
+  .legend-list li:last-child{border-bottom:none}
+  .legend-list .deg-chip{margin-left:8px}
+
+  .note-box{background:#e3f2fd;color:#01579b;font-size:.78em;padding:12px 14px;border-radius:10px;margin:16px;line-height:1.8}
+  .src-box{background:#fff8e1;border:1.5px solid #ffca28;color:#5d4200;font-size:.72em;padding:10px 12px;border-radius:10px;margin:16px;line-height:1.7}
+</style>
+</head>
+<body>
+<div class="app" id="mainView">
+  <div class="header">
+    <h1>🎹 مقام راست</h1>
+    <div class="sub">آموزش کامل: فواصل، درجات، نواختن، و ترکیبات خانواده‌ی راست</div>
+    <div class="badge-complete">✅ بالاترین سطح تأیید — تصویر شفاف اپ Maqamat با اعداد چاپشده</div>
+  </div>
+
+  <div class="card">
+    <h2>فواصل موسیقایی مقام راست</h2>
+    <div class="sub">جنس راست (۱–۵، پنتاکورد) + جنس راست تکراری (۵–۸، همپوشان از درجه۵)</div>
+    <div class="diagwrap-scroll"><div class="diagwrap">
+      <div class="tickline" id="tickline"></div>
+      <div class="fracrow" id="fracrow"></div>
+      <div class="numrow" id="numrow"></div>
+      <div class="layers" id="layers"></div>
+    </div></div>
+  </div>
+
+  <div class="card">
+    <h2>راست — از دو (C) شروع میشود</h2>
+    <div class="sub">روی «پخش پی‌در‌پی» بزنید یا خودتان روی هر کلید ضربه بزنید</div>
+
+    <div class="explain-box idle" id="explainBox">
+      <div class="name" id="explainName">برای شروع، پخش را بزنید</div>
+      <div class="desc" id="explainDesc">هر نُت که نواخته شود، اینجا توضیح آن به زبان ساده نمایش داده میشود.</div>
+    </div>
+
+    <div class="piano-wrap">
+      <div class="piano" id="piano"></div>
+    </div>
+
+    <div class="controls">
+      <button class="btn btn-play" id="playBtn">▶ پخش پی‌در‌پی</button>
+      <button class="btn btn-loop" id="loopBtn">🔁 تکرار</button>
+      <button class="btn btn-fullscreen" id="fsBtn">⛶ تمام‌صفحه</button>
+    </div>
+  </div>
+
+  <div class="legend-title">📋 لیست کامل ۸ نُت مقام راست (از دو)</div>
+  <ul class="legend-list" id="legendList"></ul>
+
+  <div class="legend-title">🔗 مقام راست و ترکیبات آن</div>
+  <div class="card">
+    <div class="sub">همه از «جنس راست» روی درجه‌ی ۱ ساخته میشوند؛ فقط جنس دوم فرق میکند</div>
+    <div id="comboList"></div>
+    <div class="combo-note">🔈 روی دکمه‌ی ▶ کنار هر مقام بزنید تا صدای آن پخش شود؛ روی خود کارت بزنید تا صفحه‌ی جزئیات (با پیانوی مستقل) باز شود.</div>
+  </div>
+
+  <div class="note-box">
+    🎼 <b>نکته:</b> جنس راست خودش دارای دو فاصله‌ی 3⁄4 پرده (ربع‌پرده) در وسط است — به همین دلیل «راست» را اصلیترین و شناختهشدهترین مقام دارای ربع‌پرده در موسیقی عربی/شرقی میدانند. تقریباً همهی مقام‌های این خانواده با همین طعم مشخص شروع میشوند.
+    <br><br>
+    📱 <b>اصلاحیه:</b> طبق maqamworld.com، «یکاه» نسخهی قدیمی/باستانی «نیروز» است (نه راست خالص) — پس در این دمو (که همیشه از یک نُت ثابت شروع میشود) با نیروز یکسان شنیده میشود و در همان ترکیب نمایش داده شده.
+    <br><br>
+    🆕 <b>سوزدل آرا</b> نیز اضافه شد — طبق maqamworld.com دقیقاً معادل «جنس نهاوند روی درجه‌ی ۵ مقام راست» است؛ این ترکیب بهعنوان یک ابزار مدولاسیون رایج برای بازگشت به جنس راست، در تقریباً همهی اجراهای مقام راست دیده میشود.
+  </div>
+
+  <div class="src-box">
+    🔎 <b>منبع:</b> فاصلههای دقیق تمام ترکیبها از تصویر شفاف و با کیفیت اپ <b>Maqamat</b> (صفحه‌ی «Rast Family»، شامل اعداد چاپشدهی قرمز روی نتنویسی) استخراج شدند — بالاترین دقت منبع در بین همهی صفحات این پروژه.
+    <br><br>
+    ⚠️ یک ردیف در تصویر («نهاوند + راست» با اعداد ۱،1⁄2،۱،۱،3⁄4،3⁄4،۱) بهدلیل ناهماهنگی بین برچسب «راست» و اعدادی که بیشتر با الگوی «بیات» مطابقت داشت، و نداشتن نام مشخص، ساخته نشد.
+    <br><br>
+    ⚠️ دو ردیف دیگر («نیشابورک» و «اصفهان») از فهرست ترکیبات اپ «مدرسه تلاوت» ساخته نشدند: «نیشابورک» در همان لیست دوبار با دو ساختار متفاوت ظاهر شده بود (تناقض داخلی)، و «اصفهان» یک نام دستگاه فارسی است که در منبع معتبر maqamworld.com برای خانواده‌ی راست عربی دیده نشد — هر دو تا دریافت منبع بهتر، نگهداری نشدند.
+  </div>
+</div>
+
+<div class="app" id="detailView" style="display:none"></div>
+
+<script>
+function toFa(n){ return n.toString().replace(/[0-9]/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]); }
+function buildRoundTrip(arr){
+  if(arr.length <= 1) return arr.slice();
+  return arr.concat(arr.slice().reverse());
+}
+
+const NOTE_FREQ_C4 = 261.626; // نت استقرار مقام راست = دو۴ (C4)
+function freqFromOffset(offset){ return NOTE_FREQ_C4 * Math.pow(2, offset/12); }
+
+const WHITE_KEYS = [
+  {name:'C4', label:'دو', deg:1, isTonic:true},
+  {name:'D4', label:'ر', deg:2, isTonic:false},
+  {name:'E4', label:'می'},
+  {name:'F4', label:'فا', deg:4, isTonic:false},
+  {name:'G4', label:'سل', deg:5, isTonic:false},
+  {name:'A4', label:'لا', deg:6, isTonic:false},
+  {name:'B4', label:'سی'},
+  {name:'C5', label:'دو (اکتاو)', deg:8, isTonic:false}
+];
+const BLACK_KEYS = [
+  {name:'Cs4', label:'دو#', afterWhiteIdx:0},
+  {name:'Ds4', label:'میبمل', afterWhiteIdx:1},
+  {name:'Fs4', label:'فا#', afterWhiteIdx:3},
+  {name:'Gs4', label:'لابمل', afterWhiteIdx:4},
+  {name:'As4', label:'سیبمل', afterWhiteIdx:5}
+];
+const WKEY_W = 44, BKEY_W = 26, TICK_W = 44;
+const KEY_SEMI={C4:0,Cs4:1,D4:2,Ds4:3,E4:4,F4:5,Fs4:6,G4:7,Gs4:8,A4:9,As4:10,B4:11,C5:12};
+function freqFromSemi(s){return 261.626*Math.pow(2,s/12);}
+const CHROM_NAMES = ['دو','دو# / ربمل','ر','ر# / میبمل','می','فا','فا# / سلبمل','سل','سل# / لابمل','لا','لا# / سیبمل','سی','دو (اکتاو)'];
+const OFFSET_CENTER_PX = [22,41,66,110,129,154,173,198,217,242,286,305,330];
+function chromName(offset){
+  if(Number.isInteger(offset)) return CHROM_NAMES[offset];
+  const lo = CHROM_NAMES[Math.floor(offset)], hi = CHROM_NAMES[Math.ceil(offset)];
+  return 'ربع‌پرده (بین '+lo+' و '+hi+')';
+}
+function centerForOffset(offset){
+  if(Number.isInteger(offset)) return OFFSET_CENTER_PX[offset];
+  const lo = OFFSET_CENTER_PX[Math.floor(offset)], hi = OFFSET_CENTER_PX[Math.ceil(offset)];
+  return (lo+hi)/2;
+}
+const DIFF_LABELS={1:'1⁄2',1.5:'3⁄4',2:'1',3:'1 1⁄2'};
+
+// ── توالی ۸ نُت مقام راست (جنس راست [۱،3⁄4،3⁄4،۱] + جنس راست تکراری overlap از درجه۵ [۱،3⁄4،3⁄4]) ──
+const RAST_SCALE = [
+  {deg:1, offset:0,   label:'دو',                     desc:'نُت شروع — استقرار (تونیک) اصلی مقام راست'},
+  {deg:2, offset:2,   label:'ر',                     desc:'یک پرده بالاتر — دومین نُت جنس راست'},
+  {deg:3, offset:3.5, label:'می نیمبمل (ربعپرده)',   desc:'3⁄4 پرده بالاتر — سومین نُت جنس راست، رنگ خاص و شناختهشدهی راست'},
+  {deg:4, offset:5,   label:'فا',                     desc:'3⁄4 پرده بالاتر — چهارمین نُت جنس راست'},
+  {deg:5, offset:7,   label:'سل (غماز)',               desc:'یک پرده بالاتر — پایان «جنس راست» و شروع دوبارهی همان جنس از همین نُت'},
+  {deg:6, offset:9,   label:'لا',                     desc:'یک پرده بالاتر — دومین نُت جنس راست (تکراری)'},
+  {deg:7, offset:10.5,label:'سی نیمبمل (ربعپرده)',   desc:'3⁄4 پرده بالاتر — سومین نُت جنس راست (تکراری)'},
+  {deg:8, offset:12,  label:'دو (اکتاو)',               desc:'3⁄4 پرده بالاتر — رسیدن به اکتاو، پایان مقام راست'},
+];
+const RAST_INTERVALS=['1','3⁄4','3⁄4','1','1','3⁄4','3⁄4'];
+
+const HIER_LAYERS = [
+  {name:'جنس راست (۱–۵)', endDeg:5, color:'#b71c1c'},
+  {name:'مقام راست (کامل)', endDeg:8, color:'#1e88c9'},
+];
+const tickline = document.getElementById('tickline');
+for(let i=0;i<8;i++){
+  const t=document.createElement('div'); t.className='tick'+(i===0||i===7?' end':'');
+  t.style.left=(i*TICK_W)+'px'; tickline.appendChild(t);
+}
+const fracrow=document.getElementById('fracrow');
+RAST_INTERVALS.forEach((f,i)=>{
+  const c=document.createElement('div');
+  c.className='frac-chip'; c.style.left=((i+0.5)*TICK_W)+'px'; c.textContent=f;
+  fracrow.appendChild(c);
+});
+const numrow=document.getElementById('numrow');
+for(let i=0;i<8;i++){
+  const s=document.createElement('span'); s.style.left=(i*TICK_W)+'px'; s.textContent=toFa(i+1);
+  numrow.appendChild(s);
+}
+const layers=document.getElementById('layers');
+HIER_LAYERS.forEach(l=>{
+  const row=document.createElement('div'); row.className='layer-row';
+  const bar=document.createElement('div'); bar.className='layer-bar';
+  bar.style.width=((l.endDeg-1)*TICK_W)+'px'; bar.style.background=l.color; bar.textContent=l.name;
+  row.appendChild(bar); layers.appendChild(row);
+});
+
+// ── رسم پیانوی اصلی ──
+const piano=document.getElementById('piano');
+const keyElements={};
+function findScaleNote(offset){ return RAST_SCALE.find(s=>Number.isInteger(s.offset) && s.offset===offset); }
+WHITE_KEYS.forEach((k,i)=>{
+  const el=document.createElement('div');
+  const semi=KEY_SEMI[k.name];
+  el.className='wkey'+(k.deg?' used':'')+(k.isTonic?' tonic':'');
+  el.style.left=(i*WKEY_W)+'px';
+  el.innerHTML='<div class="lbl">'+k.label+'</div>'+(k.deg?'<div class="deg-badge"><span class="deg-chip'+(k.isTonic?' tonic-chip':'')+'">'+toFa(k.deg)+'</span></div>':'');
+  el.onclick=()=>playMainNote({freq:freqFromSemi(semi),label:k.label,desc:''}, el);
+  piano.appendChild(el); keyElements['s'+semi]=el;
+});
+BLACK_KEYS.forEach(k=>{
+  const el=document.createElement('div');
+  const semi=KEY_SEMI[k.name];
+  el.className='bkey'+(k.deg?' used':'')+(k.isTonic?' tonic':'');
+  el.style.left=((k.afterWhiteIdx+1)*WKEY_W-BKEY_W/2-3)+'px';
+  el.innerHTML='<div class="lbl">'+k.label+'</div>'+(k.deg?'<div class="deg-badge"><span class="deg-chip'+(k.isTonic?' tonic-chip':'')+'">'+toFa(k.deg)+'</span></div>':'');
+  el.onclick=(e)=>{e.stopPropagation(); playMainNote({freq:freqFromSemi(semi),label:k.label,desc:''}, el);};
+  piano.appendChild(el); keyElements['s'+semi]=el;
+});
+RAST_SCALE.filter(s=>!Number.isInteger(s.offset)).forEach(s=>{
+  const el=document.createElement('div');
+  el.className='qmark';
+  el.style.left=(centerForOffset(s.offset)-15)+'px';
+  el.textContent='1⁄4'; el.title=s.label;
+  el.onclick=(e)=>{ e.stopPropagation(); playMainNote(s, el); };
+  piano.appendChild(el); keyElements['o'+s.offset]=el;
+});
+
+// ── پخش صدا ──
+let audioCtx=null;
+function ensureCtx(){
+  if(!audioCtx) audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+  if(audioCtx.state==='suspended') audioCtx.resume();
+  return audioCtx;
+}
+function playNote(freq, el){
+  const ctx=ensureCtx();
+  const osc=ctx.createOscillator(); const gain=ctx.createGain();
+  osc.type='triangle'; osc.frequency.value=freq;
+  gain.gain.setValueAtTime(0.0001, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.35, ctx.currentTime+0.01);
+  gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime+1.1);
+  osc.connect(gain); gain.connect(ctx.destination);
+  osc.start(); osc.stop(ctx.currentTime+1.15);
+  if(el){ el.classList.add('active'); setTimeout(()=>el.classList.remove('active'),550); }
+}
+function playMainNote(note, el){
+  playNote(note.freq!==undefined?note.freq:freqFromOffset(note.offset), el);
+  updateExplain(document.getElementById('explainBox'), document.getElementById('explainName'), document.getElementById('explainDesc'), note);
+}
+function updateExplain(box, nameEl, descEl, note){
+  box.classList.remove('idle');
+  nameEl.innerHTML='<span class="deg">'+(note.deg?toFa(note.deg):'')+'</span>'+(note.label||'');
+  descEl.textContent=note.desc||'';
+}
+
+const legendList=document.getElementById('legendList');
+RAST_SCALE.forEach(s=>{
+  const li=document.createElement('li');
+  li.innerHTML='<span><span class="deg-chip">'+toFa(s.deg)+'</span> '+s.label+'</span><span style="color:#999">'+s.desc.split('—')[0].trim()+'</span>';
+  legendList.appendChild(li);
+});
+
+let seqTimer=null, looping=false;
+function playSequence(){
+  stopSequence();
+  const seq=buildRoundTrip(RAST_SCALE);
+  let i=0;
+  function step(){
+    if(i>=seq.length){ if(looping){ i=0; } else { return; } }
+    const s=seq[i];
+    playMainNote(s, keyElements['o'+s.offset]);
+    i++; seqTimer=setTimeout(step,750);
+  }
+  step();
+}
+function stopSequence(){ if(seqTimer){ clearTimeout(seqTimer); seqTimer=null; } }
+document.getElementById('playBtn').onclick=()=>{ ensureCtx(); playSequence(); };
+document.getElementById('loopBtn').onclick=(e)=>{ looping=!looping; e.target.classList.toggle('on',looping); };
+
+// ══════════ ترکیبات مقام راست (قابل پخش) ══════════
+const RAST1_OFFSETS=[0,2,3.5,5,7]; // جنس راست: درجه۱ تا ۵
+const JINS_PATTERNS={
+  'جنس راست':  [2,1.5,1.5,2], // ۱،3⁄4،3⁄4،۱ — پنتاکورد؛ فقط ۳ فاصله‌ی اول استفاده میشود (راست اصلی)
+  'جنس حجاز':  [1,3,1],       // 1⁄2،۱1⁄2،1⁄2 — تتراکورد (سوزناک)
+  'جنس عجم':   [2,2,1,2],     // ۱،۱،1⁄2،۱ — پنتاکورد؛ فقط ۳ فاصله‌ی اول استفاده میشود (ماهور)
+  'جنس بیات':  [1.5,1.5,2],   // 3⁄4،3⁄4،۱ — تتراکورد (نیروز)
+  'جنس نهاوند':[2,1,2,2],     // ۱،1⁄2،۱،۱ — پنتاکورد؛ فقط ۳ فاصله‌ی اول استفاده میشود (سوزدل آرا)
+};
+const RAST_COMBOS=[
+  {name:'مقام راست (اصلی)',              jins2:'جنس راست', color2:'#1e88c9'},
+  {name:'سوزناک (Suznak)',               jins2:'جنس حجاز', color2:'#6d4c41'},
+  {name:'ماهور (Mahur)',                 jins2:'جنس عجم',  color2:'#00838f'},
+  {name:'نیروز / یکاه (Nairuz / Yakah)', jins2:'جنس بیات', color2:'#2e7d32'},
+  {name:'سوزدل آرا (Suzdalara)',         jins2:'جنس نهاوند', color2:'#c62828'},
+];
+
+function buildComboScale(combo){
+  const offsets=[...RAST1_OFFSETS];
+  const pattern=JINS_PATTERNS[combo.jins2].slice(0,3); // فقط ۳ فاصله برای تکمیل تا درجه۸
+  let cum=7; // افست درجه۵ (غماز جنس راست)
+  pattern.forEach(p=>{ cum+=p; offsets.push(cum); });
+  return offsets.map((o,i)=>{
+    const isQuarter=!Number.isInteger(o);
+    let desc, jinsLabel;
+    if(i<5){ jinsLabel='جنس راست'; desc = RAST_SCALE[i] ? RAST_SCALE[i].desc : 'بخشی از جنس راست'; }
+    else { jinsLabel=combo.jins2; desc = isQuarter ? 'این نُت «ربع‌پرده» است و از «'+combo.jins2+'» میآید.' : 'این نُت از «'+combo.jins2+'» است و رنگ ویژهی «'+combo.name+'» را میسازد.'; }
+    return { deg:i+1, offset:o, freq:freqFromOffset(o), label:chromName(o)+(i===0?' (شروع)':''), desc:desc, isQuarter:isQuarter, jins: jinsLabel };
+  });
+}
+
+function renderIntervalDiagramGeneric(containerEl, offsetsArr){
+  containerEl.innerHTML=''; containerEl.className='diagwrap';
+  containerEl.style.width=((offsetsArr.length-1)*TICK_W)+'px';
+  const tl=document.createElement('div'); tl.className='tickline';
+  offsetsArr.forEach((o,idx)=>{
+    const t=document.createElement('div'); t.className='tick'+(idx===0||idx===offsetsArr.length-1?' end':'');
+    t.style.left=(idx*TICK_W)+'px'; tl.appendChild(t);
+  });
+  containerEl.appendChild(tl);
+  const fr=document.createElement('div'); fr.className='fracrow';
+  for(let idx=0; idx<offsetsArr.length-1; idx++){
+    const diff=Math.round((offsetsArr[idx+1]-offsetsArr[idx])*2)/2;
+    const chip=document.createElement('div'); chip.className='frac-chip'+(diff===3?' big':'');
+    chip.style.left=((idx+0.5)*TICK_W)+'px'; chip.textContent=DIFF_LABELS[diff]||diff;
+    fr.appendChild(chip);
+  }
+  containerEl.appendChild(fr);
+  const nr=document.createElement('div'); nr.className='numrow';
+  offsetsArr.forEach((o,idx)=>{
+    const s=document.createElement('span'); s.style.left=(idx*TICK_W)+'px'; s.textContent=toFa(idx+1);
+    nr.appendChild(s);
+  });
+  containerEl.appendChild(nr);
+}
+
+const comboList=document.getElementById('comboList');
+let comboSeqTimer=null, activeComboBtn=null;
+function stopComboSequence(){
+  if(comboSeqTimer){ clearTimeout(comboSeqTimer); comboSeqTimer=null; }
+  if(activeComboBtn){ activeComboBtn.classList.remove('playing'); activeComboBtn.textContent='▶'; activeComboBtn=null; }
+}
+function playComboSequence(combo, btn){
+  stopSequence(); stopComboSequence(); ensureCtx();
+  const seq=buildRoundTrip(buildComboScale(combo).map(s=>s.freq));
+  activeComboBtn=btn; btn.classList.add('playing'); btn.textContent='■';
+  let i=0;
+  function step(){
+    if(i>=seq.length){ stopComboSequence(); return; }
+    playNote(seq[i], null); i++; comboSeqTimer=setTimeout(step,650);
+  }
+  step();
+}
+RAST_COMBOS.forEach((c,idx)=>{
+  const item=document.createElement('div'); item.className='combo-item';
+  item.innerHTML =
+    '<div class="combo-head">'+
+      '<div class="combo-name">'+c.name+' <span style="color:#aaa;font-weight:normal;font-size:.78em">(برای جزئیات بزنید)</span></div>'+
+      '<button class="combo-playbtn" type="button">▶</button>'+
+    '</div>'+
+    '<div class="combo-bar">'+
+      '<div class="combo-seg seg1">جنس راست</div>'+
+      '<div class="combo-seg" style="background:'+c.color2+'">'+c.jins2+'</div>'+
+    '</div>'+
+    '<div style="overflow-x:auto;direction:ltr;padding-top:2px"><div id="combodiag-'+idx+'"></div></div>';
+  const btn=item.querySelector('.combo-playbtn');
+  btn.onclick=(e)=>{ e.stopPropagation(); if(activeComboBtn===btn){ stopComboSequence(); return; } playComboSequence(c, btn); };
+  item.onclick=()=>{ stopComboSequence(); openComboDetail(c); };
+  comboList.appendChild(item);
+  renderIntervalDiagramGeneric(item.querySelector('#combodiag-'+idx), buildComboScale(c).map(s=>s.offset));
+});
+
+// ══════════ صفحه‌ی جزئیات هر ترکیب ══════════
+let detailScale=[], detailKeyElements={}, detailSeqTimer=null, detailLooping=false;
+function renderDetailPiano(container, scaleArr){
+  container.innerHTML=''; detailKeyElements={};
+  const findNote=(offset)=>scaleArr.find(s=>!s.isQuarter && s.offset===offset);
+  WHITE_KEYS.forEach((k,i)=>{
+    const note=findNote(k.offset);
+    const el=document.createElement('div');
+    el.className='wkey'+(note?' used':'');
+    el.style.left=(i*WKEY_W)+'px';
+    el.className='wkey'+(k.deg?' used':'')+(k.isTonic?' tonic':'');
+    el.innerHTML='<div class="lbl">'+k.label+'</div>'+(k.deg?'<div class="deg-badge"><span class="deg-chip'+(k.isTonic?' tonic-chip':'')+'">'+toFa(k.deg)+'</span></div>':'');
+    el.onclick=()=>playDetailNote({freq:freqFromSemi(KEY_SEMI[k.name]),label:k.label,desc:''}, el);
+    container.appendChild(el); detailKeyElements['s'+KEY_SEMI[k.name]]=el;
+  });
+  BLACK_KEYS.forEach(k=>{
+    const note=findNote(k.offset);
+    const el=document.createElement('div');
+    el.className='bkey'+(note?' used':'');
+    el.style.left=((k.afterWhiteIdx+1)*WKEY_W-BKEY_W/2-3)+'px';
+    el.className='bkey'+(k.deg?' used':'')+(k.isTonic?' tonic':'');
+    el.innerHTML='<div class="lbl">'+k.label+'</div>'+(k.deg?'<div class="deg-badge"><span class="deg-chip'+(k.isTonic?' tonic-chip':'')+'">'+toFa(k.deg)+'</span></div>':'');
+    el.onclick=(e)=>{e.stopPropagation(); playDetailNote({freq:freqFromSemi(KEY_SEMI[k.name]),label:k.label,desc:''}, el);};
+    container.appendChild(el); detailKeyElements['s'+KEY_SEMI[k.name]]=el;
+  });
+  scaleArr.filter(s=>s.isQuarter).forEach(s=>{
+    const el=document.createElement('div'); el.className='qmark';
+    el.style.left=(centerForOffset(s.offset)-15)+'px'; el.textContent='1⁄4';
+    el.onclick=(e)=>{ e.stopPropagation(); playDetailNote(s, el); };
+    container.appendChild(el); detailKeyElements['o'+s.offset]=el;
+  });
+}
+function playDetailNote(note, el){
+  playNote(note.freq, el);
+  const box=document.getElementById('detailExplainBox');
+  if(box){ updateExplain(box, document.getElementById('detailExplainName'), document.getElementById('detailExplainDesc'), note); }
+}
+function stopDetailSequence(){ if(detailSeqTimer){ clearTimeout(detailSeqTimer); detailSeqTimer=null; } }
+function playDetailSequence(){
+  stopDetailSequence();
+  const seq=buildRoundTrip(detailScale);
+  let i=0;
+  function step(){
+    if(i>=seq.length){ if(detailLooping){ i=0; } else { return; } }
+    const s=seq[i];
+    playDetailNote(s, detailKeyElements['o'+s.offset]);
+    i++; detailSeqTimer=setTimeout(step,750);
+  }
+  step();
+}
+function openComboDetail(combo){
+  stopSequence();
+  detailScale=buildComboScale(combo);
+  detailLooping=false;
+  const dv=document.getElementById('detailView');
+  dv.innerHTML =
+    '<div class="header">'+
+      '<h1>🎹 '+combo.name+'</h1>'+
+      '<div class="sub">جنس راست + '+combo.jins2+'</div>'+
+      '<button id="detailBackBtn" style="margin-top:10px;border:none;background:rgba(255,255,255,.15);color:#fff;border-radius:20px;padding:6px 16px;font-size:.78em;cursor:pointer">← بازگشت</button>'+
+    '</div>'+
+    '<div class="card">'+
+      '<h2>فواصل موسیقایی '+combo.name+'</h2>'+
+      '<div style="overflow-x:auto;direction:ltr"><div id="detailDiag"></div></div>'+
+    '</div>'+
+    '<div class="card">'+
+      '<h2>نواختن نُت‌های '+combo.name+'</h2>'+
+      '<div class="sub">روی «پخش پی‌در‌پی» بزنید یا خودتان روی هر کلید ضربه بزنید</div>'+
+      '<div class="explain-box idle" id="detailExplainBox">'+
+        '<div class="name" id="detailExplainName">برای شروع، پخش را بزنید</div>'+
+        '<div class="desc" id="detailExplainDesc">هر نُت که نواخته شود، اینجا توضیح آن نمایش داده میشود.</div>'+
+      '</div>'+
+      '<div class="piano-wrap"><div class="piano" id="detailPiano"></div></div>'+
+      '<div class="controls">'+
+        '<button class="btn btn-play" id="detailPlayBtn">▶ پخش پی‌در‌پی</button>'+
+        '<button class="btn btn-loop" id="detailLoopBtn">🔁 تکرار</button>'+
+        '<button class="btn btn-fullscreen" id="detailFsBtn">⛶ تمام‌صفحه</button>'+
+      '</div>'+
+    '</div>'+
+    '<div class="legend-title">📋 لیست کامل نُت‌های '+combo.name+'</div>'+
+    '<ul class="legend-list" id="detailLegendList"></ul>';
+
+  renderIntervalDiagramGeneric(document.getElementById('detailDiag'), detailScale.map(s=>s.offset));
+  renderDetailPiano(document.getElementById('detailPiano'), detailScale);
+  const legendList=document.getElementById('detailLegendList');
+  detailScale.forEach(s=>{
+    const li=document.createElement('li');
+    li.innerHTML='<span><span class="deg-chip">'+toFa(s.deg)+'</span> '+s.label+'</span><span style="color:#999;font-size:.85em">'+s.jins+'</span>';
+    legendList.appendChild(li);
+  });
+  document.getElementById('detailBackBtn').onclick=closeComboDetail;
+  document.getElementById('detailPlayBtn').onclick=()=>{ ensureCtx(); playDetailSequence(); };
+  document.getElementById('detailLoopBtn').onclick=(e)=>{ detailLooping=!detailLooping; e.target.classList.toggle('on',detailLooping); };
+  document.getElementById('mainView').style.display='none';
+  dv.style.display='block';
+  window.scrollTo(0,0);
+}
+function closeComboDetail(){
+  stopDetailSequence();
+  document.getElementById('detailView').style.display='none';
+  document.getElementById('mainView').style.display='block';
+  window.scrollTo(0,0);
+}
+
+// ── دکمه تمام‌صفحه (پیانو) — CSS overlay + محاسبه‌ی زنده‌ی مقیاس برای جا‌شدن کامل در صفحه (portrait/landscape) ──
+var fsActiveCard = null;
+function fitPianoToScreen(card){
+  var wrap = card.querySelector('.piano-wrap');
+  var piano = wrap ? wrap.querySelector('.piano') : null;
+  if(!wrap || !piano) return;
+  wrap.style.transform = 'none';
+  var naturalW = piano.offsetWidth || 352;
+  var naturalH = piano.offsetHeight || 180;
+  var otherH = 0;
+  Array.prototype.forEach.call(card.children, function(ch){
+    if(ch !== wrap) otherH += ch.getBoundingClientRect().height;
+  });
+  var availH = window.innerHeight - otherH - 40;
+  var availW = window.innerWidth - 24;
+  var scale = Math.min(availW / naturalW, availH / naturalH);
+  if(!isFinite(scale) || scale <= 0) scale = 1;
+  scale = Math.max(0.5, Math.min(scale, 2.4));
+  wrap.style.transform = 'scale(' + scale + ')';
+  wrap.style.transformOrigin = 'center center';
+}
+function refitActiveFullscreen(){
+  if(fsActiveCard) fitPianoToScreen(fsActiveCard);
+}
+window.addEventListener('resize', refitActiveFullscreen);
+window.addEventListener('orientationchange', function(){ setTimeout(refitActiveFullscreen, 250); });
+document.addEventListener('click', function(e){
+  var btn = e.target.closest ? e.target.closest('.btn-fullscreen') : null;
+  if(!btn) return;
+  var card = btn.closest('.card');
+  if(!card) return;
+  var active = card.classList.toggle('fs-active');
+  btn.textContent = active ? '✕ خروج از تمام‌صفحه' : '⛶ تمام‌صفحه';
+  document.body.style.overflow = active ? 'hidden' : '';
+  if(active){
+    fsActiveCard = card;
+    requestAnimationFrame(function(){ fitPianoToScreen(card); });
+  } else {
+    if(fsActiveCard === card) fsActiveCard = null;
+    var wrap = card.querySelector('.piano-wrap');
+    if(wrap){ wrap.style.transform = 'none'; }
+  }
+});
+</script>
+</body>
+</html>

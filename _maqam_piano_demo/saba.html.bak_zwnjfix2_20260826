@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>مقام صبا و صبا زمزم — دمو</title>
+<style>
+  @font-face{font-family:'Vazirmatn';src:url('fonts/Vazirmatn-arabic.woff2') format('woff2'),url('fonts/Vazirmatn-latin.woff2') format('woff2');font-weight:400 700;font-style:normal;font-display:swap}
+  @font-face{font-family:'Amiri';src:url('fonts/Amiri-Regular-arabic.woff2') format('woff2'),url('fonts/Amiri-Regular-latin.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap}
+  @font-face{font-family:'Amiri';src:url('fonts/Amiri-Bold-arabic.woff2') format('woff2'),url('fonts/Amiri-Bold-latin.woff2') format('woff2');font-weight:700;font-style:normal;font-display:swap}
+
+  *{box-sizing:border-box;font-family:'Vazirmatn',Tahoma,"Segoe UI",sans-serif}
+  body{margin:0;background:#0f0f1a;color:#eee;min-height:100vh;display:flex;justify-content:center}
+  .app{width:100%;max-width:420px;background:#16213e;min-height:100vh;padding-bottom:24px}
+  .header{background:linear-gradient(135deg,#1a1a2e,#16213e);color:#fff;padding:18px 20px;text-align:center;box-shadow:0 3px 12px rgba(0,0,0,.3)}
+  .header h1{font-size:1.15em;margin:0}
+  .header .sub{font-size:.78em;opacity:.6;margin-top:4px}
+  .badge-complete{display:inline-block;background:#4CAF50;color:#fff;font-size:.68em;font-weight:bold;padding:2px 10px;border-radius:10px;margin-top:6px}
+
+  .card{background:#fff;color:#222;border-radius:16px;margin:16px;padding:18px;box-shadow:0 8px 26px rgba(0,0,0,.35)}
+  .card h2{font-size:1.05em;margin:0 0 8px;color:#1a1a2e;text-align:center}
+  .card .sub{font-size:.8em;color:#888;text-align:center;margin-bottom:14px}
+
+  .diagwrap-scroll{overflow-x:auto;direction:ltr;-webkit-overflow-scrolling:touch;margin-top:10px}
+  .diagwrap{width:352px;margin:0;direction:ltr}
+  .tickline{position:relative;height:14px;border-bottom:2px solid #999}
+  .tickline .tick{position:absolute;bottom:0;width:2px;height:12px;background:#999}
+  .tickline .tick.end{height:18px;background:#333;width:2px}
+  .fracrow{position:relative;height:26px;margin-top:6px}
+  .frac-chip{position:absolute;top:0;transform:translateX(-50%);background:#00838f;color:#fff;font-weight:bold;font-size:.68em;border-radius:50%;width:28px;height:22px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 4px rgba(0,0,0,.15)}
+  .frac-chip.big{background:#d84315}
+  .numrow{position:relative;height:18px;margin-top:2px;font-weight:bold;color:#333;font-size:.8em}
+  .numrow span{position:absolute;transform:translateX(-50%)}
+  .layers{margin-top:14px;display:flex;flex-direction:column;gap:6px}
+  .layer-row{position:relative;height:28px}
+  .layer-bar{position:absolute;top:0;left:0;height:28px;border-radius:6px;color:#fff;font-weight:bold;font-size:.7em;display:flex;align-items:center;padding-left:6px;box-shadow:0 2px 6px rgba(0,0,0,.15);white-space:nowrap}
+
+  .degnames{position:relative;height:34px;margin-top:8px}
+  .degnames span{position:absolute;width:60px;transform:translateX(-50%);text-align:center;font-size:.66em;color:#555;line-height:1.3}
+
+  .explain-box{background:#e0f7fa;border:1.5px solid #4dd0e1;border-radius:12px;padding:14px;margin:14px 16px;min-height:70px;transition:.2s}
+  .explain-box .deg{display:inline-block;background:#00838f;color:#fff;font-weight:bold;border-radius:50%;width:26px;height:26px;text-align:center;line-height:26px;font-size:.85em;margin-left:8px}
+  .explain-box .name{font-weight:bold;font-size:1.15em;color:#006064}
+  .explain-box .desc{font-size:.85em;color:#004c4f;margin-top:6px;line-height:1.6}
+  .explain-box.idle{background:#f5f5f5;border-color:#ddd}
+  .explain-box.idle .name{color:#999}
+
+  .piano-wrap{margin:18px 16px;overflow-x:auto;padding-bottom:6px}
+  .piano{position:relative;height:180px;width:352px;margin:0 auto;direction:ltr}
+  .wkey{position:absolute;top:0;width:44px;height:180px;background:#fefefe;border:1px solid #ccc;border-radius:0 0 6px 6px;cursor:pointer;box-shadow:inset 0 -6px 10px -6px rgba(0,0,0,.15);transition:background .12s}
+  .wkey.used{box-shadow:inset 0 -6px 10px -6px rgba(0,131,143,.4)}
+  .wkey .lbl{position:absolute;bottom:8px;left:0;right:0;text-align:center;font-size:.68em;color:#999}
+  .wkey .deg-badge{position:absolute;top:8px;left:0;right:0;text-align:center}
+  .wkey.active{background:#b2ebf2}
+  .bkey{position:absolute;top:0;width:26px;height:110px;background:#1a1a1a;border-radius:0 0 4px 4px;cursor:pointer;z-index:5;box-shadow:0 3px 6px rgba(0,0,0,.4);transition:background .12s}
+  .bkey .lbl{position:absolute;bottom:6px;left:0;right:0;text-align:center;font-size:.6em;color:#ccc}
+  .bkey .deg-badge{position:absolute;top:6px;left:0;right:0;text-align:center}
+  .bkey.active{background:#00838f}
+  .deg-chip{display:inline-block;background:#00838f;color:#fff;font-weight:bold;border-radius:50%;width:18px;height:18px;line-height:18px;font-size:.62em}
+  .bkey .deg-chip{background:#80deea;color:#1a1a2e}
+
+  .qmark{position:absolute;top:-26px;width:30px;height:30px;border-radius:50%;background:#ff8f00;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:.72em;cursor:pointer;z-index:10;box-shadow:0 3px 8px rgba(0,0,0,.3);border:2px solid #fff}
+  .qmark.active{background:#e65100;transform:scale(1.15)}
+  .qmark::after{content:"";position:absolute;bottom:-14px;right:50%;width:2px;height:14px;background:#ff8f00}
+
+  .controls{display:flex;justify-content:center;gap:12px;margin:16px}
+  .btn{border:none;cursor:pointer;border-radius:50px;display:flex;align-items:center;justify-content:center;gap:8px;padding:0 20px;height:46px;font-size:.9em;font-weight:bold;box-shadow:0 2px 10px rgba(0,0,0,.15);transition:.15s}
+  .btn:active{transform:scale(.95)}
+  .btn-play{background:#1a1a2e;color:#fff}
+  .btn-loop{background:#f0f0f0;color:#555}
+  .btn-loop.on{background:#4CAF50;color:#fff}
+  .btn-fullscreen{background:#e0e0e0;color:#455a64}
+  .card.fs-active{position:fixed;top:0;left:0;right:0;bottom:0;width:100%;height:100%;
+    z-index:9999;border-radius:0;margin:0;max-height:none;overflow-y:auto;background:#16213e;
+    display:flex;flex-direction:column;align-items:center;padding:18px 10px 40px}
+  .card.fs-active h2,.card.fs-active .sub{color:#fff}
+  .card.fs-active .piano-wrap{margin:14px auto;overflow:visible;display:flex;justify-content:center}
+  .card.fs-active .explain-box{width:auto;max-width:90vw}
+  .card.fs-active .controls{flex-wrap:wrap}
+
+  .legend-title{font-size:.85em;font-weight:bold;color:#eee;margin:20px 16px 6px}
+  .legend-list{margin:0 16px;padding:0;list-style:none;font-size:.8em;color:#ccc;background:#1e2a4a;border-radius:12px;overflow:hidden}
+  .legend-list li{display:flex;justify-content:space-between;padding:8px 12px;border-bottom:1px solid rgba(255,255,255,.06)}
+  .legend-list li:last-child{border-bottom:none}
+  .legend-list .deg-chip{margin-left:8px}
+
+  .note-box{background:#fff3e0;color:#8a5300;font-size:.78em;padding:12px 14px;border-radius:10px;margin:16px;line-height:1.8}
+  .src-box{background:#fff8e1;border:1.5px solid #ffca28;color:#5d4200;font-size:.72em;padding:10px 12px;border-radius:10px;margin:16px;line-height:1.7}
+</style>
+</head>
+<body>
+<div class="app" id="mainView">
+  <div class="header">
+    <h1>🎶 مقام صبا و صبا زمزم</h1>
+    <div class="sub">آموزش کامل: فواصل، درجات، و نواختن خانواده‌ی صبا</div>
+    <div class="badge-complete">✅ نسخهی دوم — تأیید شده با تصویر دقیق اپ Maqamat</div>
+  </div>
+
+  <!-- ══════ صبا ══════ -->
+  <div class="card">
+    <h2>مقام صبا</h2>
+    <div class="sub">جنس صبا (۱–۳) همپوشان با جنس حجاز (۳–۶) همپوشان با ثلاثی عجم (۶–۸)</div>
+    <div class="diagwrap-scroll"><div class="diagwrap" id="diag-saba"></div></div>
+  </div>
+
+  <div class="card">
+    <h2>صبا — از ر (D) شروع میشود</h2>
+    <div class="explain-box idle" id="explainBox-saba">
+      <div class="name" id="explainName-saba">برای شروع، پخش را بزنید</div>
+      <div class="desc" id="explainDesc-saba">هر نُت که نواخته شود، اینجا توضیح آن نمایش داده میشود.</div>
+    </div>
+    <div class="piano-wrap"><div class="piano" id="piano-saba"></div></div>
+    <div class="controls">
+      <button class="btn btn-play" id="playBtn-saba">▶ پخش پی‌در‌پی</button>
+      <button class="btn btn-loop" id="loopBtn-saba">🔁 تکرار</button>
+      <button class="btn btn-fullscreen" id="fsBtn-saba">⛶ تمام‌صفحه</button>
+    </div>
+  </div>
+
+  <div class="legend-title">📋 لیست کامل ۸ نُت مقام صبا</div>
+  <ul class="legend-list" id="legendList-saba"></ul>
+
+  <!-- ══════ صبا زمزم ══════ -->
+  <div class="card">
+    <h2>مقام صبا زمزم (Saba Zamzam)</h2>
+    <div class="sub">جنس زمزم (۱–۳) همپوشان با جنس حجاز (۳–۶) همپوشان با ثلاثی عجم (۶–۸)</div>
+    <div class="diagwrap-scroll"><div class="diagwrap" id="diag-zamzam"></div></div>
+  </div>
+
+  <div class="card">
+    <h2>صبا زمزم — از ر (D) شروع میشود</h2>
+    <div class="explain-box idle" id="explainBox-zamzam">
+      <div class="name" id="explainName-zamzam">برای شروع، پخش را بزنید</div>
+      <div class="desc" id="explainDesc-zamzam">هر نُت که نواخته شود، اینجا توضیح آن نمایش داده میشود.</div>
+    </div>
+    <div class="piano-wrap"><div class="piano" id="piano-zamzam"></div></div>
+    <div class="controls">
+      <button class="btn btn-play" id="playBtn-zamzam">▶ پخش پی‌در‌پی</button>
+      <button class="btn btn-loop" id="loopBtn-zamzam">🔁 تکرار</button>
+      <button class="btn btn-fullscreen" id="fsBtn-zamzam">⛶ تمام‌صفحه</button>
+    </div>
+  </div>
+
+  <div class="legend-title">📋 لیست کامل ۸ نُت مقام صبا زمزم</div>
+  <ul class="legend-list" id="legendList-zamzam"></ul>
+
+  <div class="note-box">
+    🎼 <b>تفاوت اصلی صبا و صبا زمزم:</b> فقط در ۲ فاصله‌ی اول! در «صبا»، نُت دوم یک <b>ربع‌پرده</b> است (رنگ باز و ملایم)؛ در «صبا زمزم»، نُت دوم یک <b>نیم‌پردهی کامل</b> (ر‌بمل) است — همین تفاوت کوچک، رنگ صبا زمزم را بستهتر و کروماتیکتر میکند.
+    <br><br>
+    🎼 <b>امضای مشترک هر دو:</b> جهش «ثانیهی افزوده» (۱ پرده و نیم) بین نُت‌های ۴ و ۵ — این جهش غیرمعمول در هر دو مقام دیده میشود و رنگ حزنانگیز مشخصهی خانواده‌ی صبا را میسازد.
+    <br><br>
+    📱 <b>نکته:</b> نُت‌های ربع‌پرده با نشانگر نارنجی 🟠 مشخص شدهاند.
+  </div>
+
+  <div class="src-box">
+    🔎 <b>منبع:</b> ساختار کلی از <b>maqamworld.com</b> («Jins Saba on tonic, overlapped by Jins Hijaz on 3rd degree, followed by Jins ‘Ajam or Nikriz on 6th degree») و فاصلههای دقیق عددی هر دو مقام (صبا و صبا زمزم) از تصویر دقیق اپ <b>Maqamat</b> استخراج و تأیید شدند.
+    <br><br>
+    ✅ نامگذاری بخش پایانی (درجه۶ تا ۸) به «ثلاثی عجم» — طبق تصویر اپ «مدرسه تلاوت» — تأیید و اصلاح شد (نسخهی قبلی این دمو بهاشتباه از عنوان «کرد» که در یک اپ دیگر دیده بودیم استفاده میکرد؛ اعداد در هر دو حالت یکسان و درست بودند، فقط نام تصحیح شد).
+    <br><br>
+    ⚠️ طبق maqamworld، هیچکدام از این دو مقام بخشی از یک «خانواده‌ی مقامی» رسمی نیستند؛ گروهبندی «Saba Family» در اپ Maqamat فقط برای راحتی آموزشی است.
+  </div>
+</div>
+
+<script>
+function toFa(n){ return n.toString().replace(/[0-9]/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]); }
+function buildRoundTrip(arr){
+  if(arr.length <= 1) return arr.slice();
+  return arr.concat(arr.slice().reverse());
+}
+const NOTE_FREQ_D4 = 293.665;
+function freqFromOffset(offset){ return NOTE_FREQ_D4 * Math.pow(2, offset/12); }
+
+const WHITE_KEYS = [
+  {offset:0,  label:'ر'}, {offset:2,  label:'می'}, {offset:3,  label:'فا'}, {offset:5,  label:'سل'},
+  {offset:7,  label:'لا'}, {offset:9,  label:'سی'}, {offset:10, label:'دو'}, {offset:12, label:'ر'},
+];
+const BLACK_KEYS = [
+  {offset:1,  label:'ر#',  afterWhiteIdx:0}, {offset:4,  label:'فا#', afterWhiteIdx:2},
+  {offset:6,  label:'سل#', afterWhiteIdx:3}, {offset:8,  label:'لا#', afterWhiteIdx:4}, {offset:11, label:'دو#', afterWhiteIdx:6},
+];
+const WKEY_W = 44, BKEY_W = 26, TICK_W = 44;
+const CHROM_NAMES = ['ر','ر# / می‌بمل','می','فا','فا# / سل‌بمل','سل','سل# / لا‌بمل','لا','لا# / سی‌بمل','سی','دو','دو# / ر‌بمل','ر (اکتاو)'];
+const OFFSET_CENTER_PX = [22,41,66,110,129,154,173,198,217,242,286,305,330];
+function chromName(offset){
+  if(Number.isInteger(offset)) return CHROM_NAMES[offset];
+  const lo = CHROM_NAMES[Math.floor(offset)], hi = CHROM_NAMES[Math.ceil(offset)];
+  return 'ربع‌پرده (بین '+lo+' و '+hi+')';
+}
+function centerForOffset(offset){
+  if(Number.isInteger(offset)) return OFFSET_CENTER_PX[offset];
+  const lo = OFFSET_CENTER_PX[Math.floor(offset)], hi = OFFSET_CENTER_PX[Math.ceil(offset)];
+  return (lo+hi)/2;
+}
+const DIFF_LABELS = {1:'1⁄2', 1.5:'3⁄4', 2:'1', 3:'1 1⁄2'};
+
+// ── دادهی دو مقام (تأیید شده با تصویر اپ Maqamat) ──
+function buildScale(offsets, labels, descs, quarterDegs){
+  return offsets.map((o,i)=>({
+    deg:i+1, offset:o, label:labels[i], desc:descs[i],
+    isQuarter: quarterDegs.includes(i+1)
+  }));
+}
+const SABA_OFFSETS   = [0,1.5,3,4,7,8,10,12];
+const ZAMZAM_OFFSETS = [0,1,  3,4,7,8,10,12];
+
+const SABA_SCALE = buildScale(SABA_OFFSETS,
+  ['ر','می نیم‌بمل','فا (غماز صبا)','فا# / سل‌بمل','لا','سی‌بمل','دو','ر (اکتاو)'],
+  [
+    'نُت شروع — استقرار (تونیک) اصلی مقام صبا',
+    'ربع‌پرده — دومین نُت «جنس صبا»؛ رنگ باز و ملایم (تفاوت اصلی با صبا زمزم)',
+    'پایان «جنس صبا» — از همین نُت، «جنس حجاز» همپوشان میشود',
+    'نیم‌پرده بالاتر — دومین نُت جنس حجاز',
+    'یک پرده و نیم بالاتر — جهش «ثانیهی افزوده»، امضای اصلی خانواده‌ی صبا',
+    'نیم‌پرده بالاتر — پایان «جنس حجاز» و شروع «ثلاثی عجم» از همین نُت',
+    'یک پرده بالاتر — اولین نُت ثلاثی عجم',
+    'یک پرده بالاتر — دومین نُت ثلاثی عجم، رسیدن به اکتاو'
+  ], [2]);
+
+const ZAMZAM_SCALE = buildScale(ZAMZAM_OFFSETS,
+  ['ر','ر‌بمل (می‌بملبمل)','فا (غماز زمزم)','فا# / سل‌بمل','لا','سی‌بمل','دو','ر (اکتاو)'],
+  [
+    'نُت شروع — استقرار (تونیک) اصلی مقام صبا زمزم',
+    'نیم‌پردهی کامل — دومین نُت «جنس زمزم»؛ رنگ بسته و کروماتیکتر (تفاوت اصلی با صبا)',
+    'پایان «جنس زمزم» — از همین نُت، «جنس حجاز» همپوشان میشود',
+    'نیم‌پرده بالاتر — دومین نُت جنس حجاز',
+    'یک پرده و نیم بالاتر — جهش «ثانیهی افزوده»، امضای مشترک خانواده‌ی صبا',
+    'نیم‌پرده بالاتر — پایان «جنس حجاز» و شروع «ثلاثی عجم» از همین نُت',
+    'یک پرده بالاتر — اولین نُت ثلاثی عجم',
+    'یک پرده بالاتر — دومین نُت ثلاثی عجم، رسیدن به اکتاو'
+  ], []);
+
+const SABA_HIER = [
+  {name:'جنس صبا (۱–۳)',            start:0, end:3, color:'#00838f'},
+  {name:'جنس حجاز (۳–۶، همپوشان)', start:2, end:6, color:'#1e88c9'},
+  {name:'ثلاثی عجم (۶–۸، همپوشان)', start:5, end:8, color:'#c62828'},
+];
+const ZAMZAM_HIER = [
+  {name:'جنس زمزم (۱–۳)',           start:0, end:3, color:'#6d4c41'},
+  {name:'جنس حجاز (۳–۶، همپوشان)', start:2, end:6, color:'#1e88c9'},
+  {name:'ثلاثی عجم (۶–۸، همپوشان)', start:5, end:8, color:'#c62828'},
+];
+
+// ── رندر عمومی نمودار فاصله + سلسله‌مراتب ──
+function renderDiagram(containerEl, offsets, hierLayers){
+  containerEl.innerHTML = '';
+  const tickline=document.createElement('div'); tickline.className='tickline';
+  offsets.forEach((o,i)=>{
+    const t=document.createElement('div'); t.className='tick'+(i===0||i===offsets.length-1?' end':'');
+    t.style.left=(i*TICK_W)+'px'; tickline.appendChild(t);
+  });
+  containerEl.appendChild(tickline);
+
+  const fracrow=document.createElement('div'); fracrow.className='fracrow';
+  for(let i=0;i<offsets.length-1;i++){
+    const diff=Math.round((offsets[i+1]-offsets[i])*2)/2;
+    const chip=document.createElement('div');
+    chip.className='frac-chip'+(diff===3?' big':'');
+    chip.style.left=((i+0.5)*TICK_W)+'px';
+    chip.textContent=DIFF_LABELS[diff]||diff;
+    fracrow.appendChild(chip);
+  }
+  containerEl.appendChild(fracrow);
+
+  const numrow=document.createElement('div'); numrow.className='numrow';
+  offsets.forEach((o,i)=>{
+    const s=document.createElement('span'); s.style.left=(i*TICK_W)+'px'; s.textContent=toFa(i+1);
+    numrow.appendChild(s);
+  });
+  containerEl.appendChild(numrow);
+
+  const layers=document.createElement('div'); layers.className='layers';
+  hierLayers.forEach(l=>{
+    const row=document.createElement('div'); row.className='layer-row';
+    const bar=document.createElement('div'); bar.className='layer-bar';
+    bar.style.left=(l.start*TICK_W)+'px'; bar.style.width=((l.end-1-l.start)*TICK_W)+'px';
+    bar.style.background=l.color; bar.textContent=l.name;
+    row.appendChild(bar); layers.appendChild(row);
+  });
+  containerEl.appendChild(layers);
+}
+
+// ── پخش صدا ──
+let audioCtx=null;
+function ensureCtx(){
+  if(!audioCtx) audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+  if(audioCtx.state==='suspended') audioCtx.resume();
+  return audioCtx;
+}
+function playNote(freq, el){
+  const ctx=ensureCtx();
+  const osc=ctx.createOscillator(); const gain=ctx.createGain();
+  osc.type='triangle'; osc.frequency.value=freq;
+  gain.gain.setValueAtTime(0.0001, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.35, ctx.currentTime+0.01);
+  gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime+1.8);
+  osc.connect(gain); gain.connect(ctx.destination);
+  osc.start(); osc.stop(ctx.currentTime+1.85);
+  if(el){ el.classList.add('active'); setTimeout(()=>el.classList.remove('active'),900); }
+}
+
+// ── ساخت یک ماقام کامل (پیانو + کنترل + لجند) در یک namespace ──
+function setupMaqamSection(id, scaleArr){
+  const keyElements={};
+  const piano=document.getElementById('piano-'+id);
+  function findScaleNote(offset){ return scaleArr.find(s=>!s.isQuarter && s.offset===offset); }
+
+  WHITE_KEYS.forEach((k,i)=>{
+    const el=document.createElement('div');
+    const note=findScaleNote(k.offset);
+    el.className='wkey'+(note?' used':'');
+    el.style.left=(i*WKEY_W)+'px';
+    el.innerHTML='<div class="lbl">'+k.label+'</div>'+(note?'<div class="deg-badge"><span class="deg-chip">'+toFa(note.deg)+'</span></div>':'');
+    el.onclick=()=>playMainNote(note||{freq:freqFromOffset(k.offset),label:k.label,desc:''}, el);
+    piano.appendChild(el); keyElements['o'+k.offset]=el;
+  });
+  BLACK_KEYS.forEach(k=>{
+    const el=document.createElement('div');
+    const note=findScaleNote(k.offset);
+    el.className='bkey'+(note?' used':'');
+    el.style.left=((k.afterWhiteIdx+1)*WKEY_W - BKEY_W/2 - 3)+'px';
+    el.innerHTML='<div class="lbl">'+k.label+'</div>'+(note?'<div class="deg-badge"><span class="deg-chip">'+toFa(note.deg)+'</span></div>':'');
+    el.onclick=(e)=>{ e.stopPropagation(); playMainNote(note||{freq:freqFromOffset(k.offset),label:k.label,desc:''}, el); };
+    piano.appendChild(el); keyElements['o'+k.offset]=el;
+  });
+  scaleArr.filter(s=>s.isQuarter).forEach(s=>{
+    const el=document.createElement('div');
+    el.className='qmark';
+    el.style.left=(centerForOffset(s.offset)-15)+'px';
+    el.textContent='1⁄4'; el.title=s.label;
+    el.onclick=(e)=>{ e.stopPropagation(); playMainNote(s, el); };
+    piano.appendChild(el); keyElements['o'+s.offset]=el;
+  });
+
+  function playMainNote(note, el){
+    playNote(note.freq!==undefined?note.freq:freqFromOffset(note.offset), el);
+    const box=document.getElementById('explainBox-'+id);
+    box.classList.remove('idle');
+    document.getElementById('explainName-'+id).innerHTML='<span class="deg">'+(note.deg?toFa(note.deg):'')+'</span>'+(note.label||'');
+    document.getElementById('explainDesc-'+id).textContent=note.desc||'';
+  }
+
+  const legendList=document.getElementById('legendList-'+id);
+  scaleArr.forEach(s=>{
+    const li=document.createElement('li');
+    li.innerHTML='<span><span class="deg-chip">'+toFa(s.deg)+'</span> '+s.label+'</span><span style="color:#999">'+s.desc.split('—')[0].trim()+'</span>';
+    legendList.appendChild(li);
+  });
+
+  let seqTimer=null, looping=false;
+  function playSequence(){
+    stopSequence();
+    const seq=buildRoundTrip(scaleArr);
+    let i=0;
+    function step(){
+      if(i>=seq.length){ if(looping){ i=0; } else { return; } }
+      const s=seq[i];
+      playMainNote(s, keyElements['o'+s.offset]);
+      i++; seqTimer=setTimeout(step,750);
+    }
+    step();
+  }
+  function stopSequence(){ if(seqTimer){ clearTimeout(seqTimer); seqTimer=null; } }
+  document.getElementById('playBtn-'+id).onclick=()=>{ ensureCtx(); playSequence(); };
+  document.getElementById('loopBtn-'+id).onclick=(e)=>{ looping=!looping; e.target.classList.toggle('on',looping); };
+}
+
+renderDiagram(document.getElementById('diag-saba'), SABA_OFFSETS, SABA_HIER);
+renderDiagram(document.getElementById('diag-zamzam'), ZAMZAM_OFFSETS, ZAMZAM_HIER);
+setupMaqamSection('saba', SABA_SCALE);
+setupMaqamSection('zamzam', ZAMZAM_SCALE);
+
+// ── دکمه تمام‌صفحه (پیانو) — CSS overlay + محاسبه‌ی زنده‌ی مقیاس برای جا‌شدن کامل در صفحه (portrait/landscape) ──
+var fsActiveCard = null;
+function fitPianoToScreen(card){
+  var wrap = card.querySelector('.piano-wrap');
+  var piano = wrap ? wrap.querySelector('.piano') : null;
+  if(!wrap || !piano) return;
+  wrap.style.transform = 'none';
+  var naturalW = piano.offsetWidth || 352;
+  var naturalH = piano.offsetHeight || 180;
+  var otherH = 0;
+  Array.prototype.forEach.call(card.children, function(ch){
+    if(ch !== wrap) otherH += ch.getBoundingClientRect().height;
+  });
+  var availH = window.innerHeight - otherH - 40;
+  var availW = window.innerWidth - 24;
+  var scale = Math.min(availW / naturalW, availH / naturalH);
+  if(!isFinite(scale) || scale <= 0) scale = 1;
+  scale = Math.max(0.5, Math.min(scale, 2.4));
+  wrap.style.transform = 'scale(' + scale + ')';
+  wrap.style.transformOrigin = 'center center';
+}
+function refitActiveFullscreen(){
+  if(fsActiveCard) fitPianoToScreen(fsActiveCard);
+}
+window.addEventListener('resize', refitActiveFullscreen);
+window.addEventListener('orientationchange', function(){ setTimeout(refitActiveFullscreen, 250); });
+document.addEventListener('click', function(e){
+  var btn = e.target.closest ? e.target.closest('.btn-fullscreen') : null;
+  if(!btn) return;
+  var card = btn.closest('.card');
+  if(!card) return;
+  var active = card.classList.toggle('fs-active');
+  btn.textContent = active ? '✕ خروج از تمام‌صفحه' : '⛶ تمام‌صفحه';
+  document.body.style.overflow = active ? 'hidden' : '';
+  if(active){
+    fsActiveCard = card;
+    requestAnimationFrame(function(){ fitPianoToScreen(card); });
+  } else {
+    if(fsActiveCard === card) fsActiveCard = null;
+    var wrap = card.querySelector('.piano-wrap');
+    if(wrap){ wrap.style.transform = 'none'; }
+  }
+});
+</script>
+</body>
+</html>
