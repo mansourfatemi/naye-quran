@@ -3757,6 +3757,8 @@ function goBack(){
       const _sq=document.getElementById("maqamSearchInput");
       if(_sq && _cfm.searchQuery){ _sq.value=_cfm.searchQuery; filterMaqamGrid(); }
       cameFromMaqamDetail=null;
+      window.scrollTo(0,0);
+      if(_sq) setTimeout(()=>_sq.scrollIntoView({behavior:"smooth",block:"start"}),100);
     } else {
       document.getElementById("tilawatListPage").style.display="block";
       document.getElementById("hTitle").textContent="🎵 "+curQari.name;
