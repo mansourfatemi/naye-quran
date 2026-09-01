@@ -3754,6 +3754,7 @@ function goBack(){
       const _cfm=cameFromMaqamDetail;
       document.getElementById("hSub").textContent=(curQari||maqamFilterQari)?(curQari||maqamFilterQari).name+" — مقامات":"همه قاریان — مقامات";
       document.querySelector(".header").style.background="linear-gradient(135deg,#1a1a2e,#16213e)";
+      curQari=null;
       const _sq=document.getElementById("maqamSearchInput");
       if(_sq && _cfm.searchQuery){ _sq.value=_cfm.searchQuery; filterMaqamGrid(); }
       cameFromMaqamDetail=null;
