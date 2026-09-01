@@ -46,9 +46,9 @@
 .tab{flex:1;padding:7px 4px;text-align:center;cursor:pointer;font-weight:bold;color:#888;border-bottom:3px solid transparent;font-size:.78em;line-height:1.3}
 .tab.active{color:var(--qcolor);border-bottom-color:var(--qcolor);background:#fff8f8}
 .tab-icon{font-size:1.1em;display:block}
-.pw{padding:16px 10px;background:linear-gradient(160deg,#1a1a2e,#232345);border-radius:0;min-height:calc(100vh - 108px);display:flex;flex-direction:column}
-.pc{background:#fff;border-radius:16px;box-shadow:0 8px 26px rgba(0,0,0,.35);position:relative;overflow:hidden;display:flex;flex-direction:column;flex:1}
-.fd{padding:20px 16px;text-align:center;flex:1}
+.pw{padding:16px 10px;background:linear-gradient(160deg,#1a1a2e,#232345);border-radius:0}
+.pc{background:#fff;border-radius:16px;box-shadow:0 8px 26px rgba(0,0,0,.35);position:relative;overflow:hidden;display:flex;flex-direction:column;height:calc(100vh - 155px)}
+.fd{padding:20px 16px;text-align:center;flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
 .pc::before{content:"";position:absolute;top:0;left:0;right:0;height:5px;background:var(--mqcolor);z-index:2}
 .pc::after{content:"";position:absolute;inset:9px;border:1.5px solid var(--mqcolor);border-radius:10px;opacity:.4;pointer-events:none;z-index:1}
 .pc .corner{position:absolute;width:24px;height:24px;color:var(--mqcolor);z-index:2;pointer-events:none}
@@ -73,7 +73,7 @@
 .pf{position:absolute;right:0;top:0;height:100%;border-radius:5px;width:0%;pointer-events:none}
 .pt-thumb{position:absolute;top:50%;width:20px;height:20px;background:#fff;border:3px solid #888;border-radius:50%;transform:translate(50%,-50%);right:0%;box-shadow:0 1px 4px rgba(0,0,0,.3);pointer-events:none;transition:right 0.1s linear}
 .tr{display:flex;justify-content:space-between;flex-direction:row-reverse;font-size:.78em;color:#999;margin-top:5px}
-.ctrl{display:flex;flex-direction:column;align-items:center;gap:14px;padding:18px 16px;background:linear-gradient(180deg,#fafafa,#f0f0f0);border-top:1px solid #e8e8e8;flex-shrink:0;position:sticky;bottom:0}
+.ctrl{display:flex;flex-direction:column;align-items:center;gap:14px;padding:18px 16px;background:linear-gradient(180deg,#fafafa,#f0f0f0);border-top:1px solid #e8e8e8;flex-shrink:0}
 .ctrl-row{display:flex;justify-content:center;align-items:center;gap:14px}
 .ctrl-main{gap:22px}
 .btn{border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;-webkit-user-select:none;user-select:none;transition:transform .15s,background .2s,border-color .2s,color .2s}
@@ -187,7 +187,7 @@
 .leg-info{flex:1;text-align:right}
 .leg-name{font-size:.88em;font-weight:bold;color:#333}
 .leg-val{font-size:.78em;color:#888}
-@media(max-width:420px){.ayah{font-size:clamp(1.4em,5.3vw,2.0em)}.bp{width:62px;height:62px}.bn{width:48px;height:48px}.ctrl{gap:10px;padding:14px 12px}.ctrl-row{gap:10px}.ctrl-main{gap:18px}.br,.bt,.badd,.bshare,.bfav{width:38px;height:38px}}
+@media(max-width:420px){.pc{height:calc(100vh - 148px)}.ayah{font-size:clamp(1.4em,5.3vw,2.0em)}.bp{width:62px;height:62px}.bn{width:48px;height:48px}.ctrl{gap:10px;padding:14px 12px}.ctrl-row{gap:10px}.ctrl-main{gap:18px}.br,.bt,.badd,.bshare,.bfav{width:38px;height:38px}}
 
 /* آموزش مقامات */
 #maqamPage{display:none;padding-bottom:20px}
