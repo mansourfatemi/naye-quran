@@ -3747,9 +3747,21 @@ function goBack(){
   au.pause();pl=false;
   if(document.getElementById("playerPage").style.display==="block"){
     document.getElementById("playerPage").style.display="none";
-    document.getElementById("tilawatListPage").style.display="block";
-    document.getElementById("hTitle").textContent="🎵 "+curQari.name;
-    document.getElementById("hSub").textContent=curQari.full_name||curQari.desc;
+    // اگر از سرچ مقامات آمده بودیم، برگرد به سرچ
+    if(cameFromMaqamDetail && cameFromMaqamDetail.fromSearch){
+      document.getElementById("maqamPage").style.display="block";
+      document.getElementById("hTitle").textContent="🎓 آموزش مقامات";
+      const _cfm=cameFromMaqamDetail;
+      document.getElementById("hSub").textContent=(curQari||maqamFilterQari)?(curQari||maqamFilterQari).name+" — مقامات":"همه قاریان — مقامات";
+      document.querySelector(".header").style.background="linear-gradient(135deg,#1a1a2e,#16213e)";
+      const _sq=document.getElementById("maqamSearchInput");
+      if(_sq && _cfm.searchQuery){ _sq.value=_cfm.searchQuery; filterMaqamGrid(); }
+      cameFromMaqamDetail=null;
+    } else {
+      document.getElementById("tilawatListPage").style.display="block";
+      document.getElementById("hTitle").textContent="🎵 "+curQari.name;
+      document.getElementById("hSub").textContent=curQari.full_name||curQari.desc;
+    }
   } else if(document.getElementById("tilawatListPage").style.display==="block"){
     document.getElementById("tilawatListPage").style.display="none";
     document.getElementById("qariListPage").style.display="block";
