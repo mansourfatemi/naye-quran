@@ -465,6 +465,14 @@
   </div>
 </div>
 
+<div id="tajweedPage" style="display:none;padding:70px 15px 90px">
+  <div id="tajweedChaptersList"></div>
+</div>
+
+<div id="tajweedDetailPage" style="display:none;padding:70px 15px 90px">
+  <div id="tajweedDetailContent"></div>
+</div>
+
 <!-- صفحه آموزش مقامات منشاوی -->
 <div id="maqamatPage">
   <div style="text-align:center;padding:20px 0">
@@ -5165,6 +5173,8 @@ function openTajweedPage(){
   document.getElementById('tilawatListPage').style.display='none';
   document.getElementById('hashemiLessonsPage').style.display='none';
   document.getElementById('hashemiLessonPlayerPage').style.display='none';
+  document.getElementById('tajweedPage').style.display='none';
+  document.getElementById('tajweedDetailPage').style.display='none';
   document.getElementById('maqamatPage').style.display='none';
   document.getElementById('maqamSamplesPage').style.display='none';
   document.getElementById('maqamPage').style.display='none';
@@ -5172,8 +5182,6 @@ function openTajweedPage(){
   document.getElementById('playlistsPage').style.display='none';
   document.getElementById('playlistDetailPage').style.display='none';
   document.getElementById('playerPage').style.display='none';
-  document.getElementById('tajweedPage').style.display='none';
-  document.getElementById('tajweedDetailPage').style.display='none';
   document.getElementById('tajweedPage').style.display='block';
   document.getElementById('hTitle').textContent='📗 آموزش تجوید';
   document.getElementById('hSub').textContent='کتاب تجوید مصور';
@@ -5206,6 +5214,8 @@ function openTajweedDetail(idx){
   document.getElementById('tilawatListPage').style.display='none';
   document.getElementById('hashemiLessonsPage').style.display='none';
   document.getElementById('hashemiLessonPlayerPage').style.display='none';
+  document.getElementById('tajweedPage').style.display='none';
+  document.getElementById('tajweedDetailPage').style.display='none';
   document.getElementById('maqamatPage').style.display='none';
   document.getElementById('maqamSamplesPage').style.display='none';
   document.getElementById('maqamPage').style.display='none';
@@ -5213,8 +5223,6 @@ function openTajweedDetail(idx){
   document.getElementById('playlistsPage').style.display='none';
   document.getElementById('playlistDetailPage').style.display='none';
   document.getElementById('playerPage').style.display='none';
-  document.getElementById('tajweedPage').style.display='none';
-  document.getElementById('tajweedDetailPage').style.display='none';
 document.getElementById('tajweedDetailPage').style.display='block';
   if(document.getElementById('bBtn')) document.getElementById('bBtn').style.display='flex';
   nav='tajweedDetail';
