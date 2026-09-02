@@ -230,6 +230,21 @@
 .mqd-til-arrow{color:#ddd;font-size:1.3em;flex-shrink:0}
 .maq-banner{background:linear-gradient(135deg,#1a1a2e,#16213e);border-radius:16px;padding:18px 20px;display:flex;align-items:center;gap:14px;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.18);margin:16px 16px 0}
 .about-link-wrap{text-align:center;padding:22px 16px 30px}
+.tj-header{padding:15px 20px;background:linear-gradient(135deg,#1a237e,#283593);color:#fff;text-align:center;position:sticky;top:60px;z-index:10}
+.tj-header h2{margin:0;font-size:1.3em;font-weight:700}
+.tj-header p{margin:5px 0 0;font-size:0.85em;opacity:0.85}
+.tj-chapters{padding:12px;display:flex;flex-wrap:wrap;gap:8px;justify-content:center;background:#1a1a2e}
+.tj-ch-btn{background:#fff;border:1px solid #c5cae9;color:#283593;
+  padding:8px 14px;border-radius:20px;font-size:0.82em;cursor:pointer;transition:all 0.2s;font-family:inherit}
+.tj-ch-btn:hover,.tj-ch-btn.active{background:linear-gradient(135deg,#1a237e,#283593);border-color:#3949ab;color:#fff}
+.tj-pdf-container{width:100%;height:calc(100vh - 190px);background:#e0e0e0;position:relative}
+.tj-pdf-container iframe{width:100%;height:100%;border:none;display:block}
+.tj-loading{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  color:#fff;font-size:1em;text-align:center;direction:rtl}
+.tj-back-btn{position:fixed;bottom:80px;left:15px;z-index:999;
+  background:#4a8c3f;color:#fff;border:none;border-radius:50%;width:44px;height:44px;
+  font-size:1.4em;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.4)}
+
 .about-link{color:#888;font-size:.85em;text-decoration:underline;cursor:pointer}
 .about-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:500;align-items:center;justify-content:center;padding:20px}
 .about-overlay.show{display:flex}
@@ -391,24 +406,6 @@
 }
 
 
-
-/* ═══ آموزش تجوید — PDF Viewer ═══ */
-#tajweedPage{display:none;padding:60px 0 0;background:#1a1a2e;min-height:100vh}
-.tj-header{padding:15px 20px;background:linear-gradient(135deg,#2d5a27,#4a8c3f);color:#fff;text-align:center}
-.tj-header h2{margin:0;font-size:1.3em;font-weight:700}
-.tj-header p{margin:5px 0 0;font-size:0.85em;opacity:0.85}
-.tj-chapters{padding:12px;display:flex;flex-wrap:wrap;gap:8px;justify-content:center;background:#1a1a2e}
-.tj-ch-btn{background:linear-gradient(135deg,#2d3561,#1a1a2e);border:1px solid #4a5568;color:#e2e8f0;
-  padding:8px 14px;border-radius:20px;font-size:0.82em;cursor:pointer;transition:all 0.2s;font-family:inherit}
-.tj-ch-btn:hover,.tj-ch-btn.active{background:linear-gradient(135deg,#4a8c3f,#2d5a27);border-color:#4a8c3f;color:#fff}
-.tj-pdf-container{width:100%;height:calc(100vh - 180px);background:#525659;position:relative}
-.tj-pdf-container iframe{width:100%;height:100%;border:none;display:block}
-.tj-loading{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-  color:#fff;font-size:1em;text-align:center;direction:rtl}
-.tj-back-btn{position:fixed;bottom:80px;left:15px;z-index:999;
-  background:#4a8c3f;color:#fff;border:none;border-radius:50%;width:44px;height:44px;
-  font-size:1.4em;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.4)}
-
 </style>
 </head><body>
 
@@ -437,6 +434,11 @@
     </div>
     <div class="qari-arrow">&#8250;</div>
   </div>
+  <div style="text-align:center;margin:16px 12px 4px">
+    <button onclick="openTajweedPage()" style="background:linear-gradient(135deg,#2d5a27,#4a8c3f);color:#fff;border:none;padding:12px 32px;border-radius:25px;font-size:1em;cursor:pointer;font-family:inherit;box-shadow:0 2px 8px rgba(0,0,0,0.3);width:calc(100% - 24px)">
+      📖 آموزش تجوید مصوّر
+    </button>
+  </div>
   <div class="about-link-wrap"><a class="about-link" onclick="openAboutPage()">درباره سازنده</a></div>
 </div>
 
@@ -464,7 +466,6 @@
 
 <div id="tajweedDetailPage" style="display:none;padding:70px 15px 90px">
   <div id="tajweedDetailContent"></div>
-</div>
 
 <!-- صفحه آموزش مقامات منشاوی -->
 <div id="maqamatPage">
@@ -4184,7 +4185,9 @@ const MAQAM_INFO = {
 
 // مقامات ترکیبی: نگاشت به مقام اول (والد) — بهعنوان زیرمجموعه محسوب میشوند نه کارت مستقل
 // لینک دموی تعاملی پیانو برای هر مقام اصلی (پوشه _maqam_piano_demo)
-const MAQAM_DEMO_LINKS = {
+const 
+
+MAQAM_DEMO_LINKS = {
   'بیات':   '_maqam_piano_demo/bayati.html',
   'راست':   '_maqam_piano_demo/rast.html',
   'نهاوند': '_maqam_piano_demo/nahawand.html',
@@ -4535,11 +4538,116 @@ function openPlaylistsPage(){
   document.querySelector(".header").style.background="linear-gradient(135deg,#1a1a2e,#16213e)";
   renderPlaylistsList();
 }
+
+function openTajweedPage() {
+  document.getElementById('qariListPage').style.display='none';
+  document.getElementById('tilawatListPage').style.display='none';
+  document.getElementById('hashemiLessonsPage').style.display='none';
+  document.getElementById('hashemiLessonPlayerPage').style.display='none';
+  document.getElementById('tajweedPage').style.display='block';
+  document.getElementById('maqamatPage').style.display='none';
+  document.getElementById('maqamSamplesPage').style.display='none';
+  document.getElementById('maqamPage').style.display='none';
+  document.getElementById('maqamDetailPage').style.display='none';
+  document.getElementById('playlistsPage').style.display='none';
+  document.getElementById('playlistDetailPage').style.display='none';
+  document.getElementById('playerPage').style.display='none';
+  nav='tajweed';
+  renderTajweedPage();
+}
+
+const TAJWEED_CHAPTERS = [
+  {id:1, title:'قرآن کریم'},
+  {id:2, title:'علم تجوید'},
+  {id:3, title:'استعاذه و بسمله'},
+  {id:4, title:'حروف عربی'},
+  {id:5, title:'مخارج حروف'},
+  {id:6, title:'صفات حروف'},
+  {id:7, title:'احکام نون ساکن و تنوین'},
+  {id:8, title:'احکام میم ساکن، ادغام و اخفاء'},
+  {id:9, title:'وقف و ابتدا'},
+  {id:10, title:'شرایط خاص روایت حفص'}
+];
+
+function renderTajweedPage() {
+  const el = document.getElementById('tajweedPage');
+
+  // header
+  const header = document.createElement('div');
+  header.className = 'tj-header';
+  header.innerHTML = '<h2> آموزش تجوید مصوّر</h2><p>کتاب تجوید مصوّر — قرائت حفص از عاصم</p>';
+
+  // دکمههای فصل
+  const chapDiv = document.createElement('div');
+  chapDiv.className = 'tj-chapters';
+  TAJWEED_CHAPTERS.forEach(function(ch) {
+    const btn = document.createElement('button');
+    btn.className = 'tj-ch-btn';
+    btn.id = 'tjbtn' + ch.id;
+    btn.textContent = ch.id + '. ' + ch.title;
+    btn.onclick = function() { openTajweedPDF(ch.id); };
+    chapDiv.appendChild(btn);
+  });
+
+  // container PDF
+  const container = document.createElement('div');
+  container.className = 'tj-pdf-container';
+  container.id = 'tjPdfContainer';
+  const placeholder = document.createElement('div');
+  placeholder.className = 'tj-loading';
+  placeholder.innerHTML = '<div style="font-size:2em"></div><div>یک فصل را انتخاب کنید</div>';
+  container.appendChild(placeholder);
+
+  // دکمه برگشت
+  const backBtn = document.createElement('button');
+  backBtn.className = 'tj-back-btn';
+  backBtn.textContent = '←';
+  backBtn.onclick = function() { goBackFromTajweed(); };
+
+  el.innerHTML = '';
+  el.appendChild(header);
+  el.appendChild(chapDiv);
+  el.appendChild(container);
+  el.appendChild(backBtn);
+}
+
+function openTajweedPDF(chapterId) {
+  // صفحه شروع هر فصل
+  const pageMap = {
+    1: 6, 2: 15, 3: 21, 4: 25, 5: 33,
+    6: 57, 7: 96, 8: 114, 9: 141, 10: 146
+  };
+  const startPage = pageMap[chapterId] || 1;
+
+  // فعال کردن دکمه انتخاب شده
+  document.querySelectorAll('.tj-ch-btn').forEach(b => b.classList.remove('active'));
+  const btn = document.getElementById('tjbtn' + chapterId);
+  if (btn) btn.classList.add('active');
+
+  const container = document.getElementById('tjPdfContainer');
+  container.innerHTML = '';
+  const loading = document.createElement('div');
+  loading.className = 'tj-loading';
+  loading.innerHTML = '<div style="font-size:2em">⏳</div><div>در حال بارگذاری...</div>';
+  const iframe = document.createElement('iframe');
+  iframe.src = 'tajweed.pdf#page=' + startPage + '&toolbar=1&view=FitH';
+  iframe.title = 'تجوید مصوّر';
+  iframe.style.cssText = 'width:100%;height:100%;border:none;display:block';
+  iframe.onload = function() { loading.style.display = 'none'; };
+  container.appendChild(loading);
+  container.appendChild(iframe);
+}
+
+function goBackFromTajweed() {
+  document.getElementById('tajweedPage').style.display='none';
+  document.getElementById('qariListPage').style.display='block';
+  nav='home';
+}
 function renderPlaylistsList(){
   const el=document.getElementById("plList"); if(!el)return; el.innerHTML="";
   const ids=Object.keys(playlists);
   if(ids.length===0){
-    el.innerHTML='<div class="fav-empty"><div class="fav-icon">🎧</div><div>هنوز ردیف صوتی نساخته‌اید</div></div>';
+    el.innerHTML='<div class="fav-empty"><div class="fav-icon"></div><div>هنوز ردیف صوتی نساخته‌اید</div></div>';
     return;
   }
   ids.forEach(id=>{
@@ -5145,94 +5253,5 @@ initVisualizer();
 
 
 renderQariList();
-
-// ═══ آموزش تجوید — PDF Viewer ═══
-const TAJWEED_CHAPTERS = [
-{"id":1,"title":"قرآن کریم","pages":"5–10","text":"قرآن کریم کلام الله متعال است که بر پیامبر اکرم صلى الله عليه وسلم به زبان عربی فصیح نازل شده است. از ابتدا تا انتها به صورت متواتر — نسل به نسل — به دست ما رسیده و با کوتاهترین سورهاش به مبارزه میطلبد که اگر میتوانید مانند آن بیاورید.\n\n◈ تواتر\nتواتر یعنی روایت یک خبر توسط گروهی از راویان، طبقه به طبقه، به گونهای که اجتماع همه آنان بر دروغ، عقلاً محال باشد.\n\n◈ دو طریق رسیدن قرآن به ما\n• مکتوب: ثبت شده بر روی پوست، برگ، استخوان و سنگ\n• روایی (شفاهی): نقل متواتر از استاد به شاگرد\n\n◈ مراحل جمعآوری قرآن\n۱. در زمان پیامبر صلى الله عليه وسلم: هر آیهای که نازل میشد فوراً نوشته میشد. زید بن ثابت رضیاللهعنه وحی را نزد پیامبر صلى الله عليه وسلم مینوشت و پس از فراغت بر ایشان میخواند تا خطاها اصلاح شود.\n۲. در زمان خلافت ابوبکر صدیق رضیاللهعنه: آیههایی که بر روی صفحات پراکنده نوشته شده بودند جمعآوری شدند.\n۳. در زمان خلافت عثمان بن عفان رضیاللهعنه: از مصحف سابق نسخهبرداری شد و به شهرهای بزرگ اسلامی (مکه، مدینه، یمن، بحرین، بصره، کوفه و شام) فرستاده شد، همراه با یک قاری مسلط.\n\n◈ اعجاز قرآن\nقرآن عظیم با تمامی الفاظ و معانی و ویژگیهای مخصوص به خود، به صورت کامل به ما رسیده است. صحابه کرام قرآن را از زبان مبارک رسول الله صلى الله عليه وسلم فرا گرفتند و به نسل بعد بازگو کردند و به همین شیوه ادامه یافته تا امروز به دست ما رسیده است."},
-{"id":2,"title":"علم تجوید","pages":"11–16","text":"تجوید در لغت به معنای «نیکو کردن» و «زیبا ساختن» است. در اصطلاح، علم تجوید علمی است که قواعد صحیح تلاوت قرآن کریم را بیان میکند — از جمله مخارج حروف، صفات آنها، و احکام مربوط به هر حرف.\n\n◈ حکم یادگیری تجوید\n• از نظر عملی (در تلاوت): واجب عینی است — هر مسلمانی که قرآن میخواند باید تجوید را رعایت کند.\n• از نظر علمی (یادگیری قواعد): واجب کفایی است.\n\n◈ لحن در تلاوت\nلحن به معنای خطا در تلاوت قرآن است و دو نوع دارد:\n\n۱. لحن جلی (خطای آشکار): خطایی که در مخارج حروف یا اعراب کلمات است و هر شنوندهای آن را میفهمد. مانند: تبدیل حرفی به حرف دیگر، یا حذف حرکتی.\nرعایت نکردن آن: حرام است.\n\n۲. لحن خفی (خطای پنهان): خطایی که تنها اهل علم تجوید آن را تشخیص میدهند. مانند: رعایت نکردن غنّه، یا کموزیادکردن مقدار مد.\nرعایت نکردن آن در تلاوت عادی: عیب به شمار میآید.\n\n◈ تجوید و موسیقی\nموسیقی علمی است غیر عربی مربوط به صوت که قواعد و ضوابطی مخصوص دارد. ارتباط آن با تجوید:\n• طبقات صوتی: قاری قرآن میتواند از یک طبقه صوتی به طبقه دیگر منتقل شود.\n• زمان امتداد و کشیدن صدا: در مد باید میزان مشخصی رعایت شود.\nاما تجوید کاملاً مستقل از موسیقی است و قواعد خاص خود را دارد."},
-{"id":3,"title":"استعاذه و بسمله","pages":"17–20","text":"◈ استعاذه\nهرگاه قاری قرآن بخواهد چیزی از کتاب الله متعال تلاوت نماید، موظف است تلاوت خود را با استعاذه شروع نماید:\n\nأَعُوذُ بِاللَّهِ مِنَ الشَّيْطَانِ الرَّجِيمِ\n\nزیرا الله متعال در کلام خود چنین امر فرموده است:\n﴿فَإِذَا قَرَأْتَ الْقُرْآنَ فَاسْتَعِذْ بِاللَّهِ مِنَ الشَّيْطَانِ الرَّجِيمِ﴾\n\n◈ بسمله\nخواندن بسمله در ابتدای هر سوره از قرآن کریم لازم است، به جز سوره توبه.\n\nبِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ\n\nاگر قاری بخواهد از وسط سورهای شروع کند، میتواند بسمله بخواند یا نخواند، اما در هر صورت خواندن استعاذه لازم است.\n\n◈ چهار حالت جایز در شروع تلاوت\nهنگام شروع تلاوت با استعاذه و بسمله، چهار حالت وجود دارد که همگی صحیح هستند:\n۱. قطع (وقف) در همه جایگاهها: استعاذه | بسمله | شروع تلاوت\n۲. جدا کردن استعاذه از بسمله و وصل بسمله به اول تلاوت\n۳. وصل استعاذه به بسمله و قطع بسمله از تلاوت\n۴. وصل همه با یکدیگر\n\n◈ بسمله میان دو سوره\nبرای خواندن بسمله میان دو سوره، چهار حالت قابل تصور است که سه حالت جایز و یک حالت ممنوع است:\n✅ وقف — وقف — وقف (جایز)\n✅ وقف — وقف — وصل (جایز)\n✅ وصل — وصل — وصل (جایز)\n❌ وصل آخر سوره به بسمله و وصل بسمله به اول سوره بعدی بدون وقف میانی (ممنوع)"},
-{"id":4,"title":"حروف عربی","pages":"21–24","text":"◈ حروف هجای عربی\nحروف هجای عربی ۲۹ حرف هستند که امام نصر بن عاصم لیثی (متوفی ۹۰ هجری) آنها را بر اساس مشابهت حروف در خط (نوشتار) و نقطهها مرتب نمود تا حروف شبیه به هم از یکدیگر متمایز گردند.\n\nا ب ت ث ج ح خ د ذ ر ز س ش ص ض ط ظ ع غ ف ق ك ل م ن هـ و ي\n\n• حرف الف: در اصل همزه است. الف مدی همیشه ساکن است و ما قبل آن فتحه دارد.\n\n◈ ترتیب حروف ابجدی\nنزد سرزمینهای شرق اسلام:\nأبجد — هوز — حطی — کلمن — سعفص — قرشت — ثخذ — ضظعغ\n\nنزد سرزمینهای غرب اسلام:\nأبجد — هوز — حطی — کلمن — صعفض — قرست — ثخذ — ظغش\n\n◈ انواع حرکتها\n• فتحه (اَ): باز کردن دهان\n• ضمه (اُ): گرد کردن لبها\n• کسره (اِ): پایین آوردن فک\n\n◈ حرف مشدد\nحرف دارای تشدید از دو حرف تشکیل شده: اولی ساکن و دومی متحرک. هنگام تلفظ باید روی آن تأکید شود و صدا در مخرج نگه داشته شود.\n\n◈ اشکالات رایج در تلفظ حروف\n• باز نکردن دهان به مقدار لازم هنگام تلفظ الف\n• آمیختن صدای الف با مقداری از صدای یاء\n• آمیختن صدای واو مدی با مقداری از صدای الف\n• ضعیف ادا کردن همزه هنگام وقف بر آن"},
-{"id":5,"title":"مخارج حروف","pages":"25–46","text":"مخرج حرف جایگاهی است در دهان یا گلو که صدا در آنجا تشکیل میشود و حرف از آن خارج میگردد.\n\n◈ مخارج اصلی\n۱. جوف (فضای خالی حلق و دهان): الف مدی، واو مدی، یاء مدی\n۲. حلق (گلو):\n   • انتهای حلق: ء، هـ\n   • وسط حلق: ع، ح\n   • ابتدای حلق: غ، خ\n۳. لسان (زبان):\n   • ریشه زبان با کام: ق\n   • ریشه زبان کمی جلوتر: ک\n   • وسط زبان با کام: ج، ش، ی\n   • کناره زبان با دندانهای کنار: ض\n   • کناره زبان تا انتها: ل\n   • نوک زبان با لثه: ن، ر\n   • نوک زبان با پشت دندانهای جلو: ط، د، ت\n   • نوک زبان با سر دندانهای جلو: ص، س، ز\n   • نوک زبان با لبه دندانهای جلو: ظ، ذ، ث\n۴. شفتان (لبها):\n   • لب پایین با دندانهای بالا: ف\n   • هر دو لب: ب، م، و\n۵. خیشوم (بینی): غنّه نون و میم\n\n◈ چگونگی پدید آمدن صدا\nصدا عبارت است از لرزش و ارتعاش هوا به گونهای که گوش انسان توانایی شنیدن و درک آن را داشته باشد. صداها به گونههای مختلفی پدید میآیند:\n• برخورد دو جسم با یکدیگر\n• جدا شدن دو جسم از یکدیگر\n• به لرزه درآمدن یک شیء\n• اصطکاک دو جسم با هم"},
-{"id":6,"title":"صفات حروف","pages":"47–77","text":"صفات حروف، ویژگیهایی هستند که هنگام تلفظ حرف، لازم و ملازم آن هستند.\n\n◈ صفات دارای ضد (متقابل)\n۱. جهر و همس\n• جهر: حرفی که با صدای آشکار و لرزش تارهای صوتی ادا میشود. (۱۹ حرف)\n  حروف مجهور: ب ج د ذ ر ز ض ط ظ ع غ ق ل م ن و ي ء هـ\n• همس: حرفی که بدون صدای کامل و بدون لرزش تارهای صوتی ادا میشود. (۱۰ حرف)\n  حروف مهموس: ف ح ث هـ ش خ ص س ک ت\n\n۲. شدت، بینیه (توسط) و رخوت\n• شدت: نگه داشتن جریان صدا هنگام تلفظ. (۸ حرف: أ ج د ق ط ب ک ت)\n• بینیه: حد میان شدت و رخوت. (۵ حرف: ل ن ع م ر)\n• رخوت: جاری شدن صدا هنگام تلفظ. (بقیه حروف)\n\n۳. استعلاء و استفال\n• استعلاء (تفخیم): بالا رفتن زبان به سمت کام هنگام تلفظ. (۷ حرف: خ ص ض غ ط ق ظ)\n• استفال (ترقیق): پایین بودن زبان هنگام تلفظ. (بقیه حروف)\n\n۴. اطباق و انفتاح\n• اطباق: چسبیدن زبان به کام. (۴ حرف: ص ض ط ظ)\n• انفتاح: فاصله داشتن زبان از کام. (بقیه حروف)\n\n۵. اذلاق و اصمات\n• اذلاق: حروفی که با نوک زبان یا لب ادا میشوند. (۶ حرف: ف ر م ل ب ن)\n• اصمات: سایر حروف\n\n◈ صفات بدون ضد\n• قلقله: ارتعاش صدا هنگام وقف بر حروف ساکن. (۵ حرف: ق ط ب ج د)\n• صفیر: صدای سوتمانند. (۳ حرف: ص س ز)\n• لین: آسان بودن خروج حرف. (۲ حرف: و ی ساکن ماقبل مفتوح)\n• انحراف: (ل، ر)\n• تکریر: تکرار نوک زبان در راء\n• تفشی: پراکندگی صدا در شین\n• استطاله: کشیده شدن مخرج ضاد"},
-{"id":7,"title":"احکام نون ساکن و تنوین","pages":"78–110","text":"نون ساکن نونی است که حرکت ندارد (سکون دارد) و در وصل و وقف ثابت است.\nتنوین نونی است ساکن که در آخر اسمها میآید و فقط در وصل ثابت است.\n\n◈ چهار حکم نون ساکن و تنوین\n\n۱. اظهار (آشکار کردن)\nهرگاه نون ساکن یا تنوین به یکی از ۶ حرف حلقی برسد، نون آشکار خوانده میشود.\nحروف اظهار: ء هـ ع ح غ خ\nمثال: مِنْ أَهْلِ — أَنْعَمْتَ\n\n۲. ادغام (در هم آمیختن)\nهرگاه نون ساکن یا تنوین به یکی از حروف (ی ر م ل و ن) برسد در آن ادغام میشود.\n• ادغام با غنّه: (ی ن م و) — مثال: مَنْ يَقُولُ\n• ادغام بدون غنّه: (ل ر) — مثال: مِنْ رَبِّهِمْ\n\n۳. اقلاب (تبدیل)\nهرگاه نون ساکن یا تنوین به حرف «ب» برسد، نون به میم تبدیل شده و با غنّه ادا میشود.\nمثال: مِنْ بَعْدِ — سَمِيعٌ بَصِيرٌ\n\n۴. اخفاء (پنهان کردن)\nهرگاه نون ساکن یا تنوین به یکی از ۱۵ حرف باقیمانده برسد، نون پنهان خوانده میشود.\nحروف اخفاء: ت ث ج د ذ ز س ش ص ض ط ظ ف ق ک\nمثال: مِنْ تَحْتِهَا — عَلِيمٌ حَكِيمٌ\n\n◈ غنّه\nغنّه صدایی است که از خیشوم (بینی) خارج میشود. اقسام غنّه:\n• کاملترین وجه: در نون و میم مشدد یا ادغام شده — مقدار: ۲ حرکت\n• کامل: در نون و میم اخفاء شده — مقدار: ۲ حرکت\n• ناقص: در نون و میم ساکن هنگام اظهار — مقدار: ۱ حرکت\n• ناقصترین: در نون و میم متحرک — کمترین مقدار"},
-{"id":8,"title":"احکام میم ساکن و مدود","pages":"111–140","text":"◈ احکام میم ساکن\nمیم ساکن سه حکم دارد:\n\n۱. اخفاء شفوی\nهرگاه میم ساکن به حرف «ب» برسد، میم پنهان خوانده میشود با غنّه.\nمثال: وَمَا هُمْ بِمُؤْمِنِينَ\n\n۲. ادغام شفوی (ادغام مثلین صغیر)\nهرگاه میم ساکن به «م» برسد، در آن ادغام میشود با غنّه.\nمثال: أَمَّا مَنْ تَزَكَّى\n\n۳. اظهار شفوی\nهرگاه میم ساکن به سایر حروف برسد، آشکار خوانده میشود.\nمثال: قُلْ نَعَمْ وَأَنتُمْ\n\n◈ مدود\nمد در لغت به معنای افزودن، طول دادن و کشیدن است.\nدر اصطلاح: امتداد و کشیدن صدا در یکی از حروف مد (الف، واو، یاء ساکن که حرکت ماقبل از جنس آنها باشد).\n\nانواع مد:\n۱. مد طبیعی (اصلی): ۲ حرکت — بدون سبب همزه یا سکون\n   مثال: قَالَ — يَقُولُ — قِيلَ\n\n۲. مد متصل: حرف مد و همزه در یک کلمه. ۴ یا ۵ حرکت (واجب)\n   مثال: جَاءَ — سُوءَ — جِيءَ\n\n۳. مد منفصل: حرف مد در پایان کلمه، همزه در ابتدای کلمه بعد. ۲ تا ۵ حرکت (جایز)\n   مثال: إِنَّا أَعْطَيْنَا\n\n۴. مد عارض للسکون: حرف مد قبل از حرف آخر که هنگام وقف ساکن میشود. ۲ یا ۴ یا ۶ حرکت\n   مثال: نَسْتَعِينُ (هنگام وقف)\n\n۵. مد لازم: حرف مد قبل از حرف مشدد. ۶ حرکت (لازم)\n   مثال: الضَّالِّينَ — حروف مقطعه مانند: الم، طسم\n\n۶. مد لین: واو یا یاء ساکن ماقبل مفتوح، قبل از حرف ساکن هنگام وقف. ۲ یا ۴ یا ۶ حرکت\n   مثال: خَوْف — بَيْت (هنگام وقف)"},
-{"id":9,"title":"احکام لام و راء","pages":"141–170","text":"◈ احکام لام\nلام دو حالت دارد: تفخیم (درشت خوانی) و ترقیق (نازک خوانی)\n\nلام در لفظ جلاله «الله»:\n• تفخیم: هرگاه قبل از لفظ جلاله فتحه یا ضمه باشد.\n  مثال: قَالَ اللهُ — رَسُولُ اللهِ\n• ترقیق: هرگاه قبل از لفظ جلاله کسره باشد.\n  مثال: بِسْمِ اللهِ — لِلَّهِ\n\nسایر لامها همیشه ترقیق میشوند.\n\n◈ احکام راء\nراء یا تفخیم میشود یا ترقیق:\n\nموارد تفخیم راء:\n۱. راء مفتوح: رَبَّنَا\n۲. راء مضموم: رُزِقْنَا\n۳. راء ساکن ماقبل مفتوح یا مضموم: مَرْيَمُ — قُرْآن\n۴. راء ساکن ماقبل کسره عارضی: اِرْجِعِي\n۵. راء ساکن ماقبل کسره اصلی جدا از مخرج راء با حرف استعلاء بعد از آن: مِرْصَاد\n\nموارد ترقیق راء:\n۱. راء مکسور: رِزْق\n۲. راء ساکن ماقبل کسره اصلی (بدون حرف استعلاء بعد): فِرْعَوْن\n۳. راء ساکن و قبل از آن یاء ساکن: خَيْر\n\n◈ تسهیل همزه\nتسهیل یعنی تلفظ همزهای است که دارای صفتی مابین همزه حقیقی و حرف مدی همجنس با حرکت خود همزه باشد. در روایت حفص از عاصم تنها یک مورد تسهیل وجود دارد:\n﴿آعْجَمِيٌّ﴾ در آیه ۴۴ سوره فصلت\n\n◈ إماله\nإماله در لغت به معنای کج کردن است. در اصطلاح: نزدیک کردن تلفظ فتحه به کسره، یا الف به یاء — بدون اینکه کاملاً به کسره یا یاء تبدیل شود.\nدر روایت حفص از عاصم تنها یک مورد إماله کبری وجود دارد:\n﴿مَجْرَاهَا﴾ در آیه ۴۱ سوره هود"},
-{"id":10,"title":"وقف و ابتدا","pages":"171–201","text":"◈ وقف\nوقف یعنی قطع صدا بر روی کلمهای از کلمات قرآن به صورت موقت، با نیت ادامه دادن تلاوت.\n\nانواع وقف:\n۱. وقف تام: وقف بر کلمهای که معنای تامی دارد و ارتباطی به ما بعد ندارد. ✅ جایز\n۲. وقف کافی: وقف بر کلمهای که معنای تامی دارد ولی به ما بعد مرتبط است. ✅ جایز\n۳. وقف حسن: وقف بر کلمهای که معنا تمام نشده. ⚠️ جایز با شرط ابتداء مجدد\n۴. وقف قبیح: وقف بر کلمهای که معنا کاملاً ناقص است. ❌ ناجایز\n\n◈ علامات وقف در مصحف\n• م : وقف لازم (باید وقف کرد)\n• لا : وقف ممنوع (نباید وقف کرد)\n• ج : وقف جایز\n• ز : وصل اولی است\n• ص : وقف مجاز (رخصت)\n• قلی : وصل اولی است\n• ∴ یا ∴ : وقف معانقه (باید در یکی از دو محل وقف کرد)\n\n◈ کیفیت وقف بر آخر کلمات\n۱. وقف با سکون: رایجترین حالت\n۲. روم: ادا کردن حرکت آخر به مقدار یکسوم\n۳. اشمام: تمایل دادن لبها به ضمه بدون صدا (فقط در مضموم)\n\n◈ ابتداء\nابتداء یعنی شروع کردن تلاوت پس از وقف.\n• ابتداء تام: شروع از جایی که معنا کامل است ✅\n• ابتداء کافی: جایز ✅\n• ابتداء حسن: جایز با توجه به معنا ⚠️\n• ابتداء قبیح: ناجایز ❌\n\n◈ همزه وصل\nهمزه وصل همزهای است که در ابتداء با صدا ادا میشود ولی در وصل حذف میگردد.\nحرکت همزه وصل در ابتداء:\n• در اسمها: کسره (مانند: اِبن، اِمرأة)\n• در فعلهای ثلاثی: کسره\n• در فعلهای خماسی و سداسی: از حرکت سوم پیروی میکند"}
-];
-
-function openTajweedPage() {
-  document.getElementById('qariListPage').style.display='none';
-  document.getElementById('tilawatListPage').style.display='none';
-  document.getElementById('hashemiLessonsPage').style.display='none';
-  document.getElementById('hashemiLessonPlayerPage').style.display='none';
-  document.getElementById('tajweedPage').style.display='block';
-  document.getElementById('maqamatPage').style.display='none';
-  document.getElementById('maqamSamplesPage').style.display='none';
-  document.getElementById('maqamPage').style.display='none';
-  document.getElementById('maqamDetailPage').style.display='none';
-  document.getElementById('playlistsPage').style.display='none';
-  document.getElementById('playlistDetailPage').style.display='none';
-  document.getElementById('playerPage').style.display='none';
-  nav='tajweed';
-  renderTajweedPage();
-}
-
-function renderTajweedPage() {
-  const el = document.getElementById('tajweedPage');
-  let btns = TAJWEED_CHAPTERS.map((ch,i) =>
-    `<button class="tj-ch-btn" onclick="openTajweedPDF(${ch.id})" id="tjbtn${ch.id}">
-      ${ch.id}. ${ch.title}
-    </button>`
-  ).join('');
-
-  el.innerHTML = `
-    <div class="tj-header">
-      <h2>📖 آموزش تجوید مصوّر</h2>
-      <p>کتاب تجوید مصوّر — قرائت حفص از عاصم</p>
-    </div>
-    <div class="tj-chapters">${btns}</div>
-    <div class="tj-pdf-container" id="tjPdfContainer">
-      <div class="tj-loading">
-        <div style="font-size:2em">📖</div>
-        <div>یک فصل را انتخاب کنید</div>
-      </div>
-    </div>
-    <button class="tj-back-btn" onclick="goBackFromTajweed()">←</button>
-  `;
-}
-
-function openTajweedPDF(chapterId) {
-  // صفحه شروع هر فصل
-  const pageMap = {
-    1: 5, 2: 11, 3: 17, 4: 21, 5: 25,
-    6: 47, 7: 78, 8: 111, 9: 141, 10: 171
-  };
-  const startPage = pageMap[chapterId] || 1;
-
-  // فعال کردن دکمه انتخاب شده
-  document.querySelectorAll('.tj-ch-btn').forEach(b => b.classList.remove('active'));
-  const btn = document.getElementById('tjbtn' + chapterId);
-  if (btn) btn.classList.add('active');
-
-  const container = document.getElementById('tjPdfContainer');
-  container.innerHTML = `
-    <div class="tj-loading">
-      <div style="font-size:2em">⏳</div>
-      <div>در حال بارگذاری...</div>
-    </div>
-    <iframe
-      src="tajweed.pdf#page=${startPage}"
-      title="تجوید مصوّر"
-      onload="this.previousElementSibling.style.display='none'"
-    ></iframe>
-  `;
-}
-
-function goBackFromTajweed() {
-  document.getElementById('tajweedPage').style.display='none';
-  document.getElementById('qariListPage').style.display='block';
-  nav='home';
-}
-
 </script>
 </body></html>
