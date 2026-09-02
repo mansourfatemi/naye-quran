@@ -3787,7 +3787,7 @@ function openTilawat(ti){
 
 function goBack(){
   if(nav==='tajweedDetail'){openTajweedPage();return;}
-  if(nav==='tajweed'){hideAllPages();document.getElementById('mainPage').style.display='block';document.getElementById('hTitle').textContent='نوای قرآن';navStack=[];return;}
+  if(nav==='tajweed'){document.getElementById('qariListPage').style.display='none';document.getElementById('tilawatListPage').style.display='none';document.getElementById('hashemiLessonsPage').style.display='none';document.getElementById('hashemiLessonPlayerPage').style.display='none';document.getElementById('tajweedPage').style.display='none';document.getElementById('tajweedDetailPage').style.display='none';document.getElementById('maqamatPage').style.display='none';document.getElementById('maqamSamplesPage').style.display='none';document.getElementById('maqamPage').style.display='none';document.getElementById('maqamDetailPage').style.display='none';document.getElementById('playlistsPage').style.display='none';document.getElementById('playlistDetailPage').style.display='none';document.getElementById('playerPage').style.display='none';document.getElementById('mainPage').style.display='block';document.getElementById('hTitle').textContent='نوای قرآن';navStack=[];return;}
 
   au.pause();pl=false;
   if(document.getElementById("playerPage").style.display==="block"){
@@ -5179,11 +5179,26 @@ const TAJWEED_CHAPTERS = [
 ];
 
 function openTajweedPage(){
-  hideAllPages();
+  au.pause(); pl=false;
+  document.getElementById('qariListPage').style.display='none';
+  document.getElementById('tilawatListPage').style.display='none';
+  document.getElementById('hashemiLessonsPage').style.display='none';
+  document.getElementById('hashemiLessonPlayerPage').style.display='none';
+  document.getElementById('tajweedPage').style.display='none';
+  document.getElementById('tajweedDetailPage').style.display='none';
+  document.getElementById('maqamatPage').style.display='none';
+  document.getElementById('maqamSamplesPage').style.display='none';
+  document.getElementById('maqamPage').style.display='none';
+  document.getElementById('maqamDetailPage').style.display='none';
+  document.getElementById('playlistsPage').style.display='none';
+  document.getElementById('playlistDetailPage').style.display='none';
+  document.getElementById('playerPage').style.display='none';
   document.getElementById('tajweedPage').style.display='block';
   document.getElementById('hTitle').textContent='📗 آموزش تجوید';
+  document.getElementById('hSub').textContent='کتاب تجوید مصور';
+  if(document.getElementById('bBtn')) document.getElementById('bBtn').style.display='flex';
+  nav='tajweed';
   renderTajweedChapters();
-  pushNav('tajweed');
 }
 
 function renderTajweedChapters(){
@@ -5204,9 +5219,25 @@ function renderTajweedChapters(){
 
 function openTajweedDetail(idx){
   const ch=TAJWEED_CHAPTERS[idx];
-  hideAllPages();
-  document.getElementById('tajweedDetailPage').style.display='block';
+  au.pause(); pl=false;
+  document.getElementById('qariListPage').style.display='none';
+  document.getElementById('tilawatListPage').style.display='none';
+  document.getElementById('hashemiLessonsPage').style.display='none';
+  document.getElementById('hashemiLessonPlayerPage').style.display='none';
+  document.getElementById('tajweedPage').style.display='none';
+  document.getElementById('tajweedDetailPage').style.display='none';
+  document.getElementById('maqamatPage').style.display='none';
+  document.getElementById('maqamSamplesPage').style.display='none';
+  document.getElementById('maqamPage').style.display='none';
+  document.getElementById('maqamDetailPage').style.display='none';
+  document.getElementById('playlistsPage').style.display='none';
+  document.getElementById('playlistDetailPage').style.display='none';
+  document.getElementById('playerPage').style.display='none';
+document.getElementById('tajweedDetailPage').style.display='block';
   document.getElementById('hTitle').textContent='📗 '+ch.title;
+  document.getElementById('hSub').textContent='صفحات '+ch.pages;
+  if(document.getElementById('bBtn')) document.getElementById('bBtn').style.display='flex';
+  nav='tajweedDetail';
   const dc=document.getElementById('tajweedDetailContent');
   dc.innerHTML='';
   const ph=document.createElement('div');
