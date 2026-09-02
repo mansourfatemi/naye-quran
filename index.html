@@ -3053,6 +3053,26 @@ async function updateDlBtn(btn, progressEl, qariId, audioFiles){
 }
 
 const au=document.getElementById("au");
+let auRetryCount=0;
+const MAX_AU_RETRY=3;
+au.onerror=function(){
+  if(auRetryCount < MAX_AU_RETRY && au.src && au.src.includes('archive.org')){
+    auRetryCount++;
+    const msg=document.getElementById("nAMsg");
+    if(msg){ msg.style.display="block"; msg.textContent="در حال تلاش مجدد... ("+auRetryCount+"/"+MAX_AU_RETRY+")"; }
+    setTimeout(function(){
+      const src=au.src;
+      au.src='';
+      au.src=src;
+      au.load();
+      if(autoPlay || pl){ au.play().catch(function(){}); }
+    }, 2000 * auRetryCount);
+  } else {
+    const msg=document.getElementById("nAMsg");
+    if(msg){ msg.style.display="block"; msg.textContent="⚠️ خطا در بارگذاری — اتصال اینترنت را بررسی کنید"; }
+  }
+};
+au.addEventListener("canplay", function(){ auRetryCount=0; });
 
 function setColor(c){document.documentElement.style.setProperty('--qcolor',c);}
 function openAboutPage(){
