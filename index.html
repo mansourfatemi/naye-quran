@@ -5217,18 +5217,7 @@ function openTajweedPDF(chapterId) {
   document.querySelectorAll('.tj-ch-btn').forEach(b => b.classList.remove('active'));
   const btn = document.getElementById('tjbtn' + chapterId);
   if (btn) btn.classList.add('active');
-  const container = document.getElementById('tjPdfContainer');
-  container.innerHTML = '';
-  const wrap = document.createElement('div');
-  wrap.style.cssText = 'text-align:center;padding:30px 20px';
-  const chTitle = (TAJWEED_CHAPTERS[chapterId-1]||{title:''}).title;
-  wrap.innerHTML =
-    '<div style="font-size:3em;margin-bottom:12px">&#128214;</div>'
-    + '<div style="font-size:1.1em;color:#333;margin-bottom:20px">' + chTitle + '</div>'
-    + '<a href="' + pdfUrl + '" target="_blank" style="display:inline-block;background:linear-gradient(135deg,#1a237e,#283593);color:#fff;padding:14px 32px;border-radius:25px;text-decoration:none;font-size:1em;box-shadow:0 2px 8px rgba(0,0,0,0.3)">'
-    + '&#128196; باز کردن در مرورگر</a>'
-    + '<div style="margin-top:14px;color:#888;font-size:.85em">صفحه ' + startPage + ' از کتاب</div>';
-  container.appendChild(wrap);
+  window.open(pdfUrl, '_blank');
 }
 
 </script>
