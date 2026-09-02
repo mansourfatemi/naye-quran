@@ -392,22 +392,22 @@
 
 
 
-/* ═══ آموزش تجوید ═══ */
-#tajweedPage{display:none;padding:70px 15px 90px}
-.tj-chapter-card{background:#fff;border-radius:14px;padding:16px 18px;margin:10px 0;
-  box-shadow:0 2px 8px rgba(0,0,0,.08);cursor:pointer;display:flex;align-items:center;
-  border-right:5px solid #1a6b3a;transition:transform .15s}
-.tj-chapter-card:active{transform:scale(.97)}
-.tj-ch-num{background:#1a6b3a;color:#fff;border-radius:50%;width:36px;height:36px;
-  display:flex;align-items:center;justify-content:center;font-weight:bold;
-  font-size:.95em;flex-shrink:0;margin-left:14px}
-.tj-ch-info{flex:1}
-.tj-ch-title{font-size:1.05em;font-weight:bold;color:#1a1a2e;margin-bottom:3px}
-.tj-ch-pages{font-size:.82em;color:#888}
-#tajweedDetailPage{display:none;padding:70px 15px 90px}
-.tj-text{font-size:.92em;line-height:2.1;color:#222;direction:rtl;text-align:right;
-  white-space:pre-wrap;background:#fffdf5;padding:16px;border-radius:10px;
-  border:1px solid #e8e0c8}
+/* ═══ آموزش تجوید — PDF Viewer ═══ */
+#tajweedPage{display:none;padding:60px 0 0;background:#1a1a2e;min-height:100vh}
+.tj-header{padding:15px 20px;background:linear-gradient(135deg,#2d5a27,#4a8c3f);color:#fff;text-align:center}
+.tj-header h2{margin:0;font-size:1.3em;font-weight:700}
+.tj-header p{margin:5px 0 0;font-size:0.85em;opacity:0.85}
+.tj-chapters{padding:12px;display:flex;flex-wrap:wrap;gap:8px;justify-content:center;background:#1a1a2e}
+.tj-ch-btn{background:linear-gradient(135deg,#2d3561,#1a1a2e);border:1px solid #4a5568;color:#e2e8f0;
+  padding:8px 14px;border-radius:20px;font-size:0.82em;cursor:pointer;transition:all 0.2s;font-family:inherit}
+.tj-ch-btn:hover,.tj-ch-btn.active{background:linear-gradient(135deg,#4a8c3f,#2d5a27);border-color:#4a8c3f;color:#fff}
+.tj-pdf-container{width:100%;height:calc(100vh - 180px);background:#525659;position:relative}
+.tj-pdf-container iframe{width:100%;height:100%;border:none;display:block}
+.tj-loading{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  color:#fff;font-size:1em;text-align:center;direction:rtl}
+.tj-back-btn{position:fixed;bottom:80px;left:15px;z-index:999;
+  background:#4a8c3f;color:#fff;border:none;border-radius:50%;width:44px;height:44px;
+  font-size:1.4em;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.4)}
 
 </style>
 </head><body>
@@ -427,13 +427,6 @@
       <div class="qari-meta">همه قاریان</div>
     </div>
     <div class="qari-arrow">&#8250;</div>
-  </div>
-  <div class="qari-card" style="border-right-color:#1a6b3a" onclick="openTajweedPage()">
-    <div style="font-size:1.8em;margin-left:12px">📗</div>
-    <div class="til-info">
-      <div class="qari-name">آموزش تجوید</div>
-      <div class="qari-sub">کتاب تجوید مصور — ۱۰ فصل</div>
-    </div>
   </div>
   <div class="qari-card" style="border-right-color:#2E7D32" onclick="openPlaylistsPage()">
     <div class="qari-avatar" style="background:linear-gradient(135deg,#4CAF50,#2E7D32)">🎧</div>
@@ -5153,7 +5146,7 @@ initVisualizer();
 
 renderQariList();
 
-// ═══ آموزش تجوید ═══
+// ═══ آموزش تجوید — PDF Viewer ═══
 const TAJWEED_CHAPTERS = [
 {"id":1,"title":"قرآن کریم","pages":"5–10","text":"قرآن کریم کلام الله متعال است که بر پیامبر اکرم صلى الله عليه وسلم به زبان عربی فصیح نازل شده است. از ابتدا تا انتها به صورت متواتر — نسل به نسل — به دست ما رسیده و با کوتاهترین سورهاش به مبارزه میطلبد که اگر میتوانید مانند آن بیاورید.\n\n◈ تواتر\nتواتر یعنی روایت یک خبر توسط گروهی از راویان، طبقه به طبقه، به گونهای که اجتماع همه آنان بر دروغ، عقلاً محال باشد.\n\n◈ دو طریق رسیدن قرآن به ما\n• مکتوب: ثبت شده بر روی پوست، برگ، استخوان و سنگ\n• روایی (شفاهی): نقل متواتر از استاد به شاگرد\n\n◈ مراحل جمعآوری قرآن\n۱. در زمان پیامبر صلى الله عليه وسلم: هر آیهای که نازل میشد فوراً نوشته میشد. زید بن ثابت رضیاللهعنه وحی را نزد پیامبر صلى الله عليه وسلم مینوشت و پس از فراغت بر ایشان میخواند تا خطاها اصلاح شود.\n۲. در زمان خلافت ابوبکر صدیق رضیاللهعنه: آیههایی که بر روی صفحات پراکنده نوشته شده بودند جمعآوری شدند.\n۳. در زمان خلافت عثمان بن عفان رضیاللهعنه: از مصحف سابق نسخهبرداری شد و به شهرهای بزرگ اسلامی (مکه، مدینه، یمن، بحرین، بصره، کوفه و شام) فرستاده شد، همراه با یک قاری مسلط.\n\n◈ اعجاز قرآن\nقرآن عظیم با تمامی الفاظ و معانی و ویژگیهای مخصوص به خود، به صورت کامل به ما رسیده است. صحابه کرام قرآن را از زبان مبارک رسول الله صلى الله عليه وسلم فرا گرفتند و به نسل بعد بازگو کردند و به همین شیوه ادامه یافته تا امروز به دست ما رسیده است."},
 {"id":2,"title":"علم تجوید","pages":"11–16","text":"تجوید در لغت به معنای «نیکو کردن» و «زیبا ساختن» است. در اصطلاح، علم تجوید علمی است که قواعد صحیح تلاوت قرآن کریم را بیان میکند — از جمله مخارج حروف، صفات آنها، و احکام مربوط به هر حرف.\n\n◈ حکم یادگیری تجوید\n• از نظر عملی (در تلاوت): واجب عینی است — هر مسلمانی که قرآن میخواند باید تجوید را رعایت کند.\n• از نظر علمی (یادگیری قواعد): واجب کفایی است.\n\n◈ لحن در تلاوت\nلحن به معنای خطا در تلاوت قرآن است و دو نوع دارد:\n\n۱. لحن جلی (خطای آشکار): خطایی که در مخارج حروف یا اعراب کلمات است و هر شنوندهای آن را میفهمد. مانند: تبدیل حرفی به حرف دیگر، یا حذف حرکتی.\nرعایت نکردن آن: حرام است.\n\n۲. لحن خفی (خطای پنهان): خطایی که تنها اهل علم تجوید آن را تشخیص میدهند. مانند: رعایت نکردن غنّه، یا کموزیادکردن مقدار مد.\nرعایت نکردن آن در تلاوت عادی: عیب به شمار میآید.\n\n◈ تجوید و موسیقی\nموسیقی علمی است غیر عربی مربوط به صوت که قواعد و ضوابطی مخصوص دارد. ارتباط آن با تجوید:\n• طبقات صوتی: قاری قرآن میتواند از یک طبقه صوتی به طبقه دیگر منتقل شود.\n• زمان امتداد و کشیدن صدا: در مد باید میزان مشخصی رعایت شود.\nاما تجوید کاملاً مستقل از موسیقی است و قواعد خاص خود را دارد."},
@@ -5167,55 +5160,12 @@ const TAJWEED_CHAPTERS = [
 {"id":10,"title":"وقف و ابتدا","pages":"171–201","text":"◈ وقف\nوقف یعنی قطع صدا بر روی کلمهای از کلمات قرآن به صورت موقت، با نیت ادامه دادن تلاوت.\n\nانواع وقف:\n۱. وقف تام: وقف بر کلمهای که معنای تامی دارد و ارتباطی به ما بعد ندارد. ✅ جایز\n۲. وقف کافی: وقف بر کلمهای که معنای تامی دارد ولی به ما بعد مرتبط است. ✅ جایز\n۳. وقف حسن: وقف بر کلمهای که معنا تمام نشده. ⚠️ جایز با شرط ابتداء مجدد\n۴. وقف قبیح: وقف بر کلمهای که معنا کاملاً ناقص است. ❌ ناجایز\n\n◈ علامات وقف در مصحف\n• م : وقف لازم (باید وقف کرد)\n• لا : وقف ممنوع (نباید وقف کرد)\n• ج : وقف جایز\n• ز : وصل اولی است\n• ص : وقف مجاز (رخصت)\n• قلی : وصل اولی است\n• ∴ یا ∴ : وقف معانقه (باید در یکی از دو محل وقف کرد)\n\n◈ کیفیت وقف بر آخر کلمات\n۱. وقف با سکون: رایجترین حالت\n۲. روم: ادا کردن حرکت آخر به مقدار یکسوم\n۳. اشمام: تمایل دادن لبها به ضمه بدون صدا (فقط در مضموم)\n\n◈ ابتداء\nابتداء یعنی شروع کردن تلاوت پس از وقف.\n• ابتداء تام: شروع از جایی که معنا کامل است ✅\n• ابتداء کافی: جایز ✅\n• ابتداء حسن: جایز با توجه به معنا ⚠️\n• ابتداء قبیح: ناجایز ❌\n\n◈ همزه وصل\nهمزه وصل همزهای است که در ابتداء با صدا ادا میشود ولی در وصل حذف میگردد.\nحرکت همزه وصل در ابتداء:\n• در اسمها: کسره (مانند: اِبن، اِمرأة)\n• در فعلهای ثلاثی: کسره\n• در فعلهای خماسی و سداسی: از حرکت سوم پیروی میکند"}
 ];
 
-function openTajweedPage(){
-  au.pause(); pl=false;
+function openTajweedPage() {
   document.getElementById('qariListPage').style.display='none';
   document.getElementById('tilawatListPage').style.display='none';
   document.getElementById('hashemiLessonsPage').style.display='none';
   document.getElementById('hashemiLessonPlayerPage').style.display='none';
-  document.getElementById('tajweedPage').style.display='none';
-  document.getElementById('tajweedDetailPage').style.display='none';
-  document.getElementById('maqamatPage').style.display='none';
-  document.getElementById('maqamSamplesPage').style.display='none';
-  document.getElementById('maqamPage').style.display='none';
-  document.getElementById('maqamDetailPage').style.display='none';
-  document.getElementById('playlistsPage').style.display='none';
-  document.getElementById('playlistDetailPage').style.display='none';
-  document.getElementById('playerPage').style.display='none';
   document.getElementById('tajweedPage').style.display='block';
-  document.getElementById('hTitle').textContent='📗 آموزش تجوید';
-  document.getElementById('hSub').textContent='کتاب تجوید مصور';
-  if(document.getElementById('bBtn')) document.getElementById('bBtn').style.display='flex';
-  nav='tajweed';
-  renderTajweedChapters();
-}
-
-
-function renderTajweedChapters(){
-  const el=document.getElementById('tajweedChaptersList');
-  el.innerHTML='';
-  TAJWEED_CHAPTERS.forEach((ch,i)=>{
-    const d=document.createElement('div');
-    d.className='tj-chapter-card';
-    d.innerHTML=`<div class="tj-ch-num">${i+1}</div>
-      <div class="tj-ch-info">
-        <div class="tj-ch-title">${ch.title}</div>
-        <div class="tj-ch-pages">صفحات ${ch.pages}</div>
-      </div>`;
-    d.onclick=()=>openTajweedDetail(i);
-    el.appendChild(d);
-  });
-}
-
-function openTajweedDetail(idx){
-  const ch=TAJWEED_CHAPTERS[idx];
-  au.pause(); pl=false;
-  document.getElementById('qariListPage').style.display='none';
-  document.getElementById('tilawatListPage').style.display='none';
-  document.getElementById('hashemiLessonsPage').style.display='none';
-  document.getElementById('hashemiLessonPlayerPage').style.display='none';
-  document.getElementById('tajweedPage').style.display='none';
-  document.getElementById('tajweedDetailPage').style.display='none';
   document.getElementById('maqamatPage').style.display='none';
   document.getElementById('maqamSamplesPage').style.display='none';
   document.getElementById('maqamPage').style.display='none';
@@ -5223,14 +5173,65 @@ function openTajweedDetail(idx){
   document.getElementById('playlistsPage').style.display='none';
   document.getElementById('playlistDetailPage').style.display='none';
   document.getElementById('playerPage').style.display='none';
-document.getElementById('tajweedDetailPage').style.display='block';
-  if(document.getElementById('bBtn')) document.getElementById('bBtn').style.display='flex';
-  nav='tajweedDetail';
-  document.getElementById('hTitle').textContent='📗 '+ch.title;
-  document.getElementById('tajweedDetailContent').innerHTML=
-    `<div style="font-size:.85em;color:#888;margin-bottom:10px">صفحات ${ch.pages}</div>
-     <div class="tj-text">${ch.text.replace(/</g,'&lt;')}</div>`;
-  pushNav('tajweedDetail',{idx});
+  nav='tajweed';
+  renderTajweedPage();
+}
+
+function renderTajweedPage() {
+  const el = document.getElementById('tajweedPage');
+  let btns = TAJWEED_CHAPTERS.map((ch,i) =>
+    `<button class="tj-ch-btn" onclick="openTajweedPDF(${ch.id})" id="tjbtn${ch.id}">
+      ${ch.id}. ${ch.title}
+    </button>`
+  ).join('');
+
+  el.innerHTML = `
+    <div class="tj-header">
+      <h2>📖 آموزش تجوید مصوّر</h2>
+      <p>کتاب تجوید مصوّر — قرائت حفص از عاصم</p>
+    </div>
+    <div class="tj-chapters">${btns}</div>
+    <div class="tj-pdf-container" id="tjPdfContainer">
+      <div class="tj-loading">
+        <div style="font-size:2em">📖</div>
+        <div>یک فصل را انتخاب کنید</div>
+      </div>
+    </div>
+    <button class="tj-back-btn" onclick="goBackFromTajweed()">←</button>
+  `;
+}
+
+function openTajweedPDF(chapterId) {
+  // صفحه شروع هر فصل
+  const pageMap = {
+    1: 5, 2: 11, 3: 17, 4: 21, 5: 25,
+    6: 47, 7: 78, 8: 111, 9: 141, 10: 171
+  };
+  const startPage = pageMap[chapterId] || 1;
+
+  // فعال کردن دکمه انتخاب شده
+  document.querySelectorAll('.tj-ch-btn').forEach(b => b.classList.remove('active'));
+  const btn = document.getElementById('tjbtn' + chapterId);
+  if (btn) btn.classList.add('active');
+
+  const container = document.getElementById('tjPdfContainer');
+  container.innerHTML = `
+    <div class="tj-loading">
+      <div style="font-size:2em">⏳</div>
+      <div>در حال بارگذاری...</div>
+    </div>
+    <iframe
+      src="tajweed.pdf#page=${startPage}"
+      title="تجوید مصوّر"
+      onload="this.previousElementSibling.style.display='none'"
+    ></iframe>
+  `;
+}
+
+function goBackFromTajweed() {
+  document.getElementById('tajweedPage').style.display='none';
+  document.getElementById('qariListPage').style.display='block';
+  nav='home';
 }
 
 </script>
