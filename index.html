@@ -5211,11 +5211,14 @@ function renderTajweedPage() {
 }
 
 function openTajweedPDF(chapterId) {
+  const pageMap = {1:6,2:15,3:21,4:25,5:33,6:57,7:96,8:114,9:141,10:146};
+  const startPage = pageMap[chapterId] || 1;
   const pdfUrl = 'https://archive.org/download/naye-quran-audio/tajweed.pdf';
+  const viewerUrl = 'https://docs.google.com/viewer?url=' + encodeURIComponent(pdfUrl) + '&embedded=false#page=' + startPage;
   document.querySelectorAll('.tj-ch-btn').forEach(b => b.classList.remove('active'));
   const btn = document.getElementById('tjbtn' + chapterId);
   if (btn) btn.classList.add('active');
-  window.open(pdfUrl, '_blank');
+  window.open(viewerUrl, '_blank');
 }
 
 </script>
