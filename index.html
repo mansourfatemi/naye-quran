@@ -465,24 +465,7 @@
   </div>
 </div>
 
-
-  <!-- ═══ صفحه آموزش تجوید ═══ -->
-  <div id="tajweedPage" style="display:none;padding:70px 15px 90px">
-    <div style="text-align:center;padding:8px 0 16px;font-size:1.1em;font-weight:bold;color:#1a6b3a">
-      📗 کتاب تجوید مصور
-    </div>
-    <div style="font-size:.8em;color:#888;text-align:center;margin-bottom:16px">
-      تألیف: دکتر ایمن رشدی سوید | ترجمه: وریا اسماعیلزاده
-    </div>
-    <div id="tajweedChaptersList"></div>
-  </div>
-
-  <!-- ═══ صفحه جزئیات فصل تجوید ═══ -->
-  <div id="tajweedDetailPage" style="display:none;padding:70px 15px 90px">
-    <div id="tajweedDetailContent"></div>
-  </div>
-
-  <!-- صفحه آموزش مقامات منشاوی -->
+<!-- صفحه آموزش مقامات منشاوی -->
 <div id="maqamatPage">
   <div style="text-align:center;padding:20px 0">
     <div style="font-size:3em;margin-bottom:10px">📚</div>
@@ -3786,9 +3769,6 @@ function openTilawat(ti){
 }
 
 function goBack(){
-  if(nav==='tajweedDetail'){openTajweedPage();return;}
-  if(nav==='tajweed'){document.getElementById('qariListPage').style.display='none';document.getElementById('tilawatListPage').style.display='none';document.getElementById('hashemiLessonsPage').style.display='none';document.getElementById('hashemiLessonPlayerPage').style.display='none';document.getElementById('tajweedPage').style.display='none';document.getElementById('tajweedDetailPage').style.display='none';document.getElementById('maqamatPage').style.display='none';document.getElementById('maqamSamplesPage').style.display='none';document.getElementById('maqamPage').style.display='none';document.getElementById('maqamDetailPage').style.display='none';document.getElementById('playlistsPage').style.display='none';document.getElementById('playlistDetailPage').style.display='none';document.getElementById('playerPage').style.display='none';document.getElementById('mainPage').style.display='block';document.getElementById('hTitle').textContent='نوای قرآن';navStack=[];return;}
-
   au.pause();pl=false;
   if(document.getElementById("playerPage").style.display==="block"){
     document.getElementById("playerPage").style.display="none";
