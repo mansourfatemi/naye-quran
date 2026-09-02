@@ -5160,12 +5160,26 @@ const TAJWEED_CHAPTERS = [
 ];
 
 function openTajweedPage(){
-  hideAllPages();
+  au.pause(); pl=false;
+  document.getElementById('qariListPage').style.display='none';
+  document.getElementById('tilawatListPage').style.display='none';
+  document.getElementById('hashemiLessonsPage').style.display='none';
+  document.getElementById('hashemiLessonPlayerPage').style.display='none';
+  document.getElementById('maqamatPage').style.display='none';
+  document.getElementById('maqamSamplesPage').style.display='none';
+  document.getElementById('maqamPage').style.display='none';
+  document.getElementById('maqamDetailPage').style.display='none';
+  document.getElementById('playlistsPage').style.display='none';
+  document.getElementById('playlistDetailPage').style.display='none';
+  document.getElementById('playerPage').style.display='none';
   document.getElementById('tajweedPage').style.display='block';
   document.getElementById('hTitle').textContent='📗 آموزش تجوید';
+  document.getElementById('hSub').textContent='کتاب تجوید مصور';
+  if(document.getElementById('bBtn')) document.getElementById('bBtn').style.display='flex';
+  nav='tajweed';
   renderTajweedChapters();
-  pushNav('tajweed');
 }
+
 
 function renderTajweedChapters(){
   const el=document.getElementById('tajweedChaptersList');
@@ -5185,7 +5199,8 @@ function renderTajweedChapters(){
 
 function openTajweedDetail(idx){
   const ch=TAJWEED_CHAPTERS[idx];
-    document.getElementById('qariListPage').style.display='none';
+  au.pause(); pl=false;
+  document.getElementById('qariListPage').style.display='none';
   document.getElementById('tilawatListPage').style.display='none';
   document.getElementById('hashemiLessonsPage').style.display='none';
   document.getElementById('hashemiLessonPlayerPage').style.display='none';
