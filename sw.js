@@ -1,4 +1,4 @@
-const CACHE='mt-mq-v20260903115601';
+const CACHE='mt-mq-v20260903115858';
 const CORE=['./','./index.html','./manifest.json','./icon-192.png','./icon-512.png'];
 const AUDIO=[
   "./qaris/manshawy/audio/01.mp3",
