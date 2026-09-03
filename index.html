@@ -427,15 +427,15 @@
       <div class="qari-meta">پلی‌لیست شخصی</div>
     </div>
     <div class="qari-arrow">&#8250;</div>
-  </div>
-  <div class="qari-card" onclick="openTajweedPage()" style="cursor:pointer;margin:12px 0">
+    <div class="qari-card" onclick="openTajweedPage()" style="cursor:pointer;margin:12px 0">
     <div class="qari-avatar" style="background:linear-gradient(135deg,#1a237e,#283593);display:flex;align-items:center;justify-content:center;font-size:2em">&#128214;</div>
     <div class="qari-info">
       <div class="qari-name">آموزش تجوید مصوّر</div>
       <div class="qari-meta">کتاب تجوید مصوّر — قرائت حفص از عاصم</div>
     </div>
   </div>
-  <div class="about-link-wrap"><a class="about-link" onclick="openAboutPage()">درباره سازنده</a></div>
+  </div>
+<div class="about-link-wrap"><a class="about-link" onclick="openAboutPage()">درباره سازنده</a></div>
 </div>
 
 <div id="tajweedPage" style="display:none;padding:70px 15px 90px">
@@ -3053,26 +3053,6 @@ async function updateDlBtn(btn, progressEl, qariId, audioFiles){
 }
 
 const au=document.getElementById("au");
-let auRetryCount=0;
-const MAX_AU_RETRY=3;
-au.onerror=function(){
-  if(auRetryCount < MAX_AU_RETRY && au.src && au.src.includes('archive.org')){
-    auRetryCount++;
-    const msg=document.getElementById("nAMsg");
-    if(msg){ msg.style.display="block"; msg.textContent="در حال تلاش مجدد... ("+auRetryCount+"/"+MAX_AU_RETRY+")"; }
-    setTimeout(function(){
-      const src=au.src;
-      au.src='';
-      au.src=src;
-      au.load();
-      if(autoPlay || pl){ au.play().catch(function(){}); }
-    }, 2000 * auRetryCount);
-  } else {
-    const msg=document.getElementById("nAMsg");
-    if(msg){ msg.style.display="block"; msg.textContent="⚠️ خطا در بارگذاری — اتصال اینترنت را بررسی کنید"; }
-  }
-};
-au.addEventListener("canplay", function(){ auRetryCount=0; });
 
 function setColor(c){document.documentElement.style.setProperty('--qcolor',c);}
 function openAboutPage(){
@@ -5162,15 +5142,15 @@ renderQariList();
 
 
 const TAJWEED_CHAPTERS = [
-  {id:1,  title:'مقدمه و تعریف تجوید'},
-  {id:2,  title:'احکام نون ساکن و تنوین'},
-  {id:3,  title:'احکام میم ساکن'},
-  {id:4,  title:'مدّ و قصر'},
-  {id:5,  title:'احکام لام'},
-  {id:6,  title:'احکام راء'},
-  {id:7,  title:'مخارج الحروف'},
-  {id:8,  title:'صفات الحروف'},
-  {id:9,  title:'وقف و ابتدا'},
+  {id:1, title:'قرآن کریم'},
+  {id:2, title:'علم تجوید'},
+  {id:3, title:'استعاذه و بسمله'},
+  {id:4, title:'حروف عربی'},
+  {id:5, title:'مخارج حروف'},
+  {id:6, title:'صفات حروف'},
+  {id:7, title:'احکام نون ساکن و تنوین'},
+  {id:8, title:'احکام میم ساکن، ادغام و اخفاء'},
+  {id:9, title:'وقف و ابتدا'},
   {id:10, title:'شرایط خاص روایت حفص'}
 ];
 
