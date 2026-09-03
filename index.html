@@ -5231,9 +5231,22 @@ function renderTajweedPage() {
 }
 
 function openTajweedPDF(chapterId) {
-  const pageMap = {1:6,2:15,3:21,4:25,5:33,6:57,7:96,8:114,9:141,10:146};
-  const startPage = pageMap[chapterId] || 1;
-  const pdfUrl = 'https://archive.org/download/naye-quran-audio/tajweed.pdf';
+  const chFiles = {
+    1: 'tajweed_ch01_moqaddame.pdf',
+    2: 'tajweed_ch02_noon_sakeen.pdf',
+    3: 'tajweed_ch03_meem_sakeen.pdf',
+    4: 'tajweed_ch04_madd.pdf',
+    5: 'tajweed_ch05_lam.pdf',
+    6: 'tajweed_ch06_ra.pdf',
+    7: 'tajweed_ch07_makharej.pdf',
+    8: 'tajweed_ch08_sefaat.pdf',
+    9: 'tajweed_ch09_waqf.pdf',
+    10: 'tajweed_ch10_shart.pdf'
+  };
+  const BASE = 'https://archive.org/download/naye-quran-audio/';
+  const fname = chFiles[chapterId];
+  if (!fname) return;
+  const pdfUrl = BASE + fname;
   document.querySelectorAll('.tj-ch-btn').forEach(b => b.classList.remove('active'));
   const btn = document.getElementById('tjbtn' + chapterId);
   if (btn) btn.classList.add('active');
@@ -5244,14 +5257,11 @@ function openTajweedPDF(chapterId) {
   wrap.style.cssText = 'text-align:center;padding:24px 20px';
   wrap.innerHTML =
     '<div style="font-size:2.5em;margin-bottom:10px">&#128214;</div>'
-    + '<div style="font-size:1.05em;font-weight:bold;color:#1a237e;margin-bottom:6px">' + chTitle + '</div>'
-    + '<div style="background:#fff3cd;border:1px solid #ffc107;border-radius:10px;padding:12px 16px;margin:14px 0;font-size:.95em;color:#856404">'
-    + '&#128204; این فصل از <b>صفحه ' + startPage + '</b> کتاب شروع می‌شود'
-    + '</div>'
-    + '<a href="' + pdfUrl + '" target="_blank" style="display:inline-block;background:linear-gradient(135deg,#1a237e,#283593);color:#fff;padding:13px 28px;border-radius:25px;text-decoration:none;font-size:1em;box-shadow:0 2px 8px rgba(0,0,0,0.3)">'
-    + '&#128196; باز کردن کتاب تجوید</a>'
-    + '<div style="margin-top:10px;color:#999;font-size:.8em">بعد از باز شدن به صفحه ' + startPage + ' بروید</div>';
+    + '<div style="font-size:1.05em;font-weight:bold;color:#1a237e;margin-bottom:16px">' + chTitle + '</div>'
+    + '<a href="' + pdfUrl + '" target="_blank" style="display:inline-block;background:linear-gradient(135deg,#1a237e,#283593);color:#fff;padding:14px 32px;border-radius:25px;text-decoration:none;font-size:1.05em;box-shadow:0 2px 8px rgba(0,0,0,0.3)">'
+    + '&#128196; باز کردن این فصل</a>';
   container.appendChild(wrap);
+  window.open(pdfUrl, '_blank');
 }
 
 </script>
