@@ -4238,14 +4238,7 @@ function openMaqamPage(){
   document.querySelector(".header").style.background="linear-gradient(135deg,#1a1a2e,#16213e)";
   const filterWrap=document.getElementById("maqamQariFilterWrap");
   if(filterWrap){
-    if(curQari){
-      filterWrap.style.display="none";
-    } else {
-      filterWrap.style.display="block";
-      const sel=document.getElementById("maqamQariSelect");
-      sel.innerHTML='<option value="">🎓 همه قاریان</option>'+QARIS.map(q=>`<option value="${q.id}">${q.name}</option>`).join('');
-      sel.value="";
-    }
+    filterWrap.style.display="none";
   }
   renderMaqamGrid();
 }
