@@ -4396,25 +4396,6 @@ function renderMqdTilawatList(maqam, color){
     </div>`;
   const wrap=document.getElementById("mqdSections"); wrap.innerHTML="";
   const shClips = SHAHHAT_MAQAM_CLIPS[maqam] || [];
-  if(shClips.length){
-    const shSec=document.createElement("div"); shSec.className="mqd-sec";
-    shSec.innerHTML=`<div class="mqd-sec-title">🎤 قطعات آموزشی شحات انور — ${shClips.length} قطعه</div>`;
-    shClips.forEach(clip=>{
-      const verseHtml = (clip.verses||[]).map(v=>
-        `<div class="mqd-ayah">${v.ar||""}</div>${v.fa?'<div class="mqd-meta">'+v.fa+'</div>':''}`
-      ).join('');
-      const row=document.createElement("div"); row.className="mqd-fi";
-      row.innerHTML=`<div class="mqd-num" style="background:${color}">${clip.id}</div>
-        <div class="mqd-txt">
-          ${verseHtml || '<div class="mqd-ayah">'+clip.name+'</div>'}
-          <div class="mqd-meta">${clip.name}${clip.duration?" | "+clip.duration:""}</div>
-        </div>
-        <button class="mqd-play has" id="shplay${clip.id}" title="پخش">▶</button>`;
-      row.onclick=(e)=>{ e.stopPropagation(); toggleShahhatClip(clip.id); };
-      shSec.appendChild(row);
-    });
-    wrap.appendChild(shSec);
-  }
   const activeQariDetail=curQari||maqamFilterQari;
   const source=activeQariDetail?[activeQariDetail]:QARIS;
   let grand=0;
@@ -4436,6 +4417,25 @@ function renderMqdTilawatList(maqam, color){
       wrap.appendChild(card);
     });
   });
+  if(shClips.length){
+    const shSec=document.createElement("div"); shSec.className="mqd-sec";
+    shSec.innerHTML=`<div class="mqd-sec-title">🎤 قطعات آموزشی شحات انور — ${shClips.length} قطعه</div>`;
+    shClips.forEach(clip=>{
+      const verseHtml = (clip.verses||[]).map(v=>
+        `<div class="mqd-ayah">${v.ar||""}</div>${v.fa?'<div class="mqd-meta">'+v.fa+'</div>':''}`
+      ).join('');
+      const row=document.createElement("div"); row.className="mqd-fi";
+      row.innerHTML=`<div class="mqd-num" style="background:${color}">${clip.id}</div>
+        <div class="mqd-txt">
+          ${verseHtml || '<div class="mqd-ayah">'+clip.name+'</div>'}
+          <div class="mqd-meta">${clip.name}${clip.duration?" | "+clip.duration:""}</div>
+        </div>
+        <button class="mqd-play has" id="shplay${clip.id}" title="پخش">▶</button>`;
+      row.onclick=(e)=>{ e.stopPropagation(); toggleShahhatClip(clip.id); };
+      shSec.appendChild(row);
+    });
+    wrap.appendChild(shSec);
+  }
   if(grand===0 && shClips.length===0){
     wrap.innerHTML='<div style="text-align:center;padding:40px;color:#bbb">فرازی یافت نشد</div>';
   }
