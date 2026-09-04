@@ -1,4 +1,4 @@
-const CACHE='mt-mq-v20260904184309';
+const CACHE='mt-mq-v20260904203617';
 const CORE=['./','./index.html','./manifest.json','./icon-192.png','./icon-512.png'];
 const AUDIO=[
   "./qaris/manshawy/audio/01.mp3",
@@ -3310,7 +3310,7 @@ self.addEventListener('install',e=>{
   }));self.skipWaiting();
 });
 self.addEventListener('activate',e=>{
-  e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==CACHE&&k!=='nq-offline-v1').map(k=>caches.delete(k)))));
+  e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==CACHE).map(k=>caches.delete(k)))));
   self.clients.claim();
 });
 self.addEventListener('fetch',e=>{
@@ -3321,7 +3321,7 @@ self.addEventListener('fetch',e=>{
       if(hit)return hit;
       try{
         const resp=await fetch(e.request);
-        if(resp&&resp.status===200)c.put(e.request,resp.clone()).catch(()=>{});
+        if(resp&&resp.ok)c.put(e.request,resp.clone());
         return resp;
       }catch(err){return new Response('',{status:503});}
     }));
