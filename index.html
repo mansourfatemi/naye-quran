@@ -3059,6 +3059,7 @@ async function updateDlBtn(btn, progressEl, qariId, audioFiles){
 const au=document.getElementById("au");
 
 function setColor(c){document.documentElement.style.setProperty('--qcolor',c);}
+function getAudioUrl(qari,f){ return f.auFull || ("https://archive.org/download/naye-quran-audio/qaris/"+qari.id+"/"+f.au); }
 function openAboutPage(){
   document.getElementById('aboutBioText').textContent=CREATOR_BIO;
   document.getElementById('aboutOverlay').classList.add('show');
@@ -3844,7 +3845,7 @@ function upd(autoPlay){
   document.getElementById("fB").style.background=mqc;
   document.getElementById("mT").textContent=f.m;
   document.getElementById("oT").textContent="اکتاو "+f.o;
-  document.getElementById("oT").style.display=(curQari.id==="manshawy"||curQari.id==="hashemi")?"none":"inline-block";
+  document.getElementById("oT").style.display=(curQari.id==="manshawy"||curQari.id==="hashemi"||curQari.id==="shahhat")?"none":"inline-block";
   document.getElementById("dT").textContent=f.d;
   updateThumb(0);
   document.getElementById("tC").textContent="0:00";
@@ -3857,7 +3858,7 @@ function upd(autoPlay){
   const favKey=curQari.id+"_"+cT.id;
   fb.classList.toggle("on",isFav(favKey,cI));
   if(f.au){
-    au.src="https://archive.org/download/naye-quran-audio/qaris/"+curQari.id+"/"+f.au;au.load();
+    au.src=getAudioUrl(curQari,f);au.load();
     document.getElementById("nAMsg").style.display="none";
     document.getElementById("pTr").style.opacity="1";
     if(autoPlay){
@@ -3930,7 +3931,7 @@ async function doShare(f,shareTitle,shareText){
   if(btn)btn.disabled=true;
   try{
     if(f.au&&window.navigator&&navigator.canShare){
-      const audioUrl="https://archive.org/download/naye-quran-audio/qaris/"+curQari.id+"/"+f.au;
+      const audioUrl=getAudioUrl(curQari,f);
       const resp=await fetch(audioUrl);
       const blob=await resp.blob();
       const ext=f.au.split(".").pop();
@@ -3961,7 +3962,7 @@ async function shareFallback(f,shareText){
   await navigator.clipboard.writeText(shareText);
   if(f&&f.au){
     try{
-      const audioUrl="https://archive.org/download/naye-quran-audio/qaris/"+curQari.id+"/"+f.au;
+      const audioUrl=getAudioUrl(curQari,f);
       const resp=await fetch(audioUrl);
       const blob=await resp.blob();
       const ext=f.au.split(".").pop();
@@ -4436,6 +4437,25 @@ function renderMqdTilawatList(maqam, color){
   }
 }
 
+function getShahhatVirtualQari(){ return {id:'shahhat', name:'شحات انور', color:'#795548'}; }
+function buildShahhatVirtualTilawat(maqam){
+  const clips = SHAHHAT_MAQAM_CLIPS[maqam]||[];
+  return {
+    id:'shahhat_'+maqam,
+    name:'شحات انور — مقام '+maqam,
+    faraz: clips.map((clip,idx)=>({
+      n: idx+1,
+      a: (clip.verses&&clip.verses.length ? clip.verses.map(v=>v.ar).filter(Boolean).join(' ') : clip.name),
+      tr: (clip.verses&&clip.verses.length ? clip.verses.map(v=>v.fa).filter(Boolean).join(' ') : ''),
+      m: maqam,
+      o: '',
+      d: clip.name,
+      t: clip.duration||'',
+      au: 'x',
+      auFull: clip.url
+    }))
+  };
+}
 function openShahhatMaqamDetail(maqam, color){
   mqdNavStack.push(()=>renderMqdTilawatList(maqam, color));
   mqdSubLevel=true;
@@ -4453,20 +4473,31 @@ function openShahhatMaqamDetail(maqam, color){
     wrap.innerHTML='<div style="text-align:center;padding:40px;color:#bbb">قطعهای یافت نشد</div>';
     return;
   }
+  const virtualQari=getShahhatVirtualQari();
+  const virtualTil=buildShahhatVirtualTilawat(maqam);
   const sec=document.createElement("div"); sec.className="mqd-sec";
   sec.innerHTML=`<div class="mqd-sec-title">🎤 شحات انور — ${shClips.length} قطعه</div>`;
-  shClips.forEach(clip=>{
-    const verseHtml = (clip.verses||[]).map(v=>
-      `<div class="mqd-ayah">${v.ar||""}</div>${v.fa?'<div class="mqd-meta">'+v.fa+'</div>':''}`
-    ).join('');
+  shClips.forEach((clip,idx)=>{
     const row=document.createElement("div"); row.className="mqd-fi";
-    row.innerHTML=`<div class="mqd-num" style="background:${color}">${clip.id}</div>
+    const f=virtualTil.faraz[idx];
+    row.innerHTML=`<div class="mqd-num" style="background:${color}">${idx+1}</div>
       <div class="mqd-txt">
-        ${verseHtml || '<div class="mqd-ayah">'+clip.name+'</div>'}
-        <div class="mqd-meta">${clip.name}${clip.duration?" | "+clip.duration:""}</div>
+        <div class="mqd-ayah">${f.a}</div>
+        <div class="mqd-meta">${f.tr?f.tr+" | ":""}${clip.name}${clip.duration?" | "+clip.duration:""}</div>
       </div>
-      <button class="mqd-play has" id="shplay${clip.id}" title="پخش">▶</button>`;
-    row.onclick=(e)=>{ e.stopPropagation(); toggleShahhatClip(clip.id); };
+      <button class="mqd-play has" title="پخش">▶</button>`;
+    const playBtn=row.querySelector(".mqd-play");
+    const qIdx=mqdQueue.length;
+    mqdQueue.push({btn:playBtn, audioSrc:clip.url, au:clip.url, has:true});
+    playBtn.onclick=(e)=>{
+      e.stopPropagation();
+      if(!au.paused && au.src===clip.url){
+        au.pause(); playBtn.innerHTML="▶"; mqdPreviewActive=false;
+      } else {
+        mqdPlayAt(qIdx);
+      }
+    };
+    row.onclick=()=>jumpToFaraz(virtualQari,virtualTil,idx,maqam,color);
     sec.appendChild(row);
   });
   wrap.appendChild(sec);
@@ -4867,7 +4898,9 @@ goBack=function(){
       if(_sq && cfm.searchQuery){ _sq.value=cfm.searchQuery; filterMaqamGrid(); }
     } else {
       openMaqamDetail(cfm.maqam, cfm.color);
-      if(cfm.qId){
+      if(cfm.qId==='shahhat'){
+        openShahhatMaqamDetail(cfm.maqam, cfm.color);
+      } else if(cfm.qId){
         openMaqamQariDetail(cfm.maqam, cfm.color, cfm.qId);
         if(cfm.tId) openMaqamTilawatDetail(cfm.maqam, cfm.color, cfm.qId, cfm.tId);
       }
