@@ -4969,12 +4969,13 @@ function renderMqdTilawatList(maqam, color, forcedQari){
   document.getElementById("hTitle").textContent=info.icon+" مقام "+maqam;
   document.getElementById("hSub").textContent="انتخاب تلاوت";
   window.mqdCurrentDemoUrl = MAQAM_DEMO_LINKS[maqam] || null;
+  const showDemoBtnHere = !forcedQari;
   document.getElementById("mqdHeader").innerHTML=`
     <div class="mqd-dot" style="background:${color}"></div>
     <div class="mqd-info">
       <div class="mqd-name">${info.icon} مقام ${maqam}</div>
       <div class="mqd-sub">${info.desc}</div>
-      ${MAQAM_DEMO_LINKS[maqam] ? '<button class="mqd-demo-btn" onclick="navToDemo()">🎹 آموزش تعاملی این مقام</button>' : ''}
+      ${showDemoBtnHere && MAQAM_DEMO_LINKS[maqam] ? '<button class="mqd-demo-btn" onclick="navToDemo()">🎹 آموزش تعاملی این مقام</button>' : ''}
     </div>`;
   const wrap=document.getElementById("mqdSections"); wrap.innerHTML="";
   const activeQariDetail=forcedQari||curQari||maqamFilterQari;
