@@ -4417,29 +4417,58 @@ function renderMqdTilawatList(maqam, color){
     wrap.appendChild(card);
   });
   if(shClips.length){
-    const shSec=document.createElement("div"); shSec.className="mqd-sec";
-    shSec.innerHTML=`<div class="mqd-sec-title">🎤 قطعات آموزشی شحات انور — ${shClips.length} قطعه</div>`;
-    shClips.forEach(clip=>{
-      const verseHtml = (clip.verses||[]).map(v=>
-        `<div class="mqd-ayah">${v.ar||""}</div>${v.fa?'<div class="mqd-meta">'+v.fa+'</div>':''}`
-      ).join('');
-      const row=document.createElement("div"); row.className="mqd-fi";
-      row.innerHTML=`<div class="mqd-num" style="background:${color}">${clip.id}</div>
-        <div class="mqd-txt">
-          ${verseHtml || '<div class="mqd-ayah">'+clip.name+'</div>'}
-          <div class="mqd-meta">${clip.name}${clip.duration?" | "+clip.duration:""}</div>
-        </div>
-        <button class="mqd-play has" id="shplay${clip.id}" title="پخش">▶</button>`;
-      row.onclick=(e)=>{ e.stopPropagation(); toggleShahhatClip(clip.id); };
-      shSec.appendChild(row);
-    });
-    wrap.appendChild(shSec);
+    const shCard=document.createElement("div"); shCard.className="qari-card";
+    shCard.style.setProperty('--qcolor','#795548');
+    shCard.style.borderRightColor=color;
+    shCard.innerHTML=`<div class="qari-avatar" style="background:linear-gradient(135deg,#795548,#795548bb)"><img src="avatar_shahhat.jpg" alt="شحات انور" style="width:56px;height:56px;object-fit:cover;border-radius:50%;position:absolute;top:0;left:0" onerror="this.remove()"></div>
+      <div class="qari-info">
+        <div class="qari-name">شحات انور</div>
+        <div class="qari-desc">مقام ${maqam} — قطعات آموزشی</div>
+        <div class="qari-meta">${shClips.length} قطعه</div>
+      </div>
+      <div class="qari-arrow">&#8592;</div>`;
+    shCard.onclick=()=>openShahhatMaqamDetail(maqam,color);
+    wrap.appendChild(shCard);
   }
   if(grand===0 && shClips.length===0){
     wrap.innerHTML='<div style="text-align:center;padding:40px;color:#bbb">فرازی یافت نشد</div>';
   }
 }
 
+function openShahhatMaqamDetail(maqam, color){
+  mqdSubLevel=true;
+  const shClips = SHAHHAT_MAQAM_CLIPS[maqam] || [];
+  document.getElementById("hTitle").textContent="🎤 شحات انور";
+  document.getElementById("hSub").textContent="مقام "+maqam;
+  document.getElementById("mqdHeader").innerHTML=`
+    <div class="mqd-dot" style="background:${color}"></div>
+    <div class="mqd-info">
+      <div class="mqd-name">🎤 شحات انور</div>
+      <div class="mqd-sub">مقام ${maqam}</div>
+    </div>`;
+  const wrap=document.getElementById("mqdSections"); wrap.innerHTML="";
+  if(!shClips.length){
+    wrap.innerHTML='<div style="text-align:center;padding:40px;color:#bbb">قطعهای یافت نشد</div>';
+    return;
+  }
+  const sec=document.createElement("div"); sec.className="mqd-sec";
+  sec.innerHTML=`<div class="mqd-sec-title">🎤 شحات انور — ${shClips.length} قطعه</div>`;
+  shClips.forEach(clip=>{
+    const verseHtml = (clip.verses||[]).map(v=>
+      `<div class="mqd-ayah">${v.ar||""}</div>${v.fa?'<div class="mqd-meta">'+v.fa+'</div>':''}`
+    ).join('');
+    const row=document.createElement("div"); row.className="mqd-fi";
+    row.innerHTML=`<div class="mqd-num" style="background:${color}">${clip.id}</div>
+      <div class="mqd-txt">
+        ${verseHtml || '<div class="mqd-ayah">'+clip.name+'</div>'}
+        <div class="mqd-meta">${clip.name}${clip.duration?" | "+clip.duration:""}</div>
+      </div>
+      <button class="mqd-play has" id="shplay${clip.id}" title="پخش">▶</button>`;
+    row.onclick=(e)=>{ e.stopPropagation(); toggleShahhatClip(clip.id); };
+    sec.appendChild(row);
+  });
+  wrap.appendChild(sec);
+}
 function openMaqamQariDetail(maqam, color, qId){
   mqdSubLevel=true;
   const q=QARIS.find(x=>x.id===qId);
