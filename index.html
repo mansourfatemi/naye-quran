@@ -228,6 +228,17 @@
 .mqd-til-name{font-size:1.02em;font-weight:bold;color:#222;margin-bottom:3px}
 .mqd-til-cnt{font-size:.8em;color:#999}
 .mqd-til-arrow{color:#ddd;font-size:1.3em;flex-shrink:0}
+.mqd-qari-pick{background:#fff;border-radius:14px;padding:16px 18px;margin:9px 10px;display:flex;align-items:center;gap:14px;cursor:pointer;border-right:5px solid transparent;box-shadow:0 2px 10px rgba(0,0,0,.07);transition:.2s}
+.mqd-qari-pick:active{background:#fff5f5}
+.mqd-qari-pick.disabled{cursor:default;opacity:.6;border-right-color:transparent!important;background:#fafafa}
+.mqd-qari-avatar{width:56px;height:56px;border-radius:50%;flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:1.4em}
+.mqd-qari-avatar img{width:100%;height:100%;object-fit:cover}
+.mqd-qari-info{flex:1;text-align:right;min-width:0}
+.mqd-qari-name{font-size:1.02em;font-weight:bold;color:#222;margin-bottom:3px}
+.mqd-qari-cnt{font-size:.8em;color:#999}
+.mqd-qari-badge{display:inline-block;background:#eee;color:#999;font-size:.72em;padding:2px 9px;border-radius:20px;margin-top:3px}
+.mqd-qari-arrow{color:#ddd;font-size:1.3em;flex-shrink:0}
+.mqd-sec-label{padding:14px 10px 6px;font-size:.8em;font-weight:bold;color:#999}
 .maq-banner{background:linear-gradient(135deg,#1a1a2e,#16213e);border-radius:16px;padding:18px 20px;display:flex;align-items:center;gap:14px;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.18);margin:16px 16px 0}
 .about-link-wrap{text-align:center;padding:22px 16px 30px}
 .tj-header{padding:15px 20px;background:linear-gradient(135deg,#1a237e,#283593);color:#fff;text-align:center;position:sticky;top:60px;z-index:10}
@@ -4210,6 +4221,7 @@ let cameFromMaqamDetail=null;
 let mqdPreviewActive=false;
 let mqdQueue=[];
 let mqdViewMaqam=null, mqdViewColor=null, mqdSubLevel=false;
+let mqdSelectedQari=null;
 
 function openMaqamPage(){
   au.pause(); pl=false;
@@ -4356,10 +4368,82 @@ function renderMaqamGrid(){
 }
 
 function openMaqamDetail(maqam, color){
+  au.pause(); mqdPreviewActive=false; au.onended=null;
   document.getElementById("maqamPage").style.display="none";
   document.getElementById("maqamDetailPage").style.display="block";
-  mqdViewMaqam=maqam; mqdViewColor=color; mqdSubLevel=false;
-  renderMqdTilawatList(maqam, color);
+  mqdViewMaqam=maqam; mqdViewColor=color; mqdSubLevel=false; mqdSelectedQari=null;
+  const activeQariDetail=curQari||maqamFilterQari;
+  if(activeQariDetail){
+    renderMqdTilawatList(maqam, color);
+  } else {
+    renderMqdQariPicker(maqam, color);
+  }
+}
+
+const MQD_PRIMARY_QARI_IDS=["manshawy","mostafa_ismail"];
+const MQD_OTHER_MASTERS=[
+  {name:"\u0634\u062d\u0627\u062a \u0627\u0646\u0648\u0631"},
+  {name:"\u0639\u0628\u062f\u0627\u0644\u0628\u0627\u0633\u0637 \u0639\u0628\u062f\u0627\u0644\u0635\u0645\u062f"}
+];
+
+function renderMqdQariPicker(maqam, color){
+  au.pause(); mqdPreviewActive=false; au.onended=null;
+  const info=MAQAM_INFO[maqam]||{icon:"\ud83c\udfb5",desc:""};
+  document.getElementById("hTitle").textContent=info.icon+" \u0645\u0642\u0627\u0645 "+maqam;
+  document.getElementById("hSub").textContent="\u0627\u0646\u062a\u062e\u0627\u0628 \u0642\u0627\u0631\u06cc";
+  window.mqdCurrentDemoUrl = MAQAM_DEMO_LINKS[maqam] || null;
+  document.getElementById("mqdHeader").innerHTML=`
+    <div class="mqd-dot" style="background:${color}"></div>
+    <div class="mqd-info">
+      <div class="mqd-name">${info.icon} \u0645\u0642\u0627\u0645 ${maqam}</div>
+      <div class="mqd-sub">${info.desc}</div>
+      ${MAQAM_DEMO_LINKS[maqam] ? '<button class="mqd-demo-btn" onclick="navToDemo()">\ud83c\udfb9 \u0622\u0645\u0648\u0632\u0634 \u062a\u0639\u0627\u0645\u0644\u06cc \u0627\u06cc\u0646 \u0645\u0642\u0627\u0645</button>' : ''}
+    </div>`;
+  const wrap=document.getElementById("mqdSections"); wrap.innerHTML="";
+  let any=false;
+  MQD_PRIMARY_QARI_IDS.forEach(qid=>{
+    const q=QARIS.find(x=>x.id===qid);
+    if(!q) return;
+    let cnt=0;
+    q.tilawat.forEach(t=>{ cnt+=t.faraz.filter(f=>maqamPrimary(f.m)===maqam).length; });
+    if(!cnt) return;
+    any=true;
+    const card=document.createElement("div"); card.className="mqd-qari-pick";
+    card.style.borderRightColor=q.color;
+    card.innerHTML=`<div class="mqd-qari-avatar" style="background:linear-gradient(135deg,${q.color},${q.color}bb)"><img src="avatar_${q.id}.jpg" onerror="this.remove()"></div>
+      <div class="mqd-qari-info">
+        <div class="mqd-qari-name">${q.name}</div>
+        <div class="mqd-qari-cnt">${cnt} \u0641\u0631\u0627\u0632 \u062f\u0631 \u0627\u06cc\u0646 \u0645\u0642\u0627\u0645</div>
+      </div>
+      <div class="mqd-qari-arrow">&#8592;</div>`;
+    card.onclick=()=>openMqdQariDetail(maqam,color,q.id);
+    wrap.appendChild(card);
+  });
+  const secLbl=document.createElement("div"); secLbl.className="mqd-sec-label";
+  secLbl.textContent="\u0633\u0627\u06cc\u0631 \u0627\u0633\u0627\u062a\u06cc\u062f";
+  wrap.appendChild(secLbl);
+  MQD_OTHER_MASTERS.forEach(o=>{
+    const card=document.createElement("div"); card.className="mqd-qari-pick disabled";
+    card.innerHTML=`<div class="mqd-qari-avatar" style="background:#ddd">\ud83c\udf99\ufe0f</div>
+      <div class="mqd-qari-info">
+        <div class="mqd-qari-name">${o.name}</div>
+        <div class="mqd-qari-badge">\u0628\u0647\u200c\u0632\u0648\u062f\u06cc</div>
+      </div>`;
+    wrap.appendChild(card);
+  });
+  if(!any){
+    const empty=document.createElement("div");
+    empty.style.cssText="text-align:center;padding:40px;color:#bbb";
+    empty.textContent="\u0641\u0631\u0627\u0632\u06cc \u06cc\u0627\u0641\u062a \u0646\u0634\u062f";
+    wrap.insertBefore(empty, wrap.firstChild);
+  }
+}
+
+function openMqdQariDetail(maqam, color, qId){
+  au.pause(); mqdPreviewActive=false; au.onended=null;
+  mqdSelectedQari=qId;
+  const q=QARIS.find(x=>x.id===qId);
+  renderMqdTilawatList(maqam, color, q);
 }
 
 function navToDemo(){
@@ -4380,7 +4464,8 @@ function navToTuner(){
     window.location.href = url;
   }
 }
-function renderMqdTilawatList(maqam, color){
+function renderMqdTilawatList(maqam, color, forcedQari){
+  au.pause(); mqdPreviewActive=false; au.onended=null;
   const info=MAQAM_INFO[maqam]||{icon:"🎵",desc:""};
   document.getElementById("hTitle").textContent=info.icon+" مقام "+maqam;
   document.getElementById("hSub").textContent="انتخاب تلاوت";
@@ -4393,7 +4478,7 @@ function renderMqdTilawatList(maqam, color){
       ${MAQAM_DEMO_LINKS[maqam] ? '<button class="mqd-demo-btn" onclick="navToDemo()">🎹 آموزش تعاملی این مقام</button>' : ''}
     </div>`;
   const wrap=document.getElementById("mqdSections"); wrap.innerHTML="";
-  const activeQariDetail=curQari||maqamFilterQari;
+  const activeQariDetail=forcedQari||curQari||maqamFilterQari;
   const source=activeQariDetail?[activeQariDetail]:QARIS;
   let grand=0;
   source.forEach(q=>{
@@ -4420,6 +4505,7 @@ function renderMqdTilawatList(maqam, color){
 }
 
 function openMaqamTilawatDetail(maqam, color, qId, tId){
+  au.pause(); mqdPreviewActive=false; au.onended=null;
   mqdSubLevel=true;
   const q=QARIS.find(x=>x.id===qId);
   const t=q&&q.tilawat.find(x=>x.id===tId);
@@ -4750,15 +4836,23 @@ plAudio.addEventListener("ended",()=>{
 });
 
 function goBackFromMaqamDetail(){
+  au.pause(); mqdPreviewActive=false; au.onended=null;
   if(mqdSubLevel){
     mqdSubLevel=false;
-    renderMqdTilawatList(mqdViewMaqam, mqdViewColor);
+    const fq=mqdSelectedQari?QARIS.find(x=>x.id===mqdSelectedQari):null;
+    renderMqdTilawatList(mqdViewMaqam, mqdViewColor, fq);
+    return;
+  }
+  const activeQariDetail=curQari||maqamFilterQari;
+  if(!activeQariDetail && mqdSelectedQari){
+    mqdSelectedQari=null;
+    renderMqdQariPicker(mqdViewMaqam, mqdViewColor);
     return;
   }
   document.getElementById("maqamDetailPage").style.display="none";
   document.getElementById("maqamPage").style.display="block";
-  document.getElementById("hTitle").textContent="🎓 آموزش مقامات";
-  document.getElementById("hSub").textContent=(curQari||maqamFilterQari)?(curQari||maqamFilterQari).name+" — مقامات":"همه قاریان — مقامات";
+  document.getElementById("hTitle").textContent="\ud83c\udf93 \u0622\u0645\u0648\u0632\u0634 \u0645\u0642\u0627\u0645\u0627\u062a";
+  document.getElementById("hSub").textContent=(curQari||maqamFilterQari)?(curQari||maqamFilterQari).name+" \u2014 \u0645\u0642\u0627\u0645\u0627\u062a":"\u0647\u0645\u0647 \u0642\u0627\u0631\u06cc\u0627\u0646 \u2014 \u0645\u0642\u0627\u0645\u0627\u062a";
 }
 
 // Override goBack to handle maqam pages
