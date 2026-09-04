@@ -483,11 +483,7 @@
   <div class="maq-hero">
     <div class="maq-hero-sub">روی هر مقام کلیک کنید تا فرازها را ببینید</div>
     <button class="mqd-demo-btn" onclick="navToTuner()" style="margin-top:10px">🎤 تیونر و پخش مقامات</button>
-    <div id="maqamQariFilterWrap" style="margin-top:12px;display:none">
-      <select id="maqamQariSelect" onchange="onMaqamQariFilterChange(this.value)" style="width:100%;max-width:280px;padding:10px 14px;border-radius:12px;border:none;font-size:.9em;text-align:right;direction:rtl;background:rgba(255,255,255,.95);color:#1a1a2e;font-family:inherit">
-        <option value="">🎓 همه قاریان</option>
-      </select>
-    </div>
+
   </div>
     <div id="maqamSearchWrap" style="margin-top:12px">
       <input type="text" id="maqamSearchInput" placeholder="🔍 جستجوی مقام… (مثل نیشابورک، رهاوی)" oninput="filterMaqamGrid()" style="width:100%;max-width:280px;padding:10px 14px;border-radius:12px;border:none;font-size:.9em;text-align:right;direction:rtl;background:rgba(255,255,255,.95);color:#1a1a2e;font-family:inherit">
@@ -4228,25 +4224,9 @@ function openMaqamPage(){
   document.getElementById("hTitle").textContent="🎓 آموزش مقامات";
   document.getElementById("hSub").textContent=curQari?curQari.name+" — مقامات":"همه قاریان — مقامات";
   document.querySelector(".header").style.background="linear-gradient(135deg,#1a1a2e,#16213e)";
-  const filterWrap=document.getElementById("maqamQariFilterWrap");
-  if(filterWrap){
-    if(curQari){
-      filterWrap.style.display="none";
-    } else {
-      filterWrap.style.display="block";
-      const sel=document.getElementById("maqamQariSelect");
-      sel.innerHTML='<option value="">🎓 همه قاریان</option>'+QARIS.map(q=>`<option value="${q.id}">${q.name}</option>`).join('');
-      sel.value="";
-    }
-  }
   renderMaqamGrid();
 }
 
-function onMaqamQariFilterChange(val){
-  maqamFilterQari = val ? QARIS.find(q=>q.id===val) : null;
-  document.getElementById("hSub").textContent = maqamFilterQari?maqamFilterQari.name+" — مقامات":"همه قاریان — مقامات";
-  renderMaqamGrid();
-}
 
 function searchMaqamDetails(q){
   const activeQari=curQari||maqamFilterQari;
