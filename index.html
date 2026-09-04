@@ -4400,22 +4400,21 @@ function renderMqdTilawatList(maqam, color){
   const source=activeQariDetail?[activeQariDetail]:QARIS;
   let grand=0;
   source.forEach(q=>{
-    q.tilawat.forEach(t=>{
-      const cnt=t.faraz.filter(f=>maqamPrimary(f.m)===maqam).length;
-      if(!cnt)return;
-      grand+=cnt;
-      const title=activeQariDetail?t.name:q.name+" — "+t.name;
-      const card=document.createElement("div"); card.className="mqd-til-card";
-      card.style.borderRightColor=color;
-      card.innerHTML=`<div class="mqd-til-icon">📖</div>
-        <div class="mqd-til-info">
-          <div class="mqd-til-name">${title}</div>
-          <div class="mqd-til-cnt">${cnt} فراز</div>
-        </div>
-        <div class="mqd-til-arrow">&#8592;</div>`;
-      card.onclick=()=>openMaqamTilawatDetail(maqam,color,q.id,t.id);
-      wrap.appendChild(card);
-    });
+    const cnt=q.tilawat.reduce((s,t)=>s+t.faraz.filter(f=>maqamPrimary(f.m)===maqam).length,0);
+    if(!cnt)return;
+    grand+=cnt;
+    const card=document.createElement("div"); card.className="qari-card";
+    card.style.setProperty('--qcolor',q.color);
+    card.style.borderRightColor=color;
+    card.innerHTML=`<div class="qari-avatar" style="background:linear-gradient(135deg,${q.color},${q.color}bb)"><img src="avatar_${q.id}.jpg" alt="${q.name}" style="width:56px;height:56px;object-fit:cover;border-radius:50%;position:absolute;top:0;left:0" onerror="this.remove()"></div>
+      <div class="qari-info">
+        <div class="qari-name">${q.name}</div>
+        <div class="qari-desc">مقام ${maqam}</div>
+        <div class="qari-meta">${cnt} فراز</div>
+      </div>
+      <div class="qari-arrow">&#8592;</div>`;
+    card.onclick=()=>openMaqamQariDetail(maqam,color,q.id);
+    wrap.appendChild(card);
   });
   if(shClips.length){
     const shSec=document.createElement("div"); shSec.className="mqd-sec";
@@ -4441,6 +4440,60 @@ function renderMqdTilawatList(maqam, color){
   }
 }
 
+function openMaqamQariDetail(maqam, color, qId){
+  mqdSubLevel=true;
+  const q=QARIS.find(x=>x.id===qId);
+  if(!q)return;
+  const info=MAQAM_INFO[maqam]||{icon:"🎵",desc:""};
+  document.getElementById("hTitle").textContent=info.icon+" "+q.name;
+  document.getElementById("hSub").textContent="مقام "+maqam;
+  document.getElementById("mqdHeader").innerHTML=`
+    <div class="mqd-dot" style="background:${color}"></div>
+    <div class="mqd-info">
+      <div class="mqd-name">${info.icon} ${q.name}</div>
+      <div class="mqd-sub">مقام ${maqam}</div>
+    </div>`;
+  const wrap=document.getElementById("mqdSections"); wrap.innerHTML="";
+  mqdQueue=[];
+  const matches=[];
+  q.tilawat.forEach(t=>{
+    t.faraz.forEach((f,i)=>{
+      if(maqamPrimary(f.m)===maqam) matches.push({f,i,t});
+    });
+  });
+  if(!matches.length){
+    wrap.innerHTML='<div style="text-align:center;padding:40px;color:#bbb">فرازی یافت نشد</div>';
+    return;
+  }
+  const sec=document.createElement("div"); sec.className="mqd-sec";
+  sec.innerHTML=`<div class="mqd-sec-title">🎵 ${q.name} — ${matches.length} فراز</div>`;
+  matches.forEach(({f,i,t})=>{
+    const has=!!f.au;
+    const row=document.createElement("div"); row.className="mqd-fi";
+    row.innerHTML=`<div class="mqd-num" style="background:${color}">${f.n}</div>
+      <div class="mqd-txt">
+        <div class="mqd-ayah">${f.a}</div>
+        <div class="mqd-meta">📖 ${t.name}${f.m&&f.m!==maqam?" | 🔗 "+f.m:""} | آیه ${f.o}${f.t?" | "+f.t:""}${f.d?" | "+f.d:""}</div>
+      </div>
+      <button class="mqd-play ${has?"has":""}" title="${has?"پخش":"بدون صوت"}">${has?"▶":"—"}</button>`;
+    const playBtn=row.querySelector(".mqd-play");
+    const qIdx=mqdQueue.length;
+    mqdQueue.push({btn:playBtn, audioSrc:has?("https://archive.org/download/naye-quran-audio/qaris/"+q.id+"/"+f.au):null, au:f.au, has:has});
+    if(has){
+      playBtn.onclick=(e)=>{
+        e.stopPropagation();
+        if(!au.paused && au.src.endsWith(f.au)){
+          au.pause(); playBtn.innerHTML="▶"; mqdPreviewActive=false;
+        } else {
+          mqdPlayAt(qIdx);
+        }
+      };
+    }
+    row.onclick=()=>jumpToFaraz(q,t,i,maqam,color);
+    sec.appendChild(row);
+  });
+  wrap.appendChild(sec);
+}
 function openMaqamTilawatDetail(maqam, color, qId, tId){
   mqdSubLevel=true;
   const q=QARIS.find(x=>x.id===qId);
@@ -4800,7 +4853,7 @@ goBack=function(){
       if(_sq && cfm.searchQuery){ _sq.value=cfm.searchQuery; filterMaqamGrid(); }
     } else {
       openMaqamDetail(cfm.maqam, cfm.color);
-      if(cfm.qId && cfm.tId) openMaqamTilawatDetail(cfm.maqam, cfm.color, cfm.qId, cfm.tId);
+      if(cfm.qId) openMaqamQariDetail(cfm.maqam, cfm.color, cfm.qId);
     }
     return;
   }
