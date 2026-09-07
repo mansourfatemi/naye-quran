@@ -27,7 +27,6 @@
   .pg-wkey{position:absolute;top:0;width:44px;height:130px;background:#555;border:1px solid #444;border-radius:0 0 5px 5px;transition:background .12s;cursor:pointer}
   .pg-wkey.active{background:#fff}
   .pg-bkey{position:absolute;top:0;width:26px;height:80px;background:#111;border-radius:0 0 4px 4px;z-index:5;cursor:pointer;transition:background .12s}
-  /* کلید سیاه فعال = سفید روشن (مثل نتنگار) */
   .pg-bkey.active{background:#fff}
 
   .letter-row{display:flex;justify-content:space-between;padding:10px 18px 0;font-size:1.05em;font-weight:bold;color:#999;direction:ltr}
@@ -43,7 +42,7 @@
   .cents-tick{position:absolute;bottom:0;width:1.5px;height:24px;background:#555}
   .cents-tick.mid{background:#777;height:28px}
   .cents-label{position:absolute;top:0;font-size:.7em;color:#888;transform:translateX(-50%)}
-  .cents-needle{position:absolute;bottom:0;width:3px;height:28px;background:#e91e63;transition:left .08s linear,background .15s;left:139px}
+  .cents-needle{position:absolute;bottom:0;width:3px;height:28px;background:#e91e63;transition:left .06s linear,background .15s;left:139px}
   .cents-needle.good{background:#4CAF50}
   .cents-needle.warn{background:#FF9800}
 
@@ -94,12 +93,17 @@
 </div>
 
 <script>
+// ══════════════════════════════════════════════════════════
+//  تیونر نوای قرآن — نسخه ۲ (AudioWorklet + Overlap)
+//  معماری الهامگرفته از TarsosDSP (مدرسه تلاوت ۱)
+// ══════════════════════════════════════════════════════════
+
 function toFa(n){ return n.toString().replace(/[0-9]/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]); }
 
 const NOTE_NAMES_FA = ['دو','دو#','ر','ر#','می','فا','فا#','سل','سل#','لا','لا#','سی'];
 const NOTE_NAMES_EN = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
 const IS_SHARP = [false,true,false,true,false,false,true,false,true,false,true,false];
-const WHITE_LETTER_IDX = [0,2,4,5,7,9,11]; // C D E F G A B
+const WHITE_LETTER_IDX = [0,2,4,5,7,9,11];
 const BLACK_AFTER_WHITE = {1:0, 3:1, 6:3, 8:4, 10:5};
 
 // ══════════ ردیف اکتاو (۰ تا ۸) ══════════
@@ -174,7 +178,7 @@ function setActivePianoKey(noteIdx){
   }
 }
 
-// ── نواختن دستی یک نُت مرجع با تپ روی پیانو/حروف ──
+// ── نواختن دستی یک نُت مرجع ──
 let audioCtx = null;
 function ensureCtx(){
   if(!audioCtx) audioCtx = new (window.AudioContext||window.webkitAudioContext)();
@@ -202,7 +206,7 @@ function manualPlayByIdx(noteIdx){
   const freq = 440 * Math.pow(2, (midi - 69) / 12);
   ensureCtx();
   playTone(freq);
-  displayNote(noteIdx, lastDetectedOctave, 0);
+  displayNote(noteIdx, lastDetectedOctave, 0, freq);
 }
 
 // ══════════ خطکش سِنت ══════════
@@ -223,7 +227,7 @@ function renderCentsAxis(){
 }
 renderCentsAxis();
 
-function displayNote(noteIdx, octave, cents){
+function displayNote(noteIdx, octave, cents, freq){
   document.getElementById('idleMsg').style.display = 'none';
   lastDetectedOctave = octave;
   setActiveOctave(octave);
@@ -234,7 +238,7 @@ function displayNote(noteIdx, octave, cents){
   const bigCents = document.getElementById('bigCents');
   bigNote.textContent = NOTE_NAMES_FA[noteIdx];
   const roundedCents = Math.round(cents);
-  bigCents.textContent = (roundedCents>0?'+':'') + toFa(Math.abs(roundedCents)).replace(/^/, roundedCents<0?'−':'');
+  bigCents.textContent = (roundedCents>0?'+':'') + toFa(Math.abs(roundedCents)).replace(/^/, roundedCents<0?'\u2212':'');
 
   const needle = document.getElementById('centsNeedle');
   const clamped = Math.max(-50, Math.min(50, roundedCents));
@@ -245,111 +249,160 @@ function displayNote(noteIdx, octave, cents){
   if(Math.abs(roundedCents) >= 38){
     const nextIdx = (noteIdx + (roundedCents>0?1:-1) + 12) % 12;
     qtoneHint.classList.add('show');
-    qtoneHint.innerHTML = '🔵 این ارتفاع احتمالاً <b>ربعپرده</b> است — تقریباً وسط بین «' + NOTE_NAMES_FA[noteIdx] + '» و «' + NOTE_NAMES_FA[nextIdx] + '»';
+    qtoneHint.innerHTML = '🔵 ربع\u200Cپرده — بین «' + NOTE_NAMES_FA[noteIdx] + '» و «' + NOTE_NAMES_FA[nextIdx] + '»';
   } else {
     qtoneHint.classList.remove('show');
   }
+
+  const dbg = document.getElementById('debugLine');
+  if(dbg && freq) dbg.textContent = freq.toFixed(1) + ' Hz';
 }
 function displayIdle(){
   document.getElementById('idleMsg').style.display = 'block';
-  document.getElementById('bigNote').textContent = '—';
+  document.getElementById('bigNote').textContent = '\u2014';
   document.getElementById('bigCents').innerHTML = '&nbsp;';
   document.getElementById('qtoneHint').classList.remove('show');
   octaveRow.querySelectorAll('span').forEach(s=>s.classList.remove('active'));
   letterRow.querySelectorAll('span').forEach(s=>s.classList.remove('active'));
   persianRow.querySelectorAll('span').forEach(s=>s.classList.remove('active'));
   setActivePianoKey(-1);
+  const dbg = document.getElementById('debugLine');
+  if(dbg) dbg.textContent = '';
 }
 displayIdle();
 
-// ══════════ تیونر زنده (تشخیص ارتفاع صدا از میکروفون) ══════════
+// ══════════════════════════════════════════════════════════
+//   هسته تیونر — AudioWorklet + YIN با Overlap
+//   معماری: Mic → ScriptProcessor/Worklet → ring buffer
+//           → YIN هر 512 نمونه (overlap 75%) → UI update
+// ══════════════════════════════════════════════════════════
+
 let micStream = null;
 let micAudioCtx = null;
-let micAnalyser = null;
 let micRunning = false;
-let micRafId = null;
 const micBtn = document.getElementById('micBtn');
 const micStatus = document.getElementById('micStatus');
 
-// ══ YIN pitch detection ══
-function detectPitch(buf, sampleRate){
-  let rms = 0;
-  for(let i = 0; i < buf.length; i++) rms += buf[i] * buf[i];
-  rms = Math.sqrt(rms / buf.length);
-  if(rms < 0.008) return -1;
+// ── پارامترهای تیونر (الهام از TarsosDSP) ──
+const TUNER_BUFFER = 2048;     // اندازه بافر YIN
+const TUNER_HOP    = 512;      // هر 512 نمونه = overlap 75%
+const RMS_THRESHOLD = 0.008;   // حداقل ولوم صدا
 
-  const W    = Math.floor(buf.length / 2);
-  const tMin = Math.max(2, Math.floor(sampleRate / 2000));
-  const tMax = Math.min(W - 1, Math.floor(sampleRate / 50));
+// ── YIN pitch detection (بهینهشده) ──
+function yinDetect(buf, sampleRate){
+  // RMS gate
+  let rmsSum = 0;
+  for(let i = 0; i < buf.length; i++) rmsSum += buf[i] * buf[i];
+  if(Math.sqrt(rmsSum / buf.length) < RMS_THRESHOLD) return -1;
 
-  const d = new Float32Array(tMax + 1);
-  d[0] = 0;
-  for(let tau = 1; tau <= tMax; tau++){
+  const halfLen = buf.length >>> 1;
+  const tauMin  = Math.max(2, Math.floor(sampleRate / 1400));
+  const tauMax  = Math.min(halfLen - 1, Math.floor(sampleRate / 60));
+
+  // Step 2 — difference function
+  const d = new Float32Array(tauMax + 1);
+  for(let tau = 1; tau <= tauMax; tau++){
     let s = 0;
-    for(let i = 0; i < W; i++){
-      const diff = buf[i] - buf[i + tau];
-      s += diff * diff;
+    for(let i = 0; i < halfLen; i++){
+      const v = buf[i] - buf[i + tau];
+      s += v * v;
     }
     d[tau] = s;
   }
 
-  const cmnd = new Float32Array(tMax + 1);
+  // Step 3 — CMNDF
+  const cmnd = new Float32Array(tauMax + 1);
   cmnd[0] = 1;
   let runSum = 0;
-  for(let tau = 1; tau <= tMax; tau++){
+  for(let tau = 1; tau <= tauMax; tau++){
     runSum += d[tau];
     cmnd[tau] = runSum > 0 ? (d[tau] * tau) / runSum : 1;
   }
 
-  const THRESHOLD = 0.20;
+  // Step 4 — adaptive threshold (0.10 → 0.25 رو به بالا)
   let bestTau = -1;
-  for(let tau = tMin; tau < tMax - 1; tau++){
-    if(cmnd[tau] < THRESHOLD){
-      while(tau + 1 < tMax && cmnd[tau + 1] < cmnd[tau]) tau++;
-      bestTau = tau;
-      break;
+  for(let th = 0.10; th <= 0.25; th += 0.025){
+    for(let tau = tauMin; tau < tauMax - 1; tau++){
+      if(cmnd[tau] < th){
+        while(tau + 1 < tauMax && cmnd[tau + 1] < cmnd[tau]) tau++;
+        bestTau = tau;
+        break;
+      }
     }
+    if(bestTau !== -1) break;
   }
+  // اگر هیچ threshold ای موفق نشد — minimum مطلق
   if(bestTau === -1){
     let minVal = Infinity;
-    for(let tau = tMin; tau < tMax; tau++){
+    for(let tau = tauMin; tau < tauMax; tau++){
       if(cmnd[tau] < minVal){ minVal = cmnd[tau]; bestTau = tau; }
     }
-    if(minVal > 0.35) return -1;
+    if(minVal > 0.45) return -1;
   }
 
+  // Step 5 — parabolic interpolation
   let refined = bestTau;
-  if(bestTau > 1 && bestTau < tMax - 1){
-    const denom = cmnd[bestTau-1] - 2*cmnd[bestTau] + cmnd[bestTau+1];
-    if(Math.abs(denom) > 1e-9)
-      refined = bestTau + (cmnd[bestTau-1] - cmnd[bestTau+1]) / (2 * denom);
+  if(bestTau > 1 && bestTau < tauMax - 1){
+    const s0 = cmnd[bestTau - 1], s1 = cmnd[bestTau], s2 = cmnd[bestTau + 1];
+    const denom = 2 * (2 * s1 - s2 - s0);
+    if(Math.abs(denom) > 1e-12)
+      refined = bestTau + (s0 - s2) / denom;
   }
 
   const freq = sampleRate / refined;
-  if(freq < 50 || freq > 2000) return -1;
-  return freq;
+  return (freq >= 60 && freq <= 1400) ? freq : -1;
 }
 
-const CONFIRM_FRAMES = 2;
-const CENTS_SMOOTH  = 4;
-const SILENCE_MS    = 3000;
+// ── Ring Buffer با overlap — مثل AudioDispatcher جاوا ──
+class RingYinProcessor {
+  constructor(bufSize, hopSize, sampleRate, onPitch){
+    this.bufSize = bufSize;
+    this.hopSize = hopSize;
+    this.sampleRate = sampleRate;
+    this.onPitch = onPitch;
+    this.ring = new Float32Array(bufSize);
+    this.writePos = 0;
+    this.filled = false; // آیا حداقل یک بافر کامل داریم
+  }
 
-let debounceCount = 0;
+  // دادههای جدید از میکروفون را وارد ring buffer کن
+  feed(input){
+    for(let i = 0; i < input.length; i++){
+      this.ring[this.writePos] = input[i];
+      this.writePos++;
+
+      if(this.writePos >= this.bufSize){
+        // بافر پر شد — YIN اجرا کن
+        this.filled = true;
+        this._process();
+        // overlap: شیفت (کپی hop آخر را به ابتدا — مثل TarsosDSP)
+        const overlap = this.bufSize - this.hopSize;
+        this.ring.copyWithin(0, this.hopSize, this.bufSize);
+        this.writePos = overlap;
+      }
+    }
+  }
+
+  _process(){
+    if(!this.filled) return;
+    const freq = yinDetect(this.ring, this.sampleRate);
+    this.onPitch(freq);
+  }
+}
+
+// ── UI update logic (سبکتر از قبل) ──
+const CONFIRM_FRAMES = 1;    // فوری (قبل: ۲)
+const CENTS_SMOOTH   = 2;    // میانگین ۲ (قبل: ۴)
+const SILENCE_MS     = 1500; // ۱.۵ ثانیه (قبل: ۳)
+
 let debounceMidi  = -1;
+let debounceCount = 0;
 let centsHistory  = [];
 let lastSoundTime = 0;
 let silenceTimer  = null;
 
-function micLoop(){
+function handlePitch(freq){
   if(!micRunning) return;
-  const buf = new Float32Array(micAnalyser.fftSize);
-  micAnalyser.getFloatTimeDomainData(buf);
-  const freq = detectPitch(buf, micAudioCtx.sampleRate);
-
-  const dbg = document.getElementById('debugLine');
-  if(dbg) dbg.textContent = freq > 0
-    ? (freq.toFixed(1) + ' Hz | ' + micAudioCtx.sampleRate + ' sr')
-    : 'no pitch | sr:' + micAudioCtx.sampleRate + ' buf:' + buf.length;
 
   if(freq > 0 && isFinite(freq)){
     lastSoundTime = Date.now();
@@ -368,7 +421,7 @@ function micLoop(){
       if(debounceCount >= CONFIRM_FRAMES){
         const noteIdx = ((rounded % 12) + 12) % 12;
         const octave  = Math.floor(rounded / 12) - 1;
-        displayNote(noteIdx, octave, smoothCents);
+        displayNote(noteIdx, octave, smoothCents, freq);
       }
     } else {
       debounceMidi  = rounded;
@@ -377,7 +430,7 @@ function micLoop(){
     }
 
   } else {
-    if(!silenceTimer && (Date.now() - lastSoundTime) > 400){
+    if(!silenceTimer && (Date.now() - lastSoundTime) > 300){
       silenceTimer = setTimeout(()=>{
         debounceMidi  = -1;
         debounceCount = 0;
@@ -387,44 +440,39 @@ function micLoop(){
       }, SILENCE_MS);
     }
   }
-  micRafId = requestAnimationFrame(micLoop);
 }
+
+// ══════════ شروع/توقف تیونر ══════════
+let scriptNode = null;
+let ringProcessor = null;
 
 function errorAdvice(errName){
   if(errName === 'NotReadableError'){
-    return 'میکروفون شناسایی شد ولی سیستم اجازهی خواندن آن را نداد. معمولاً یکی از اینهاست: '
-      + '(۱) برنامهی دیگری از میکروفون استفاده میکند — آن را ببندید. '
-      + '(۲) در تنظیمات گوشی ← برنامهها ← این برنامه ← مجوزها، میکروفون را فعال کنید. '
-      + '(۳) گوشی را یکبار ریاستارت کنید.';
+    return 'میکروفون شناسایی شد ولی سیستم اجازه خواندن نداد. '
+      + '(۱) برنامهٔ دیگری میکروفون را قفل کرده — آن را ببندید. '
+      + '(۲) تنظیمات ← برنامهها ← مجوزها ← میکروفون را فعال کنید. '
+      + '(۳) گوشی را ریاستارت کنید.';
   }
   if(errName === 'NotAllowedError' || errName === 'PermissionDeniedError'){
-    return 'دسترسی میکروفون رد شده. به تنظیمات گوشی ← برنامهها ← این برنامه ← مجوزها بروید و «میکروفون» را فعال کنید.';
+    return 'دسترسی میکروفون رد شده. تنظیمات ← برنامهها ← مجوزها ← «میکروفون» را فعال کنید.';
   }
   if(errName === 'NotFoundError' || errName === 'DevicesNotFoundError'){
-    return 'هیچ میکروفونی روی این دستگاه شناسایی نشد.';
+    return 'هیچ میکروفونی شناسایی نشد.';
   }
-  return 'خطای نامشخص — لطفاً دوباره تلاش کنید یا گوشی را ریاستارت کنید.';
+  return 'خطای نامشخص — لطفاً دوباره تلاش کنید.';
 }
 
 async function startTuner(){
   if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
-    micStatus.innerHTML = '❌ این نسخهی WebView از میکروفون پشتیبانی نمیکند.';
+    micStatus.innerHTML = '❌ این WebView از میکروفون پشتیبانی نمیکند.';
     return;
   }
-  micStatus.textContent = '⏳ در حال درخواست دسترسی میکروفون...';
+  micStatus.textContent = '⏳ درخواست دسترسی میکروفون...';
 
-  let deviceInfo = '';
-  try{
-    if(navigator.mediaDevices.enumerateDevices){
-      const devices = await navigator.mediaDevices.enumerateDevices();
-      const audioInputs = devices.filter(d=>d.kind === 'audioinput');
-      deviceInfo = ' [میکروفونهای شناساییشده: ' + toFa(audioInputs.length) + ']';
-    }
-  }catch(e){}
-
+  // تلاش برای گرفتن میکروفون بدون پردازشهای اضافی
   const constraintsToTry = [
-    {audio:true},
-    {audio:{echoCancellation:false, noiseSuppression:false, autoGainControl:false}}
+    {audio:{echoCancellation:false, noiseSuppression:false, autoGainControl:false}},
+    {audio:true}
   ];
   let lastErr = null;
   for(const c of constraintsToTry){
@@ -437,34 +485,54 @@ async function startTuner(){
     }
   }
   if(lastErr){
-    const name = lastErr && lastErr.name || 'خطا';
-    micStatus.innerHTML = '❌ دسترسی میکروفون ممکن نشد (' + name + ')' + deviceInfo
+    const name = lastErr.name || 'خطا';
+    micStatus.innerHTML = '❌ ' + name
       + '<br><span style="color:#aaa">' + errorAdvice(name) + '</span>'
       + '<br><button style="margin-top:10px;border:none;background:#e91e63;color:#fff;border-radius:20px;padding:6px 16px;font-size:.82em;cursor:pointer" onclick="startTuner()">🔁 تلاش دوباره</button>';
     return;
   }
-  micStatus.textContent = '';
+
   micAudioCtx = new (window.AudioContext||window.webkitAudioContext)();
   const source = micAudioCtx.createMediaStreamSource(micStream);
-  micAnalyser = micAudioCtx.createAnalyser();
-  micAnalyser.fftSize = 8192;
-  source.connect(micAnalyser);
+  const sr = micAudioCtx.sampleRate;
+
+  micStatus.textContent = '';
+
+  // ── ساخت ring buffer processor ──
+  ringProcessor = new RingYinProcessor(TUNER_BUFFER, TUNER_HOP, sr, handlePitch);
+
+  // ── ScriptProcessorNode برای گرفتن نمونهها ──
+  // (AudioWorklet ایدهآلتر است ولی ScriptProcessor سازگاری بیشتری دارد)
+  // hopSize=512 → نزدیکترین scriptProcessor bufferSize
+  // ScriptProcessor bufferSize must be power of 2: 256, 512, 1024...
+  scriptNode = micAudioCtx.createScriptProcessor(512, 1, 1);
+  scriptNode.onaudioprocess = function(e){
+    if(!micRunning) return;
+    const input = e.inputBuffer.getChannelData(0);
+    ringProcessor.feed(input);
+  };
+
+  source.connect(scriptNode);
+  scriptNode.connect(micAudioCtx.destination); // لازم برای فعال نگه داشتن
+
   micRunning = true;
   micBtn.classList.add('on');
   micBtn.textContent = '⏹️ توقف تیونر';
-  micLoop();
 }
+
 function stopTuner(){
   micRunning = false;
-  if(micRafId) cancelAnimationFrame(micRafId);
   if(silenceTimer){ clearTimeout(silenceTimer); silenceTimer = null; }
+  if(scriptNode){ scriptNode.disconnect(); scriptNode = null; }
   if(micStream){ micStream.getTracks().forEach(t=>t.stop()); micStream = null; }
   if(micAudioCtx){ micAudioCtx.close(); micAudioCtx = null; }
+  ringProcessor = null;
   debounceMidi = -1; debounceCount = 0; centsHistory = [];
   micBtn.classList.remove('on');
   micBtn.textContent = '🎙️ شروع تیونر';
   displayIdle();
 }
+
 micBtn.onclick = function(){
   if(micRunning){ stopTuner(); } else { startTuner(); }
 };
