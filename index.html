@@ -237,14 +237,18 @@
 .maq-hero{background:linear-gradient(135deg,#1a1a2e,#16213e);padding:22px 16px;text-align:center}
 .maq-hero-title{color:#fff;font-size:1.2em;font-weight:bold;margin-bottom:5px}
 .maq-hero-sub{color:rgba(255,255,255,.55);font-size:.85em}
-.maq-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:14px}
-.maq-card{background:#fff;border-radius:14px;padding:16px 12px;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.08);border-top:4px solid #ddd;text-align:center;transition:.15s}
-.maq-card:active{transform:scale(.96);background:#fafafa}
-.maq-icon{font-size:2em;margin-bottom:6px}
-.maq-name{font-weight:bold;color:#222;font-size:.95em;margin-bottom:4px}
-.maq-cnt{font-size:.78em;color:#888;margin-bottom:9px}
-.maq-bar-bg{height:4px;background:#f0f0f0;border-radius:2px}
-.maq-bar{height:4px;border-radius:2px}
+.maq-grid{display:flex;flex-direction:column;padding:8px;gap:0}
+.maq-card{background:#fff;margin:5px 6px;display:flex;align-items:center;gap:0;cursor:pointer;position:relative;border-radius:0;box-shadow:0 1px 4px rgba(0,0,0,.08);transition:.15s;overflow:visible;border-top:1px solid #e0e0e0;border-bottom:1px solid #e0e0e0}
+.maq-card::before,.maq-card::after{content:"";display:block;width:16px;flex-shrink:0;align-self:stretch;background-image:radial-gradient(circle at 0% 50%,#f0f0f0 7px,#fff 7px);background-size:16px 16px;background-color:#fff}
+.maq-card::after{background-image:radial-gradient(circle at 100% 50%,#f0f0f0 7px,#fff 7px)}
+.maq-card:active{opacity:.8}
+.maq-icon{width:48px;height:48px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1.4em;font-weight:bold;color:#fff;margin:0 8px 0 0;border-radius:12px}
+.maq-name{font-weight:bold;color:#1a1a1a;font-size:1.0em;margin-bottom:2px}
+.maq-cnt{font-size:.75em;color:#888;margin-bottom:4px}
+.maq-bar-bg{height:5px;background:#f0f0f0;border-radius:3px;max-width:180px}
+.maq-bar{height:5px;border-radius:3px}
+.maq-card-info{flex:1;text-align:right;padding:14px 4px 14px 0;min-width:0}
+.maq-card-arrow{color:#ddd;font-size:1.3em;flex-shrink:0;margin-left:4px}
 #maqamDetailPage{display:none;padding-bottom:20px}
 .mqd-back{background:none;border:none;color:var(--qcolor);font-size:.88em;cursor:pointer;padding:10px 14px;display:block;text-align:right;width:100%}
 .mqd-header{padding:14px 16px;background:#fff;border-bottom:1px solid #f0f0f0;display:flex;align-items:center;gap:12px}
@@ -4330,220 +4334,14 @@ function renderStats(){
   const sorted=Object.entries(cnt).sort((a,b)=>b[1]-a[1]);
   const R=88,cx=120,cy=120,GAP=1.8*Math.PI/180;
   let ang=-Math.PI/2,paths='';
-  sorted.forEach(([nm,c])=>{
-    const a=c/total*2*Math.PI;
-    const ea=ang+a-GAP;
-    const x1=cx+R*Math.cos(ang),y1=cy+R*Math.sin(ang);
-    const x2=cx+R*Math.cos(ea),y2=cy+R*Math.sin(ea);
-    const r2=52;
-    const ix1=cx+r2*Math.cos(ang),iy1=cy+r2*Math.sin(ang);
-    const ix2=cx+r2*Math.cos(ea),iy2=cy+r2*Math.sin(ea);
-    const lf=a>Math.PI?1:0;
-    const col=MCOLORS[nm]||'#999';
-    paths+=`<path d="M${x1},${y1} A${R},${R} 0 ${lf},1 ${x2},${y2} L${ix2},${iy2} A${r2},${r2} 0 ${lf},0 ${ix1},${iy1} Z" fill="${col}"/>`;
-    ang+=a;
-  });
-  let leg='';
-  sorted.forEach(([nm,c])=>{
-    const pct=(c/total*100).toFixed(1);
-    const col=MCOLORS[nm]||'#999';
-    leg+=`<div class="leg-item"><div class="leg-dot" style="background:${col}"></div>
-      <div class="leg-info"><div class="leg-name">${nm}</div><div class="leg-val">${c} فراز · ${pct}٪</div></div></div>`;
-  });
-  el.innerHTML=`<div class="chart-title">📊 توزیع مقامات — ${cT.name}</div>
-    <div class="chart-container"><svg class="chart-svg" viewBox="0 0 240 240">
-      ${paths}
-      <circle cx="${cx}" cy="${cy}" r="44" fill="white"/>
-      <text x="${cx}" y="${cy-7}" text-anchor="middle" font-size="15" font-weight="bold" fill="#333">${total}</text>
-      <text x="${cx}" y="${cy+12}" text-anchor="middle" font-size="11" fill="#888">فراز</text>
-    </svg></div>
-    <div class="legend">${leg}</div>`;
-}
-
-// ═══ تایمر پخش خودکار ═══
-function tTimer(){
-  autoTimer=!autoTimer;
-  const b=document.getElementById("timerBtn");
-  b.classList.toggle("on",autoTimer);
-  if(autoTimer){b.style.background="#FF9800";b.style.color="#fff";}
-  else{b.style.background="#fff";b.style.color="#FF9800";stopCountdown();}
-}
-function startCountdown(){
-  if(!autoTimer)return;
-  if(!cT||cI>=cT.faraz.length-1){stopCountdown();return;}
-  stopCountdown();
-  countdownVal=(au&&au.duration&&isFinite(au.duration)&&au.duration>0)?Math.round(au.duration):20;
-  const cd=document.getElementById("timerCountdown");
-  const cn=document.getElementById("countNum");
-  if(!cd||!cn){console.log("Timer elements not found");return;}
-  cd.style.display="block";
-  cn.textContent=countdownVal;
-  countdownId=setInterval(()=>{
-    countdownVal--;
-    cn.textContent=countdownVal;
-    if(countdownVal<=0){
-      stopCountdown();
-      cI++;
-      upd(true);
-    }
-  },1000);
-}
-function stopCountdown(){
-  if(countdownId){clearInterval(countdownId);countdownId=null;}
-  const cd=document.getElementById("timerCountdown");
-  if(cd)cd.style.display="none";
-}
-
-// ═══ آموزش مقامات ═══
-const MAQAM_INFO = {
-  'بیات':        {icon:'🎼', desc:'پایه‌ترین مقام — احساس لطیف و صمیمی'},
-  'راست':        {icon:'🎵', desc:'شاد و روان — پرکاربردترین مقام'},
-  'نهاوند':      {icon:'🌙', desc:'حزین و دلنشین — مقام عاطفی'},
-  'سه گاه':      {icon:'✨', desc:'شاد و پرانرژی — مقام روحانی'},
-  'حجاز':        {icon:'🕌', desc:'عربی اصیل — معنوی و ملکوتی'},
-  'صبا':         {icon:'🌿', desc:'غمگین و عمیق — مقام نرم'},
-  'عجم':         {icon:'🎶', desc:'ترکیب رنگارنگ مقامات'},
-};
-
-// مقامات ترکیبی: نگاشت به مقام اول (والد) — بهعنوان زیرمجموعه محسوب میشوند نه کارت مستقل
-// لینک دموی تعاملی پیانو برای هر مقام اصلی (پوشه _maqam_piano_demo)
-const MAQAM_DEMO_LINKS = {
-  'بیات':   '_maqam_piano_demo/bayati.html',
-  'راست':   '_maqam_piano_demo/rast.html',
-  'نهاوند': '_maqam_piano_demo/nahawand.html',
-  'سه گاه': '_maqam_piano_demo/segah.html',
-  'حجاز':   '_maqam_piano_demo/index.html',
-  'صبا':    '_maqam_piano_demo/saba.html',
-  'عجم':    '_maqam_piano_demo/ajam.html',
-  'کرد':    '_maqam_piano_demo/kurd.html',
-};
-
-const MAQAM_COMPOSITE_PRIMARY = {
-  'بیات و راست':'بیات',
-  'بیات - راست':'بیات',
-  'بیات و حجاز':'بیات',
-  'بیات و صبا':'بیات',
-  'بیات - صبا':'بیات',
-  'راست و بیات':'راست',
-  'راست و نهاوند':'راست',
-  'حجاز و سه گاه':'حجاز',
-  'راست چهارگاه':'راست',
-};
-function maqamPrimary(m){ return MAQAM_COMPOSITE_PRIMARY[m]||m; }
-let shahhatAudio = new Audio();
-let shahhatPlayingId = null;
-let maqamFilterQari=null;
-let cameFromMaqamDetail=null;
-let mqdPreviewActive=false;
-let mqdQueue=[];
-let mqdViewMaqam=null, mqdViewColor=null, mqdSubLevel=false;
-let mqdNavStack=[];
-
-function openMaqamPage(){
-  au.pause(); pl=false;
-  document.getElementById("qariListPage").style.display="none";
-  document.getElementById("tilawatListPage").style.display="none";
-  document.getElementById("playerPage").style.display="none";
-  document.getElementById("maqamPage").style.display="block";
-  document.getElementById("maqamDetailPage").style.display="none";
-  document.getElementById("bBtn").style.display="block";
-  maqamFilterQari=null;
-  const _mqSearchEl=document.getElementById("maqamSearchInput"); if(_mqSearchEl) _mqSearchEl.value="";
-  document.getElementById("hTitle").textContent="🎓 آموزش مقامات";
-  document.getElementById("hSub").textContent=curQari?curQari.name+" — مقامات":"همه قاریان — مقامات";
-  document.querySelector(".header").style.background="linear-gradient(135deg,#1a1a2e,#16213e)";
-  renderMaqamGrid();
-}
-
-
-function searchMaqamDetails(q){
-  const activeQari=curQari||maqamFilterQari;
-  const source=activeQari?[activeQari]:QARIS;
-  const results=[];
-  source.forEach(qr=>qr.tilawat.forEach(t=>t.faraz.forEach((f,i)=>{
-    if((f.d||"").indexOf(q)>-1) results.push({qari:qr, til:t, idx:i, faraz:f});
-  })));
-  return results;
-}
-function filterMaqamGrid(){
-  const searchEl=document.getElementById("maqamSearchInput");
-  const q=(searchEl?searchEl.value:"").trim();
-  const cards=document.querySelectorAll("#maqamGrid .maq-card");
-  let any=false;
-  cards.forEach(card=>{
-    const nmEl=card.querySelector(".maq-name");
-    const nm=nmEl?nmEl.textContent:"";
-    const match=!q||nm.indexOf(q)>-1;
-    card.style.display=match?"":"none";
-    if(match) any=true;
-  });
-  const grid=document.getElementById("maqamGrid");
-  const detailWrap=document.getElementById("maqamDetailSearchResults");
-  const noRes=document.getElementById("maqamNoResults");
-  if(!q || any){
-    grid.style.display="";
-    if(detailWrap){detailWrap.style.display="none"; detailWrap.innerHTML="";}
-    if(noRes) noRes.style.display="none";
-    return;
-  }
-  grid.style.display="none";
-  const results=searchMaqamDetails(q);
-  if(results.length===0){
-    if(detailWrap){detailWrap.style.display="none"; detailWrap.innerHTML="";}
-    if(noRes){
-      noRes.textContent="نتیجه‌ای برای «"+q+"» پیدا نشد";
-      noRes.style.display="";
-    }
-    return;
-  }
-  if(noRes) noRes.style.display="none";
-  if(detailWrap){
-    detailWrap.style.display="";
-    detailWrap.innerHTML="";
-    const header=document.createElement("div");
-    header.style.cssText="padding:10px 4px;color:#888;font-size:.85em";
-    header.textContent="نتایج در جزئیات نقمه‌ها ("+results.length+" مورد):";
-    detailWrap.appendChild(header);
-    results.slice(0,50).forEach(r=>{
-      const primaryM=maqamPrimary(r.faraz.m||"");
-      const col=MCOLORS[primaryM]||"#999";
-      const hit=document.createElement("div");
-      hit.className="maq-detail-hit";
-      hit.style.cssText="border-right:4px solid "+col+";background:#fff;border-radius:10px;padding:10px 14px;margin-bottom:8px;cursor:pointer";
-      hit.innerHTML='<div style="font-weight:bold;color:#1a1a2e">'+(r.faraz.d||"")+'</div><div style="font-size:.8em;color:#888;margin-top:3px">'+r.qari.name+' · '+r.til.name+' · فراز '+r.faraz.n+'</div>';
-      hit.onclick=()=>jumpToFaraz(r.qari, r.til, r.idx, primaryM, col);
-      detailWrap.appendChild(hit);
-    });
-  }
-}
-
-function renderMaqamGrid(){
-  const cnt={};
-  let grandTotal=0;
-  const activeQari=curQari||maqamFilterQari;
-  const source=activeQari?[activeQari]:QARIS;
-  source.forEach(q=>q.tilawat.forEach(t=>t.faraz.forEach(f=>{
-    const m=maqamPrimary(f.m||'نامشخص');
-    cnt[m]=(cnt[m]||0)+1; grandTotal++;
-  })));
-  const sorted=Object.entries(cnt).sort((a,b)=>b[1]-a[1]);
-  const maxC=sorted[0]?sorted[0][1]:1;
-  const el=document.getElementById("maqamGrid"); el.innerHTML="";
-  if(grandTotal===0){
-    el.innerHTML='<div style="grid-column:span 2;text-align:center;padding:40px;color:#bbb">هنوز فرازی اضافه نشده</div>';
-    return;
-  }
-  sorted.forEach(([nm,c])=>{
+  sorted.forEach(([nm,c],idx)=>{
     const info=MAQAM_INFO[nm]||{icon:"🎵",desc:""};
     const col=MCOLORS[nm]||"#999";
     const pct=Math.round(c/grandTotal*100);
     const barW=Math.round(c/maxC*100);
+    const nums=['۱','۲','۳','۴','۵','۶','۷','۸','۹'];
     const d=document.createElement("div"); d.className="maq-card";
-    d.style.borderTopColor=col;
-    d.innerHTML=`<div class="maq-icon">${info.icon}</div>
-      <div class="maq-name">${nm}</div>
-      <div class="maq-cnt">${c} فراز · ${pct}٪</div>
-      <div class="maq-bar-bg"><div class="maq-bar" style="width:${barW}%;background:${col}"></div></div>`;
+    d.innerHTML=`<div class="maq-icon" style="background:${col}">${info.icon}</div><div class="maq-card-info"><div class="maq-name">${nm}</div><div class="maq-cnt">${c} فراز · ${pct}٪</div><div class="maq-bar-bg"><div class="maq-bar" style="width:${barW}%;background:${col}"></div></div></div><div class="maq-card-arrow">‹</div>`;
     d.onclick=()=>openMaqamDetail(nm,col);
     el.appendChild(d);
   });
@@ -4554,10 +4352,8 @@ function renderMaqamGrid(){
     const col=MCOLORS[nm]||"#999";
     const d=document.createElement("div"); d.className="maq-card";
     d.style.borderTopColor=col; d.style.opacity="0.75";
-    d.innerHTML=`<div class="maq-icon">${info.icon}</div>
-      <div class="maq-name">${nm}</div>
-      <div class="maq-cnt" style="color:#aaa">۰ فراز · demo موجود</div>
-      <div class="maq-bar-bg"><div class="maq-bar" style="width:0%;background:${col}"></div></div>`;
+    d.innerHTML=`<div class="maq-icon" style="background:${col};opacity:.6">${info.icon}</div><div class="maq-card-info"><div class="maq-name">${nm}</div><div class="maq-cnt" style="color:#aaa">۰ فراز · demo موجود</div>
+      <div class="maq-bar-bg"><div class="maq-bar" style="width:0%;background:${col}"></div></div></div><div class="maq-card-arrow">‹</div>`;
     d.onclick=()=>{ if(typeof stopCurrentAudio==="function") stopCurrentAudio();
       const demoUrl=MAQAM_DEMO_LINKS[nm];
       if(demoUrl){ if(typeof Android!=="undefined"&&Android.openAsset){ Android.openAsset(demoUrl); } else { window.location.href=demoUrl; } }
