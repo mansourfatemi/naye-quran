@@ -144,6 +144,29 @@
 .rec-seekbar-fill{height:100%;background:#26c6da;border-radius:3px;width:0%;transition:width .1s linear}
 .brec{color:#4CAF50;font-size:1.1em}
 .brec.has-rec{color:#fff;background:#4CAF50;border-color:#4CAF50}
+/* تاریخچه تلاوت */
+#historyPage{display:none;padding:70px 15px 90px}
+.hist-item{background:#fff;border-radius:12px;margin:8px 0;padding:13px 15px;display:flex;align-items:center;gap:12px;cursor:pointer;box-shadow:0 1px 6px rgba(0,0,0,.06);border-right:4px solid var(--qcolor)}
+.hist-item:active{background:#fff5f5}
+.hist-time{font-size:.68em;color:#bbb;margin-top:3px}
+.hist-maqam{font-size:.72em;color:var(--mqcolor);font-weight:bold}
+.hist-empty{text-align:center;padding:50px 20px;color:#bbb}
+
+/* اصطلاحات تخصصی */
+#termsPage{display:none;padding:70px 15px 90px}
+.term-card{background:#fff;border-radius:14px;margin:10px 0;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.term-header{padding:14px 16px;cursor:pointer;display:flex;align-items:center;gap:12px;border-right:4px solid #9C27B0}
+.term-header:active{background:#faf5ff}
+.term-name{font-size:1.05em;font-weight:bold;color:#333;flex:1;text-align:right}
+.term-name-en{font-size:.78em;color:#999;margin-top:2px}
+.term-arrow{color:#ccc;font-size:1.2em;transition:transform .2s}
+.term-card.open .term-arrow{transform:rotate(90deg)}
+.term-body{display:none;padding:0 16px 14px;font-size:.88em;line-height:1.9;color:#555;text-align:right;border-top:1px solid #f0f0f0}
+.term-card.open .term-body{display:block}
+.term-search{width:100%;padding:12px 16px;border:2px solid #e0e0e0;border-radius:14px;font-size:.92em;text-align:right;direction:rtl;font-family:inherit;margin-bottom:12px}
+.term-search:focus{border-color:#9C27B0;outline:none}
+.term-cat{font-size:.72em;color:#9C27B0;background:#f5f0ff;padding:3px 10px;border-radius:12px;display:inline-block;margin-bottom:6px}
+
 
 
 
@@ -459,6 +482,22 @@
       <div class="qari-meta">۵۵ درس صوتی آموزش جامع تجوید</div>
     </div>
   </div>
+<div class="qari-card" style="border-right-color:#7B1FA2" onclick="openTermsPage()">
+    <div class="qari-avatar" style="background:linear-gradient(135deg,#9C27B0,#7B1FA2)">&#128218;</div>
+    <div class="qari-info">
+      <div class="qari-name">اصطلاحات تخصصی</div>
+      <div class="qari-desc">واژهنامه مقامات و الحان</div>
+    </div>
+    <div class="qari-arrow">&#8250;</div>
+  </div>
+  <div class="qari-card" style="border-right-color:#455A64" onclick="openHistoryPage()">
+    <div class="qari-avatar" style="background:linear-gradient(135deg,#546E7A,#455A64)">&#128337;</div>
+    <div class="qari-info">
+      <div class="qari-name">تاریخچه تلاوت</div>
+      <div class="qari-desc">آخرین فرازهای شنیده شده</div>
+    </div>
+    <div class="qari-arrow">&#8250;</div>
+  </div>
 <div class="about-link-wrap"><a class="about-link" onclick="openAboutPage()">درباره سازنده</a></div>
 </div>
 
@@ -531,6 +570,17 @@
     <button onclick="deleteCurrentPlaylistUi()">🗑 حذف ردیف</button>
   </div>
   <div id="plItemsList"></div>
+</div>
+
+<div id="historyPage">
+  <div style="text-align:center;padding:10px 0 16px;color:#546E7A;font-weight:bold">&#128337; آخرین فرازهای شنیده شده</div>
+  <div id="historyList"></div>
+</div>
+
+<div id="termsPage">
+  <div style="text-align:center;padding:10px 0 8px;color:#7B1FA2;font-weight:bold">&#128218; اصطلاحات تخصصی مقامات</div>
+  <input type="text" class="term-search" id="termSearch" placeholder="جستجو..." oninput="filterTerms()">
+  <div id="termsList"></div>
 </div>
 
 <div id="playerPage">
@@ -3924,6 +3974,7 @@ function tPlay(){
     au.play().then(()=>{
       pl=true;
       document.getElementById("pBtn").innerHTML="<span>&#9208;</span>";
+      if(cT&&curQari){var _f=cT.faraz[cI];addToHistory(curQari.id,curQari.name,cT.id,cT.name,cI,_f.n,_f.a,_f.m);}
       
     }).catch(()=>{pl=false;});
   }
@@ -5116,6 +5167,29 @@ goBack=function(){
 };
 
 // Override goBack to handle Hashemi lessons pages
+// Override goBack for history/terms pages
+const _origGoBack4=goBack;
+goBack=function(){
+  if(document.getElementById("historyPage").style.display==="block"){
+    document.getElementById("historyPage").style.display="none";
+    document.getElementById("qariListPage").style.display="block";
+    document.getElementById("bBtn").style.display="none";
+    document.getElementById("hTitle").textContent="🎵 نوای قرآن";
+    document.getElementById("hSub").textContent="انتخاب قاری";
+    document.querySelector(".header").style.background="linear-gradient(135deg,#1a1a2e,#16213e)";
+    curQari=null;return;
+  }
+  if(document.getElementById("termsPage").style.display==="block"){
+    document.getElementById("termsPage").style.display="none";
+    document.getElementById("qariListPage").style.display="block";
+    document.getElementById("bBtn").style.display="none";
+    document.getElementById("hTitle").textContent="🎵 نوای قرآن";
+    document.getElementById("hSub").textContent="انتخاب قاری";
+    document.querySelector(".header").style.background="linear-gradient(135deg,#1a1a2e,#16213e)";
+    curQari=null;return;
+  }
+  _origGoBack4();
+};
 const _origGoBack3=goBack;
 goBack=function(){
   if(document.getElementById("hashemiLessonPlayerPage").style.display==="block"){
@@ -5390,6 +5464,124 @@ function stopPitchMonitor() {
 
 // Initialize visualizer on page load
 initVisualizer();
+
+// ═══ تاریخچه تلاوت ═══
+const MAX_HISTORY_ITEMS=30;
+function loadHistory(){try{return JSON.parse(localStorage.getItem('nqHistory')||'[]');}catch(e){return [];}}
+function saveHistory(h){try{localStorage.setItem('nqHistory',JSON.stringify(h.slice(0,MAX_HISTORY_ITEMS)));}catch(e){}}
+function addToHistory(qariId,qariName,tilId,tilName,frazIdx,frazNum,ayahSnippet,maqam){
+  const h=loadHistory();
+  // حذف تکراری
+  const key=qariId+'_'+tilId+'_'+frazIdx;
+  const filtered=h.filter(x=>x.key!==key);
+  filtered.unshift({key:key,qId:qariId,qName:qariName,tId:tilId,tName:tilName,idx:frazIdx,num:frazNum,ayah:ayahSnippet.substring(0,60),maqam:maqam,time:Date.now()});
+  saveHistory(filtered);
+}
+
+function openHistoryPage(){
+  au.pause();pl=false;
+  document.getElementById("qariListPage").style.display="none";
+  document.getElementById("tilawatListPage").style.display="none";
+  document.getElementById("historyPage").style.display="block";
+  document.getElementById("bBtn").style.display="block";
+  document.getElementById("hTitle").textContent="🕓 تاریخچه تلاوت";
+  document.getElementById("hSub").textContent="آخرین فرازهای شنیده شده";
+  document.querySelector(".header").style.background="linear-gradient(135deg,#546E7A,#455A64)";
+  renderHistory();
+}
+function renderHistory(){
+  const el=document.getElementById("historyList");if(!el)return;
+  const h=loadHistory();
+  if(!h.length){el.innerHTML='<div class="hist-empty"><div style="font-size:3em;margin-bottom:12px">🕓</div><div>هنوز فرازی شنیده نشده</div></div>';return;}
+  el.innerHTML='';
+  h.forEach(item=>{
+    const d=document.createElement("div");d.className="hist-item";
+    const ago=timeAgo(item.time);
+    const col=MCOLORS[item.maqam]||'#999';
+    d.style.setProperty('--qcolor',col);
+    d.style.setProperty('--mqcolor',col);
+    d.innerHTML='<div class="fn ha" style="background:'+col+'">'+item.num+'</div><div style="flex:1;min-width:0;text-align:right"><div class="fa">'+item.ayah+'</div><div class="fm">'+item.qName+' · '+item.tName+'</div><div class="hist-maqam">'+item.maqam+'</div><div class="hist-time">'+ago+'</div></div>';
+    d.onclick=function(){
+      const q=QARIS.find(x=>x.id===item.qId);
+      const t=q&&q.tilawat.find(x=>x.id===item.tId);
+      if(!q||!t)return;
+      document.getElementById("historyPage").style.display="none";
+      curQari=q;cT=t;cI=item.idx;plMode=null;
+      setColor(curQari.color);
+      document.querySelector(".header").style.background='linear-gradient(135deg,'+curQari.color+','+curQari.color+'dd)';
+      document.getElementById("playerPage").style.display="block";
+      document.getElementById("hTitle").textContent="🎵 "+cT.name;
+      document.getElementById("hSub").textContent=curQari.name+" — "+cT.faraz.length+" فراز";
+      sTab("p");upd(false);
+    };
+    el.appendChild(d);
+  });
+}
+function timeAgo(ts){
+  const diff=Math.floor((Date.now()-ts)/1000);
+  if(diff<60)return 'همین الان';
+  if(diff<3600)return Math.floor(diff/60)+' دقیقه پیش';
+  if(diff<86400)return Math.floor(diff/3600)+' ساعت پیش';
+  return Math.floor(diff/86400)+' روز پیش';
+}
+
+// ═══ اصطلاحات تخصصی ═══
+const MAQAM_TERMS=[
+{cat:"درجات",name:"دوگاه",en:"Dugah",desc:"درجه دوم مقام راست و پایه مقام بیات. در سیستم غربی معادل نت ر (D) است."},
+{cat:"درجات",name:"سه‌گاه",en:"Segah",desc:"درجه سوم مقام راست. یک ربع پرده پایین‌تر از می (نصف‌بمل). این درجه در سیستم معتدل غربی وجود ندارد."},
+{cat:"درجات",name:"چهارگاه",en:"Chahargah",desc:"درجه چهارم مقام راست، معادل نت سل (G). غماز مقام راست و پایه مقام نهاوند."},
+{cat:"درجات",name:"نوا",en:"Nawa",desc:"درجه چهارم بیات و درجه پنجم راست. نقطه استقرار نغمه نوا در تلاوت."},
+{cat:"درجات",name:"حسینی",en:"Husayni",desc:"درجه ششم مقام راست. مقام حسینی از این درجه شروع می‌شود."},
+{cat:"درجات",name:"اوج",en:"Awj",desc:"درجه هفتم مقام راست. بالاترین درجه در دیوان اول."},
+{cat:"درجات",name:"کردان",en:"Kirdan",desc:"درجه هشتم مقام راست و شروع دیوان دوم (جواب). اکتاو بالای راست."},
+{cat:"ساختار",name:"جنس",en:"Jins",desc:"واحد ساختاری مقام — یک گروه ۳ تا ۵ نتی با فواصل مشخص. هر مقام از ترکیب دو یا چند جنس ساخته می‌شود."},
+{cat:"ساختار",name:"ثلاثی",en:"Trichord",desc:"جنس ۳ نتی (۲ فاصله). کوچک‌ترین واحد ساختاری مقام. مثال: ثلاثی بیات، ثلاثی عجم."},
+{cat:"ساختار",name:"عقد",en:"Pentachord",desc:"جنس ۵ نتی (۴ فاصله). بزرگ‌ترین واحد ساختاری. مثال: عقد راست، عقد نهاوند."},
+{cat:"ساختار",name:"غماز",en:"Ghammaz",desc:"درجه‌ای که جنس دوم مقام از آن شروع می‌شود. معمولاً درجه ۴ یا ۵ مقام."},
+{cat:"ساختار",name:"دیوان",en:"Diwan/Octave",desc:"یک اکتاو کامل (۸ درجه). دیوان اول = قرار (صدای پایین)، دیوان دوم = جواب (صدای بالا)."},
+{cat:"اجرا",name:"قرار",en:"Qarar",desc:"پایین‌ترین ناحیه صدای قاری — دیوان اول. معمولاً قاری تلاوت را از قرار شروع می‌کند."},
+{cat:"اجرا",name:"جواب",en:"Jawab",desc:"بالاترین ناحیه صدای قاری — دیوان دوم. همان نغمه یک اکتاو بالاتر اجرا می‌شود."},
+{cat:"اجرا",name:"فرود",en:"Forud",desc:"بازگشت به درجه استقرار مقام در پایان یک قطعه. فرود نشان‌دهنده ختم نغمه است."},
+{cat:"اجرا",name:"استقرار",en:"Istiqrar",desc:"نتی که نغمه روی آن تمام می‌شود (نت شاهد). هر نغمه یک نقطه استقرار دارد."},
+{cat:"اجرا",name:"انتقال",en:"Modulation",desc:"تغییر مقام در حین تلاوت. قاری از یک مقام به مقام دیگر منتقل می‌شود."},
+{cat:"اجرا",name:"اوج‌گیری",en:"Takeoff",desc:"رسیدن به بالاترین نقطه صدا در تلاوت. معمولاً در مقام عجم یا حجاز."},
+{cat:"فواصل",name:"ربع پرده",en:"Quarter tone",desc:"فاصله‌ای که در موسیقی غربی وجود ندارد — نصف یک نیم‌پرده. رنگ خاص موسیقی عربی."},
+{cat:"فواصل",name:"نیم‌پرده",en:"Semitone",desc:"کوچک‌ترین فاصله در موسیقی غربی (مثلاً دو تا دو#). هر پرده = ۲ نیم‌پرده."},
+{cat:"فواصل",name:"پرده",en:"Whole tone",desc:"فاصله ۲ نیم‌پرده‌ای. مثلاً از دو تا ری یک پرده فاصله دارد."},
+{cat:"فواصل",name:"سه‌ربع پرده",en:"3/4 tone",desc:"فاصله ¾ پرده — بین نیم‌پرده و پرده کامل. فاصله شاخص مقام بیات و راست."},
+];
+
+function openTermsPage(){
+  au.pause();pl=false;
+  document.getElementById("qariListPage").style.display="none";
+  document.getElementById("tilawatListPage").style.display="none";
+  document.getElementById("termsPage").style.display="block";
+  document.getElementById("bBtn").style.display="block";
+  document.getElementById("hTitle").textContent="📚 اصطلاحات تخصصی";
+  document.getElementById("hSub").textContent=MAQAM_TERMS.length+" اصطلاح";
+  document.querySelector(".header").style.background="linear-gradient(135deg,#9C27B0,#7B1FA2)";
+  renderTerms();
+}
+function renderTerms(filter){
+  const el=document.getElementById("termsList");if(!el)return;
+  el.innerHTML='';
+  const q=(filter||'').trim().toLowerCase();
+  MAQAM_TERMS.forEach((t,i)=>{
+    if(q && t.name.toLowerCase().indexOf(q)===-1 && t.en.toLowerCase().indexOf(q)===-1 && t.desc.toLowerCase().indexOf(q)===-1) return;
+    const d=document.createElement("div");d.className="term-card";d.id="tc"+i;
+    d.innerHTML='<div class="term-header" onclick="toggleTerm('+i+')"><div style="flex:1;text-align:right"><div class="term-cat">'+t.cat+'</div><div class="term-name">'+t.name+' <span class="term-name-en">('+t.en+')</span></div></div><div class="term-arrow">&#8250;</div></div><div class="term-body">'+t.desc+'</div>';
+    el.appendChild(d);
+  });
+}
+function toggleTerm(i){
+  const el=document.getElementById("tc"+i);
+  if(el) el.classList.toggle("open");
+}
+function filterTerms(){
+  const q=document.getElementById("termSearch").value;
+  renderTerms(q);
+}
+
 
 
 
