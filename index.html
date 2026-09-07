@@ -3881,6 +3881,13 @@ function upd(autoPlay){
   document.getElementById("pBtn").style.background=curQari.color;
   pl=false;
   setTimeout(fixCtrlPos,0);
+  // پاک کردن ضبط قبلی هنگام تعویض فراز
+  if(recUrl){URL.revokeObjectURL(recUrl);recUrl=null;recBlob=null;}
+  recAudio.pause();recAudio.src='';
+  var _rpb=document.getElementById('recPlayBtn');if(_rpb)_rpb.disabled=true;
+  var _rbb=document.getElementById('recBothBtn');if(_rbb)_rbb.disabled=true;
+  var _rsf=document.getElementById('recSeekFill');if(_rsf)_rsf.style.width='0%';
+  var _rst=document.getElementById('recStatus');if(_rst)_rst.textContent='دکمه ميکروفون را بزنيد تا صداي خود را ضبط کنيد';
   const fb=document.getElementById("favBtn");
   const favKey=curQari.id+"_"+cT.id;
   fb.classList.toggle("on",isFav(favKey,cI));
