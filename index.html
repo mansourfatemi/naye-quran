@@ -125,6 +125,26 @@
 .pl-fn{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;flex-shrink:0;font-size:.78em;color:#fff;background:#ccc}
 .pl-fn.ha{background:var(--qcolor,#1a1a2e)}
 .na{font-size:.8em;color:#bbb;text-align:center;padding:4px 0 8px}
+/* حالت تمرین — ضبط صدا */
+.rec-section{background:#f0faf0;border-top:2px dashed #4CAF50;padding:12px 16px;margin-top:8px;display:none;flex-shrink:0}
+.rec-section.show{display:block}
+.rec-label{font-size:.82em;color:#4CAF50;font-weight:bold;margin-bottom:8px;text-align:center}
+.rec-controls{display:flex;align-items:center;justify-content:center;gap:14px}
+.rec-btn{width:48px;height:48px;border-radius:50%;border:none;cursor:pointer;font-size:1.3em;display:flex;align-items:center;justify-content:center;transition:.15s}
+.rec-btn:active{transform:scale(.9)}
+.rec-mic{background:#4CAF50;color:#fff;box-shadow:0 3px 10px rgba(76,175,80,.3)}
+.rec-mic.recording{background:#f44336;animation:rec-pulse 1s infinite}
+@keyframes rec-pulse{0%,100%{box-shadow:0 0 0 0 rgba(244,67,54,.4)}50%{box-shadow:0 0 0 12px rgba(244,67,54,0)}}
+.rec-play-user{background:#26c6da;color:#fff;box-shadow:0 2px 8px rgba(38,198,218,.3)}
+.rec-play-user:disabled{opacity:.3;cursor:default}
+.rec-play-both{background:#FF9800;color:#fff;box-shadow:0 2px 8px rgba(255,152,0,.3);font-size:.7em;padding:0 10px;border-radius:20px;height:36px;width:auto}
+.rec-play-both:disabled{opacity:.3;cursor:default}
+.rec-status{font-size:.72em;color:#888;text-align:center;margin-top:6px;min-height:18px}
+.rec-seekbar{position:relative;height:6px;background:#c8e6c9;border-radius:3px;margin:8px 0 0;cursor:pointer}
+.rec-seekbar-fill{height:100%;background:#26c6da;border-radius:3px;width:0%;transition:width .1s linear}
+.brec{color:#4CAF50;font-size:1.1em}
+.brec.has-rec{color:#fff;background:#4CAF50;border-color:#4CAF50}
+
 
 
 #timerCountdown{position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.85);color:#FF9800;font-size:22px;font-weight:bold;padding:10px 20px;border-radius:10px;border:2px solid #FF9800;display:none;z-index:9999;text-align:center}
@@ -545,12 +565,23 @@
         <button class="btn badd" id="addBtn" onclick="tAddToPlaylist()" title="افزودن به ردیف صوتی">&#10133;</button>
         <button class="btn br" id="rBtn" onclick="tRep()" title="تکرار">&#128257;</button>
         <button class="btn bt" id="timerBtn" onclick="tTimer()" title="پخش خودکار">&#9203;</button>
+        <button class="btn brec" id="recToggleBtn" onclick="toggleRecSection()" title="حالت تمرین">&#127908;</button>
       </div>
       <div class="ctrl-row ctrl-main">
         <button class="btn bn" onclick="pF(true)" title="قبلی">&#9197;</button>
         <button class="btn bp" id="pBtn" onclick="tPlay()"><span>&#9654;</span></button>
         <button class="btn bn" onclick="nF(true)" title="بعدی">&#9198;</button>
       </div>
+    </div>
+    <div class="rec-section" id="recSection">
+      <div class="rec-label">🎤 حالت تمرین — ضبط صدای شما</div>
+      <div class="rec-controls">
+        <button class="rec-btn rec-play-user" id="recPlayBtn" onclick="playRecording()" disabled title="پخش ضبط شما">&#9654;</button>
+        <button class="rec-btn rec-mic" id="recMicBtn" onclick="toggleRecording()" title="ضبط / توقف">&#127908;</button>
+        <button class="rec-btn rec-play-both" id="recBothBtn" onclick="playBothSequential()" disabled title="پخش پشت سرهم">قاری + شما</button>
+      </div>
+      <div class="rec-seekbar" id="recSeekbar"><div class="rec-seekbar-fill" id="recSeekFill"></div></div>
+      <div class="rec-status" id="recStatus">دکمه 🎤 را بزنید تا صدای خود را ضبط کنید</div>
     </div>
   </div></div>
   <div id="tL" class="flw" style="display:none"><div id="fList"></div></div>
@@ -4023,6 +4054,117 @@ function initSeekBar(){
   pTr.addEventListener("touchcancel",()=>{_dragging=false;},{passive:true});
 }
 document.addEventListener("DOMContentLoaded",initSeekBar);
+
+// ═══ حالت تمرین — ضبط صدا و مقایسه ═══
+let recStream=null, recMediaRec=null, recChunks=[], recBlob=null, recUrl=null;
+let recAudio=new Audio();
+let recIsRecording=false;
+
+function toggleRecSection(){
+  const sec=document.getElementById('recSection');
+  const btn=document.getElementById('recToggleBtn');
+  if(!sec)return;
+  const show=sec.style.display==='none'||!sec.classList.contains('show');
+  sec.classList.toggle('show',show);
+  btn.classList.toggle('has-rec',show);
+  if(show) setTimeout(fixCtrlPos,0);
+}
+
+async function toggleRecording(){
+  const micBtn=document.getElementById('recMicBtn');
+  const status=document.getElementById('recStatus');
+  if(recIsRecording){
+    // توقف ضبط
+    if(recMediaRec&&recMediaRec.state==='recording') recMediaRec.stop();
+    recIsRecording=false;
+    micBtn.classList.remove('recording');
+    micBtn.innerHTML='&#127908;';
+    status.textContent='در حال ذخیره...';
+    return;
+  }
+  // شروع ضبط
+  try{
+    // اول صدای قاری را متوقف کن
+    au.pause(); pl=false;
+    document.getElementById('pBtn').innerHTML='<span>&#9654;</span>';
+    
+    recStream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false}});
+    recChunks=[];
+    recMediaRec=new MediaRecorder(recStream,{mimeType:'audio/webm;codecs=opus'});
+    recMediaRec.ondataavailable=e=>{if(e.data.size>0)recChunks.push(e.data);};
+    recMediaRec.onstop=()=>{
+      recBlob=new Blob(recChunks,{type:'audio/webm'});
+      if(recUrl) URL.revokeObjectURL(recUrl);
+      recUrl=URL.createObjectURL(recBlob);
+      recAudio.src=recUrl;
+      document.getElementById('recPlayBtn').disabled=false;
+      document.getElementById('recBothBtn').disabled=false;
+      status.textContent='ضبط شد! دکمه ▶ برای گوش دادن، یا «قاری + شما» برای مقایسه';
+      // آزاد کردن میکروفون
+      if(recStream){recStream.getTracks().forEach(t=>t.stop());recStream=null;}
+    };
+    recMediaRec.start();
+    recIsRecording=true;
+    micBtn.classList.add('recording');
+    micBtn.innerHTML='&#9209;';
+    status.textContent='در حال ضبط... دوباره بزنید برای توقف';
+  }catch(err){
+    status.textContent='خطا: '+err.message;
+  }
+}
+
+function playRecording(){
+  if(!recUrl)return;
+  const btn=document.getElementById('recPlayBtn');
+  const fill=document.getElementById('recSeekFill');
+  if(!recAudio.paused){
+    recAudio.pause();
+    btn.innerHTML='&#9654;';
+    return;
+  }
+  recAudio.src=recUrl;
+  recAudio.play();
+  btn.innerHTML='&#9208;';
+  recAudio.ontimeupdate=()=>{
+    if(recAudio.duration) fill.style.width=(recAudio.currentTime/recAudio.duration*100)+'%';
+  };
+  recAudio.onended=()=>{
+    btn.innerHTML='&#9654;';
+    fill.style.width='0%';
+  };
+}
+
+function playBothSequential(){
+  if(!recUrl||!cT||!cT.faraz[cI].au)return;
+  const status=document.getElementById('recStatus');
+  const fill=document.getElementById('recSeekFill');
+  // ابتدا صدای قاری
+  status.textContent='در حال پخش صدای قاری...';
+  au.currentTime=0;
+  au.play().then(()=>{
+    pl=true;
+    document.getElementById('pBtn').innerHTML='<span>&#9208;</span>';
+  });
+  au.onended=function _bothEnd(){
+    au.onended=null;
+    pl=false;
+    document.getElementById('pBtn').innerHTML='<span>&#9654;</span>';
+    // بعد صدای شما
+    status.textContent='در حال پخش صدای شما...';
+    recAudio.src=recUrl;
+    recAudio.play();
+    recAudio.ontimeupdate=()=>{
+      if(recAudio.duration) fill.style.width=(recAudio.currentTime/recAudio.duration*100)+'%';
+    };
+    recAudio.onended=()=>{
+      status.textContent='مقایسه تمام شد! دوباره بزنید یا ضبط جدید کنید';
+      fill.style.width='0%';
+      // بازگرداندن onended اصلی
+      au.onended=null;
+    };
+  };
+}
+
 
 au.addEventListener("timeupdate",()=>{
   if(au.duration && !_dragging){
