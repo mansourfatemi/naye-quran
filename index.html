@@ -5698,23 +5698,17 @@ function renderTajweedPage() {
 }
 
 function formatTajweedMatn(raw) {
-  var text = raw.replace(/
-
-/g,'
-').replace(/
-/g,'
-');
-  text = text.replace(/﴿([^﴾]+)﴾/g,'<span class="quran-verse">﴿$1﴾</span>');
-  text = text.replace(/^([۰-۹0-9]+)[\.)\-]\s*/gm, function(m,num){
+  var text = raw.replace(/\r\n/g,'\n').replace(/\r/g,'\n');
+  text = text.replace(/\uFD3E([^\uFD3F]+)\uFD3F/g,'<span class="quran-verse">\uFD3E$1\uFD3F</span>');
+  text = text.replace(/^([\u0660-\u06F90-9]+)[\.)\-]\s*/gm, function(m,num){
     return '<span class="tj-item-num">'+num+'</span> ';
   });
-  var lines = text.split('
-'), html='';
+  var lines = text.split('\n'), html='';
   for(var i=0;i<lines.length;i++){
     var line=lines[i].trim();
     if(!line) continue;
-    var isTitle = line.length<60 && (line.endsWith(':')||line.endsWith('؛')||/^(تعریف|انواع|قاعده|نکته|توجه|مثال)/.test(line));
-    if(/^[الف|ب|ج|د]\)/.test(line)){
+    var isTitle = line.length<60 && (line.endsWith(':')||line.endsWith('\u06C0')||/^(\u0641\u0635\u0644|\u0628\u062E\u0634|\u0628\u062E\u0634|\u0628\u0627\u0628|\u0642\u0633\u0645|\u0645\u0648\u0636\u0648\u0639)/.test(line));
+    if(/^[\u0627\u0644\u0641|\u0628|\u062C|\u062F]\)/.test(line)){
       html+='<p style="margin-right:16px;color:#283593;font-weight:600">'+line+'</p>';
     } else if(isTitle){
       html+='<span class="tj-section-title">'+line+'</span>';
