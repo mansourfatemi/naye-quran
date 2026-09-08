@@ -286,7 +286,33 @@
 .tj-lessons-list{padding:8px 12px 90px}
 .tj-level-label{padding:10px 8px 4px;font-size:.78em;font-weight:bold;color:#777}
 .tj-play-btn{background:#1a237e;color:#fff;border:none;border-radius:50%;width:34px;height:34px;font-size:.85em;cursor:pointer;flex-shrink:0}
-.tj-lesson-text{background:#f7f7fb;border-radius:10px;padding:12px 14px;margin:2px 6px 10px;font-size:.85em;line-height:1.8;color:#333;white-space:pre-wrap;word-break:break-word}
+
+.tj-card{background:#fff;border-radius:14px;margin:8px 4px;box-shadow:0 2px 8px rgba(0,0,0,.08);overflow:hidden;border:1px solid #e0e0e0}
+.tj-card-header{display:flex;align-items:center;padding:14px 16px;cursor:pointer;gap:12px}
+.tj-card-header:active{background:#f0f0f0}
+.tj-num{background:#1a237e;color:#fff;min-width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:.95em;flex-shrink:0}
+.tj-name{flex:1;font-weight:600;font-size:1em;color:#1a237e;line-height:1.5}
+.tj-play-btn{width:40px;height:40px;border-radius:50%;border:2px solid #1a237e;background:transparent;color:#1a237e;font-size:1.1em;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.tj-lesson-body{display:none;padding:0 18px 18px;border-top:1px solid #e8eaf6}
+.tj-lesson-body.open{display:block}
+.tj-matn{font-size:1.05em;line-height:2;color:#333;text-align:justify;padding-top:14px}
+.tj-matn p{margin-bottom:12px}
+.tj-matn .quran-verse{display:inline;font-size:1.15em;color:#1a237e;background:linear-gradient(135deg,#e8eaf6,#f3e5f5);padding:2px 8px;border-radius:6px}
+.tj-matn .tj-item-num{display:inline-block;background:#1a237e;color:#fff;width:24px;height:24px;border-radius:50%;text-align:center;font-size:.85em;line-height:24px;margin-left:6px;font-weight:bold}
+.tj-matn .tj-section-title{display:block;font-weight:bold;color:#1a237e;font-size:1.08em;margin:16px 0 8px;padding-bottom:4px;border-bottom:2px solid #e8eaf6}
+.tj-player-bar{display:none;background:linear-gradient(135deg,#e8eaf6,#ede7f6);padding:12px 16px;flex-direction:column;gap:8px;border-top:1px solid #c5cae9}
+.tj-player-bar.active{display:flex}
+.tj-player-controls{display:flex;align-items:center;justify-content:center;gap:14px}
+.tj-player-controls button{background:none;border:none;cursor:pointer;font-size:1.1em;color:#1a237e;padding:6px;border-radius:50%;width:38px;height:38px;display:flex;align-items:center;justify-content:center;flex-direction:column}
+.tj-player-controls .tj-main-play{width:46px;height:46px;background:#1a237e;color:#fff;border-radius:50%;font-size:1.3em;flex-direction:row}
+.tj-seekbar-row{display:flex;align-items:center;gap:8px}
+.tj-seekbar-track{flex:1;height:6px;background:#c5cae9;border-radius:3px;position:relative;cursor:pointer;touch-action:none}
+.tj-seekbar-fill{height:100%;background:#1a237e;border-radius:3px;width:0%;position:relative}
+.tj-seekbar-thumb{position:absolute;top:50%;right:-7px;transform:translateY(-50%);width:14px;height:14px;background:#1a237e;border-radius:50%;box-shadow:0 1px 4px rgba(0,0,0,.3)}
+.tj-time{font-size:.78em;color:#555;min-width:42px;text-align:center;direction:ltr}
+.tj-skip-label{font-size:.6em;line-height:1}
+
+
 .about-link{color:#888;font-size:.85em;text-decoration:underline;cursor:pointer}
 .about-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:500;align-items:center;justify-content:center;padding:20px}
 .about-overlay.show{display:flex}
@@ -5632,7 +5658,7 @@ function renderTajweedPage() {
   el.innerHTML = '';
   const header = document.createElement('div');
   header.className = 'tj-header';
-  header.innerHTML = '<h2>📖 آموزش جامع تجوید</h2><p>۵۵ درس صوتی — قرائت حفص از عاصم</p>';
+  header.innerHTML = '<h2>‏📖 آموزش جامع تجوید</h2><p>۵۵ درس صوتی — قرائت حفص از عاصم</p>';
   el.appendChild(header);
   const listDiv = document.createElement('div');
   listDiv.className = 'tj-lessons-list';
@@ -5646,25 +5672,22 @@ function renderTajweedPage() {
       listDiv.appendChild(lbl);
     }
     const card = document.createElement('div');
-    card.className = 'til-card';
-    card.innerHTML = '<div class="til-num" style="background:#1a237e">' + ls.id + '</div>'
-      + '<div class="til-info"><div class="til-name">' + ls.name + '</div></div>'
-      + '<button class="tj-play-btn" id="tjplay' + ls.id + '">&#9654;</button>';
-    card.onclick = function(e) {
-      if (e.target && e.target.classList.contains('tj-play-btn')) {
-        e.stopPropagation();
-        toggleTajweedAudio(ls.id);
-        return;
-      }
-      toggleTajweedText(ls.id);
-    };
+    card.className = 'tj-card';
+    card.id = 'tjcard' + ls.id;
+    const header2 = document.createElement('div');
+    header2.className = 'tj-card-header';
+    header2.innerHTML = '<div class="tj-num">' + ls.id + '</div><div class="tj-name">' + ls.name + '</div><button class="tj-play-btn" id="tjplay' + ls.id + '" onclick="event.stopPropagation();toggleTajweedAudio(' + ls.id + ')">&#9654;</button>';
+    header2.onclick = function() { toggleTajweedText(ls.id); };
+    card.appendChild(header2);
+    const body = document.createElement('div');
+    body.className = 'tj-lesson-body';
+    body.id = 'tjbody' + ls.id;
+    const matnDiv = document.createElement('div');
+    matnDiv.className = 'tj-matn';
+    matnDiv.innerHTML = formatTajweedMatn(ls.matn);
+    body.appendChild(matnDiv);
+    card.appendChild(body);
     listDiv.appendChild(card);
-    const textDiv = document.createElement('div');
-    textDiv.id = 'tjtext' + ls.id;
-    textDiv.className = 'tj-lesson-text';
-    textDiv.style.display = 'none';
-    textDiv.textContent = ls.matn;
-    listDiv.appendChild(textDiv);
   });
   el.appendChild(listDiv);
   const backBtn = document.createElement('button');
@@ -5674,32 +5697,131 @@ function renderTajweedPage() {
   el.appendChild(backBtn);
 }
 
+function formatTajweedMatn(raw) {
+  var text = raw.replace(/
+
+/g,'
+').replace(/
+/g,'
+');
+  text = text.replace(/﴿([^﴾]+)﴾/g,'<span class="quran-verse">﴿$1﴾</span>');
+  text = text.replace(/^([۰-۹0-9]+)[\.)\-]\s*/gm, function(m,num){
+    return '<span class="tj-item-num">'+num+'</span> ';
+  });
+  var lines = text.split('
+'), html='';
+  for(var i=0;i<lines.length;i++){
+    var line=lines[i].trim();
+    if(!line) continue;
+    var isTitle = line.length<60 && (line.endsWith(':')||line.endsWith('؛')||/^(تعریف|انواع|قاعده|نکته|توجه|مثال)/.test(line));
+    if(/^[الف|ب|ج|د]\)/.test(line)){
+      html+='<p style="margin-right:16px;color:#283593;font-weight:600">'+line+'</p>';
+    } else if(isTitle){
+      html+='<span class="tj-section-title">'+line+'</span>';
+    } else {
+      html+='<p>'+line+'</p>';
+    }
+  }
+  return html;
+}
+
 function toggleTajweedText(id) {
-  const t = document.getElementById('tjtext' + id);
-  if (!t) return;
-  t.style.display = (t.style.display === 'none') ? 'block' : 'none';
+  var body = document.getElementById('tjbody' + id);
+  if (!body) return;
+  body.classList.toggle('open');
+  if (body.classList.contains('open')) {
+    setTimeout(function(){ document.getElementById('tjcard' + id).scrollIntoView({behavior:'smooth',block:'start'}); }, 100);
+  }
+}
+
+var tjSeekDragging = false;
+function tjFmtTime(s){
+  if(!s||isNaN(s)) return '0:00';
+  var m=Math.floor(s/60), sec=Math.floor(s%60);
+  return m+':'+(sec<10?'0':'')+sec;
+}
+function tjShowPlayerBar(id){
+  var old=document.querySelector('.tj-player-bar');
+  if(old) old.remove();
+  var card=document.getElementById('tjcard'+id);
+  if(!card) return;
+  var bar=document.createElement('div');
+  bar.className='tj-player-bar active';
+  bar.id='tjbar'+id;
+  bar.innerHTML=
+    '<div class="tj-seekbar-row">'+
+      '<span class="tj-time" id="tjcur'+id+'">0:00</span>'+
+      '<div class="tj-seekbar-track" id="tjtrack'+id+'">'+
+        '<div class="tj-seekbar-fill" id="tjfill'+id+'"><div class="tj-seekbar-thumb"></div></div>'+
+      '</div>'+
+      '<span class="tj-time" id="tjdur'+id+'">0:00</span>'+
+    '</div>'+
+    '<div class="tj-player-controls">'+
+      '<button onclick="tjSeekBy(-10)">&#9194;<span class="tj-skip-label">10</span></button>'+
+      '<button class="tj-main-play" id="tjmplay'+id+'" onclick="toggleTajweedAudio('+id+')">&#9208;</button>'+
+      '<button onclick="tjSeekBy(10)">&#9193;<span class="tj-skip-label">10</span></button>'+
+    '</div>';
+  card.appendChild(bar);
+  var track=document.getElementById('tjtrack'+id);
+  function seekToPos(e){
+    if(!tajweedAudio||!tajweedAudio.duration) return;
+    var rect=track.getBoundingClientRect();
+    var ratio=1-(e.clientX-rect.left)/rect.width;
+    ratio=Math.max(0,Math.min(1,ratio));
+    tajweedAudio.currentTime=ratio*tajweedAudio.duration;
+  }
+  track.addEventListener('pointerdown',function(e){tjSeekDragging=true;seekToPos(e);track.setPointerCapture(e.pointerId)});
+  track.addEventListener('pointermove',function(e){if(tjSeekDragging)seekToPos(e)});
+  track.addEventListener('pointerup',function(){tjSeekDragging=false});
+}
+function tjUpdateUI(){
+  if(!tajweedAudio||!tajweedPlayingId) return;
+  var id=tajweedPlayingId;
+  var fill=document.getElementById('tjfill'+id);
+  var cur=document.getElementById('tjcur'+id);
+  var dur=document.getElementById('tjdur'+id);
+  if(fill&&tajweedAudio.duration) fill.style.width=(tajweedAudio.currentTime/tajweedAudio.duration*100)+'%';
+  if(cur) cur.textContent=tjFmtTime(tajweedAudio.currentTime);
+  if(dur) dur.textContent=tjFmtTime(tajweedAudio.duration);
+}
+function tjSeekBy(sec){
+  if(!tajweedAudio) return;
+  tajweedAudio.currentTime=Math.max(0,Math.min(tajweedAudio.duration||0,tajweedAudio.currentTime+sec));
 }
 
 function toggleTajweedAudio(id) {
-  const lesson = TAJWEED_LESSONS.find(function(l) { return l.id === id; });
+  var lesson = TAJWEED_LESSONS.find(function(l){ return l.id === id; });
   if (!lesson) return;
-  const btn = document.getElementById('tjplay' + id);
+  var btn = document.getElementById('tjplay' + id);
   if (tajweedPlayingId === id && !tajweedAudio.paused) {
     tajweedAudio.pause();
     if (btn) btn.innerHTML = '&#9654;';
-    tajweedPlayingId = null;
+    var mp = document.getElementById('tjmplay' + id);
+    if (mp) mp.innerHTML = '&#9654;';
     return;
   }
   if (tajweedPlayingId && tajweedPlayingId !== id) {
-    const prevBtn = document.getElementById('tjplay' + tajweedPlayingId);
+    var prevBtn = document.getElementById('tjplay' + tajweedPlayingId);
     if (prevBtn) prevBtn.innerHTML = '&#9654;';
+    var oldBar = document.querySelector('.tj-player-bar');
+    if (oldBar) oldBar.remove();
+  }
+  if (!tajweedAudio._tjSetup) {
+    tajweedAudio.addEventListener('timeupdate', tjUpdateUI);
+    tajweedAudio.addEventListener('loadedmetadata', tjUpdateUI);
+    tajweedAudio._tjSetup = true;
   }
   tajweedAudio.src = TAJWEED_AUDIO_BASE + lesson.audio;
   tajweedAudio.play();
   tajweedPlayingId = id;
   if (btn) btn.innerHTML = '&#9208;';
+  tjShowPlayerBar(id);
+  var body = document.getElementById('tjbody' + id);
+  if (body && !body.classList.contains('open')) body.classList.add('open');
   tajweedAudio.onended = function() {
     if (btn) btn.innerHTML = '&#9654;';
+    var mp2 = document.getElementById('tjmplay' + id);
+    if (mp2) mp2.innerHTML = '&#9654;';
     tajweedPlayingId = null;
   };
 }
