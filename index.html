@@ -1075,41 +1075,23 @@
 
   </div>
 
-  <div class="qari-card" onclick="openTajweedPage()" style="cursor:pointer;margin:12px 0">
-
-    <div class="qari-avatar" style="background:linear-gradient(135deg,#1a237e,#283593);display:flex;align-items:center;justify-content:center;font-size:2em">&#128214;</div>
-
+  <div class="qari-card" onclick="openTajweedFolder()" style="cursor:pointer;margin:12px 0">
+    <div class="qari-avatar" style="background:linear-gradient(135deg,#1a237e,#4a148c);display:flex;align-items:center;justify-content:center;font-size:2em">📖</div>
     <div class="qari-info">
-
-      <div class="qari-name">آموزش جامع تجوید</div>
-
-      <div class="qari-meta">۵۵ درس صوتی آموزش جامع تجوید</div>
-
+      <div class="qari-name">آموزش تجوید</div>
+      <div class="qari-meta">دروس صوتی + کتاب حلیة القرآن</div>
     </div>
-
+    <div class="qari-arrow">&#8250;</div>
   </div>
-
-  <div class="qari-card" onclick="openHalyaPage()" style="cursor:pointer;margin:12px 0">
-
-    <div class="qari-avatar" style="background:linear-gradient(135deg,#4a148c,#7b1fa2);display:flex;align-items:center;justify-content:center;font-size:2em">📖</div>
-
-    <div class="qari-info">
-
-      <div class="qari-name">‏کتاب حلیة القرآن</div>
-
-      <div class="qari-desc">آموزش تجوید سطح ۲ — متن کامل</div>
-
-      <div class="qari-meta">۱۸ فصل · سید محسن موسوی بلده</div>
-
-    </div>
-
-  </div>
-
-  <div class="about-link-wrap"><a class="about-link" onclick="openAboutPage()">درباره سازنده</a></div>
+<div class="about-link-wrap"><a class="about-link" onclick="openAboutPage()">درباره سازنده</a></div>
 
 </div>
 
 
+
+<div id="tajweedFolderPage" style="display:none;padding:70px 15px 90px">
+  <div id="tajweedFolderContent"></div>
+</div>
 
 <div id="halyaPage" style="display:none;padding:70px 15px 90px">
 
@@ -8982,6 +8964,7 @@ let tajweedPlayingId = null;
 
 function openTajweedPage() {
 
+  document.getElementById('tajweedFolderPage').style.display='none';
   document.getElementById('qariListPage').style.display='none';
 
   document.getElementById('tilawatListPage').style.display='none';
@@ -9024,11 +9007,10 @@ function goBackFromTajweed() {
 
   document.getElementById('tajweedPage').style.display='none';
 
-  document.getElementById('halyaPage').style.display='none';
 
-  document.getElementById('qariListPage').style.display='block';
+  document.getElementById('tajweedFolderPage').style.display='block';
 
-  nav='home';
+  nav='tajweedFolder';
 
 }
 
@@ -9040,6 +9022,7 @@ var halyaOpenCh=null, halyaOpenSec=null;
 
 function openHalyaPage() {
 
+  document.getElementById('tajweedFolderPage').style.display='none';
   document.getElementById('qariListPage').style.display='none';
 
   document.getElementById('tilawatListPage').style.display='none';
@@ -9084,11 +9067,53 @@ function goBackFromHalya() {
 
   document.getElementById('halyaPage').style.display='none';
 
-  document.getElementById('qariListPage').style.display='block';
+  document.getElementById('tajweedFolderPage').style.display='block';
 
-  nav='home';
+  nav='tajweedFolder';
 
 }
+
+// === آموزش تجوید folder ===
+function openTajweedFolder() {
+  document.getElementById('qariListPage').style.display='none';
+  document.getElementById('tilawatListPage').style.display='none';
+  document.getElementById('tajweedPage').style.display='none';
+  document.getElementById('halyaPage').style.display='none';
+  document.getElementById('tajweedFolderPage').style.display='block';
+  document.getElementById('bBtn').style.display='inline-block';
+  document.getElementById('hTitle').textContent='📖 آموزش تجوید';
+  document.getElementById('hSub').textContent='دروس صوتی و کتاب حلیة القرآن';
+  nav='tajweedFolder';
+  renderTajweedFolder();
+}
+
+function goBackFromTajweedFolder() {
+  document.getElementById('tajweedFolderPage').style.display='none';
+  document.getElementById('qariListPage').style.display='block';
+  nav='home';
+}
+
+function renderTajweedFolder() {
+  var el = document.getElementById('tajweedFolderContent');
+  if(el.children.length > 0) return;
+  
+  // Card 1: دروس صوتی
+  var c1 = document.createElement('div');
+  c1.className = 'qari-card';
+  c1.style.cssText = 'cursor:pointer;margin:12px 0';
+  c1.innerHTML = '<div class="qari-avatar" style="background:linear-gradient(135deg,#1a237e,#283593);display:flex;align-items:center;justify-content:center;font-size:2em">🎧</div><div class="qari-info"><div class="qari-name">دروس صوتی تجوید</div><div class="qari-meta">۵۵ درس صوتی — قرائت حفص از عاصم</div></div><div class="qari-arrow">›</div>';
+  c1.onclick = function(){ openTajweedPage(); };
+  el.appendChild(c1);
+  
+  // Card 2: کتاب حلیة القرآن
+  var c2 = document.createElement('div');
+  c2.className = 'qari-card';
+  c2.style.cssText = 'cursor:pointer;margin:12px 0';
+  c2.innerHTML = '<div class="qari-avatar" style="background:linear-gradient(135deg,#4a148c,#7b1fa2);display:flex;align-items:center;justify-content:center;font-size:2em">📖</div><div class="qari-info"><div class="qari-name">‏کتاب حلیة القرآن</div><div class="qari-desc">آموزش تجوید سطح ۲ — متن کامل</div><div class="qari-meta">۱۸ فصل · سید محسن موسوی بلده</div></div><div class="qari-arrow">›</div>';
+  c2.onclick = function(){ openHalyaPage(); };
+  el.appendChild(c2);
+}
+
 
 
 
