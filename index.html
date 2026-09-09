@@ -508,8 +508,7 @@
 .halya-as{display:none;margin:0 0 16px;padding:14px 18px;background:linear-gradient(135deg,#fffde7,#fff8e1);border:1px solid #ffe082;border-radius:10px;color:#333;font-size:.88em;line-height:1.8}
 .halya-as.show{display:block}
 .halya-as-title{font-size:.8em;font-weight:700;color:#8d6e00;margin-bottom:6px}
-.halya-hdr .back-btn{display:inline-block;background:#f5f0e0;border:1px solid #d4af37;color:#8d6e00;padding:6px 16px;border-radius:20px;font-size:.9em;cursor:pointer;font-family:inherit;margin-bottom:8px}
-.halya-hdr .back-btn:hover{background:#ffe082}
+
 </style>
 </head><body>
 
@@ -5751,8 +5750,7 @@ function renderHalyaPage() {
   
   var hdr = document.createElement('div');
   hdr.className = 'halya-hdr';
-  hdr.innerHTML = '<div class="back-btn" onclick="goBackFromHalya()">←</div>' +
-    '<h2>‏📖 حلیة القرآن — سطح ۲</h2>' +
+  hdr.innerHTML = '<h2>‏📖 حلیة القرآن — سطح ۲</h2>' +
     '<p style="font-size:.85em;opacity:.7;margin-top:4px">سید محسن موسوی بلده · ۲۱۶ صفحه · انتشارات احیاء کتاب</p>';
   el.appendChild(hdr);
   
