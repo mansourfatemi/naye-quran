@@ -8192,6 +8192,26 @@ goBack=function(){
 
 };
 
+// Override goBack for tajweedFolder page
+const _origGoBack6=goBack;
+goBack=function(){
+  if(document.getElementById("tajweedFolderPage").style.display==="block"){
+    goBackFromTajweedFolder();
+    return;
+  }
+  _origGoBack6();
+};
+
+// Override goBack for tajweedPage (back to folder)
+const _origGoBack7=goBack;
+goBack=function(){
+  if(document.getElementById("tajweedPage").style.display==="block"){
+    goBackFromTajweed();
+    return;
+  }
+  _origGoBack7();
+};
+
 
 
 let audioCtx=null, analyser=null, vizBars=[], vizAnimId=null, audioSource=null, vizSetup=false;
