@@ -1104,7 +1104,6 @@
     </div>
 
   </div>
-<div class="qari-card" style="border-right-color:#7B1FA2" onclick="openTermsPage()"><div class="qari-avatar" style="background:linear-gradient(135deg,#9C27B0,#7B1FA2)">📚</div><div class="qari-info"><div class="qari-name">اصطلاحات تخصصی</div><div class="qari-desc">واژه‌نامه مقامات و الحان</div></div><div class="qari-arrow">&#8250;</div></div>
 
   <div class="about-link-wrap"><a class="about-link" onclick="openAboutPage()">درباره سازنده</a></div>
 
@@ -5337,6 +5336,14 @@ function renderHashemiLessonsList(){
     el.appendChild(d);
 
   });
+
+  // اصطلاحات تخصصی button at bottom
+  var termsBtn=document.createElement("div");
+  termsBtn.className="til-card";
+  termsBtn.style.cssText="margin-top:20px;border-right:3px solid #7B1FA2;cursor:pointer";
+  termsBtn.innerHTML='<div class="til-num" style="background:#7B1FA2">📚</div><div class="til-info"><div class="til-name">اصطلاحات تخصصی</div><div class="til-meta">واژه‌نامه مقامات و الحان</div></div><div class="til-arrow">›</div>';
+  termsBtn.onclick=function(){openTermsPage()};
+  el.appendChild(termsBtn);
 
 }
 
