@@ -1,6 +1,9 @@
-const CACHE='mt-mq-v20260909144432';
+const CACHE='mt-mq-v20260909144655';
+
 const CORE=['./','./index.html','./manifest.json','./icon-192.png','./icon-512.png'];
+
 const AUDIO=[
+
   "./qaris/manshawy/audio/01.mp3",
   "./qaris/manshawy/audio/02.mp3",
   "./qaris/manshawy/audio/03.mp3",
@@ -3302,36 +3305,69 @@ const AUDIO=[
   "./qaris/hashemi/audio_t5/36.m4a",
   "./qaris/hashemi/audio_t5/37.m4a",
   "./qaris/hashemi/audio_t5/38.m4a"
+
 ];
+
 self.addEventListener('install',e=>{
+
   e.waitUntil(caches.open(CACHE).then(async c=>{
+
     await c.addAll(CORE);
+
     for(const u of AUDIO){try{await c.add(u);}catch(ex){}}
+
   }));self.skipWaiting();
+
 });
+
 self.addEventListener('activate',e=>{
+
   e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==CACHE).map(k=>caches.delete(k)))));
+
   self.clients.claim();
+
 });
+
 self.addEventListener('fetch',e=>{
+
   if(e.request.method!=='GET')return;
+
   if(e.request.url.includes('archive.org')){
+
     e.respondWith(caches.open('nq-offline-v1').then(async c=>{
+
       const hit=await c.match(e.request);
+
       if(hit)return hit;
+
       try{
+
         const resp=await fetch(e.request);
+
         if(resp&&resp.ok)c.put(e.request,resp.clone());
+
         return resp;
+
       }catch(err){return new Response('',{status:503});}
+
     }));
+
     return;
+
   }
+
   e.respondWith(caches.match(e.request).then(c=>{
+
     if(c)return c;
+
     return fetch(e.request).then(r=>{
+
       if(!r||r.status!==200)return r;
+
       caches.open(CACHE).then(ca=>ca.put(e.request,r.clone()));return r;
+
     }).catch(()=>c||new Response('Offline',{status:503}));
+
   }));
+
 });
