@@ -5925,18 +5925,12 @@ function renderTajweedPage() {
 }
 
 function formatTajweedMatn(raw) {
-  var text = raw.replace(/
-
-/g,'
-').replace(/
-/g,'
-');
+  var text = raw.split(String.fromCharCode(13,10)).join(String.fromCharCode(10)).split(String.fromCharCode(13)).join(String.fromCharCode(10));
   text = text.replace(/﴿([^﴾]+)﴾/g,'<span class="quran-verse">﴿$1﴾</span>');
   text = text.replace(/^([۰-۹0-9]+)[\.)\-]\s*/gm, function(m,num){
     return '<span class="tj-item-num">'+num+'</span> ';
   });
-  var lines = text.split('
-'), html='';
+  var lines = text.split(String.fromCharCode(10)), html='';
   for(var i=0;i<lines.length;i++){
     var line=lines[i].trim();
     if(!line) continue;
