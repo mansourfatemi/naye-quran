@@ -161,7 +161,7 @@
 
 .bp{width:68px;height:68px;border-radius:50%;color:#fff;font-size:1.6em;box-shadow:0 4px 18px rgba(0,0,0,.22)}.bp span{display:inline-block;transform:scaleX(-1)}
 
-.br,.bt,.badd,.bshare,.bfav{width:40px;height:40px;border-radius:50%;background:#fff;border:1.5px solid #e6e6e6;font-size:1em;box-shadow:0 1px 4px rgba(0,0,0,.04)}
+.br,.bt,.badd,.bshare,.bfav,.bspd{width:40px;height:40px;border-radius:50%;background:#fff;border:1.5px solid #e6e6e6;font-size:1em;box-shadow:0 1px 4px rgba(0,0,0,.04)}
 
 .br{color:#888}
 
@@ -170,6 +170,10 @@
 .bt{color:#FF9800}
 
 .bt.on{background:#FF9800;color:#fff;border-color:#FF9800}
+
+.bspd{color:#3F51B5;font-size:.68em;font-weight:700}
+
+.bspd.on{background:#3F51B5;color:#fff;border-color:#3F51B5}
 
 .badd{color:#4CAF50;font-size:1.1em}
 
@@ -1331,6 +1335,8 @@
         <button class="btn bt" id="timerBtn" onclick="tTimer()" title="پخش خودکار">&#9203;</button>
 
         <button class="btn brec" id="recToggleBtn" onclick="toggleRecSection()" title="حالت تمرین">&#127908;</button>
+
+        <button class="btn bspd" id="speedBtn" onclick="tSpeed()" title="سرعت پخش">1x</button>
 
       </div>
 
@@ -3840,7 +3846,7 @@ function installApp(){if(_dp){_dp.prompt();_dp.userChoice.then(()=>{_dp=null;doc
 window.addEventListener('appinstalled',()=>{document.getElementById('ib').style.display='none';});
 
 
-let curQari=null, cT=null, cI=0, pl=false, rp=false;
+let curQari=null, cT=null, cI=0, pl=false, rp=false, curSpeed=1;
 
 let favs={};
 
@@ -5596,7 +5602,7 @@ function upd(autoPlay){
 
   if(f.au){
 
-    au.src=getAudioUrl(curQari,f);au.load();
+    au.src=getAudioUrl(curQari,f);au.load();au.playbackRate=curSpeed;
 
     document.getElementById("nAMsg").style.display="none";
 
@@ -5761,6 +5767,8 @@ function pF(ap){
 }
 
 function tRep(){rp=!rp;const b=document.getElementById("rBtn");b.classList.toggle("on",rp);if(rp)b.style.background=curQari.color;}
+
+function tSpeed(){const speeds=[1,0.75,0.5];let idx=speeds.indexOf(curSpeed);idx=(idx+1)%speeds.length;curSpeed=speeds[idx];au.playbackRate=curSpeed;const b=document.getElementById("speedBtn");b.textContent=(curSpeed===1?"1x":curSpeed+"x");b.classList.toggle("on",curSpeed!==1);}
 
 function tFav(){
 
@@ -7304,7 +7312,7 @@ function mqdPlayAt(idx){
 
   mqdPreviewActive=true;
 
-  au.src=item.audioSrc; au.load();
+  au.src=item.audioSrc; au.load(); au.playbackRate=curSpeed;
 
   au.play().catch(()=>{mqdPreviewActive=false;});
 
