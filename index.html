@@ -4253,6 +4253,13 @@ btn.onclick=()=>{ if(typeof Android!=="undefined"&&Android.openAsset){ Android.o
 
     });
 
+    // اصطلاحات تخصصی — after maqam list
+    var termsBtn=document.createElement("div"); termsBtn.className="til-card";
+    termsBtn.style.cssText="margin:20px 6px 10px;border-right:3px solid #7B1FA2;cursor:pointer";
+    termsBtn.innerHTML='<div class="til-num" style="background:#7B1FA2">📚</div><div class="til-info"><div class="til-name">اصطلاحات تخصصی</div><div class="til-meta">واژه‌نامه مقامات و الحان</div></div><div class="til-arrow">›</div>';
+    termsBtn.onclick=function(){openTermsPage()};
+    el.appendChild(termsBtn);
+
   }
 
   
@@ -5337,13 +5344,6 @@ function renderHashemiLessonsList(){
 
   });
 
-  // اصطلاحات تخصصی button at bottom
-  var termsBtn=document.createElement("div");
-  termsBtn.className="til-card";
-  termsBtn.style.cssText="margin-top:20px;border-right:3px solid #7B1FA2;cursor:pointer";
-  termsBtn.innerHTML='<div class="til-num" style="background:#7B1FA2">📚</div><div class="til-info"><div class="til-name">اصطلاحات تخصصی</div><div class="til-meta">واژه‌نامه مقامات و الحان</div></div><div class="til-arrow">›</div>';
-  termsBtn.onclick=function(){openTermsPage()};
-  el.appendChild(termsBtn);
 
 }
 
