@@ -542,6 +542,7 @@
       <div class="qari-name">آموزش جامع تجوید</div>
       <div class="qari-meta">۵۵ درس صوتی آموزش جامع تجوید</div>
     </div>
+  </div>
   <div class="qari-card" onclick="openHalyaPage()" style="cursor:pointer;margin:12px 0">
     <div class="qari-avatar" style="background:linear-gradient(135deg,#4a148c,#7b1fa2);display:flex;align-items:center;justify-content:center;font-size:2em">📖</div>
     <div class="qari-info">
@@ -5287,6 +5288,17 @@ goBack=function(){
   }
   _origGoBack3();
 };
+
+// Override goBack to handle Halya al-Quran page
+const _origGoBack5=goBack;
+goBack=function(){
+  if(document.getElementById("halyaPage").style.display==="block"){
+    goBackFromHalya();
+    return;
+  }
+  _origGoBack5();
+};
+
 let audioCtx=null, analyser=null, vizBars=[], vizAnimId=null, audioSource=null, vizSetup=false;
 
 function initVisualizer(){
