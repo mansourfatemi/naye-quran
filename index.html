@@ -5714,7 +5714,6 @@ function goBackFromTajweed() {
   nav='home';
 }
 
-// === حلیة القرآن ===
 var halyaOpenCh=null, halyaOpenSec=null;
 
 function openHalyaPage() {
@@ -5743,9 +5742,9 @@ function goBackFromHalya() {
 
 function renderHalyaPage() {
   var el = document.getElementById('halyaContent');
+  if(el.children.length > 1) return;
   el.innerHTML = '';
   
-  // Header
   var hdr = document.createElement('div');
   hdr.className = 'halya-hdr';
   hdr.innerHTML = '<div class="back-btn" onclick="goBackFromHalya()">←</div>' +
@@ -5753,15 +5752,13 @@ function renderHalyaPage() {
     '<p style="font-size:.85em;opacity:.7;margin-top:4px">سید محسن موسوی بلده · ۲۱۶ صفحه · انتشارات احیاء کتاب</p>';
   el.appendChild(hdr);
   
-  // Search
   var sb = document.createElement('div');
   sb.style.cssText = 'margin:14px 0';
   sb.innerHTML = '<input type="text" placeholder="جستجو در کتاب..." oninput="halyaSearch(this.value)" style="width:100%;padding:10px 16px;background:rgba(255,255,255,.06);border:1px solid rgba(212,175,55,.2);border-radius:8px;color:#e8e0d4;font-family:inherit;font-size:.93em;outline:none">';
   el.appendChild(sb);
   
-  // Chapters
   if(typeof HALYA_CHAPTERS==='undefined'||!HALYA_CHAPTERS.length){
-    el.innerHTML+='<p style="text-align:center;color:#888">دادهای یافت نشد</p>';
+    el.innerHTML+='<p style="text-align:center;color:#888">داده‌ای یافت نشد</p>';
     return;
   }
   
@@ -5787,32 +5784,29 @@ function renderHalyaPage() {
       var sid = 'hs' + ch.num + '_' + si;
       var secDiv = document.createElement('div');
       secDiv.className = 'halya-sec';
-      
-      var secH = document.createElement('div');
-      secH.className = 'halya-sh';
-      secH.onclick = (function(id){return function(){togHSec(id)}})(sid);
-      secH.innerHTML = '<span class="halya-dt">◆</span><span class="halya-st">' + sec.title + '</span><span class="halya-sar" id="a' + sid + '">▾</span>';
-      secDiv.appendChild(secH);
+      var secHdr = document.createElement('div');
+      secHdr.className = 'halya-sh';
+      secHdr.setAttribute('data-sid', sid);
+      secHdr.onclick = function(){ togHSec(this.getAttribute('data-sid')); };
+      secHdr.innerHTML = '<span class="halya-dt">◆</span><span class="halya-st">' + sec.title + '</span>' +
+        '<span class="halya-sar" id="a' + sid + '">▾</span>';
+      secDiv.appendChild(secHdr);
       
       var secB = document.createElement('div');
       secB.className = 'halya-sb';
       secB.id = 'b' + sid;
       
-      // AI summary button (optional)
       if(sec.ai) {
         secB.innerHTML += '<button class="halya-ab" onclick="togHAI(this)">💡 خلاصه</button>' +
           '<div class="halya-as"><div class="halya-as-title">🧠 خلاصه برای حفظ</div>' + sec.ai + '</div>';
       }
       
-      // Content items
       sec.items.forEach(function(item) {
         if(item.type === 'table' && item.data) {
           var tbl = '<table class="halya-tbl">';
           if(item.data.caption) tbl += '<caption>' + item.data.caption + '</caption>';
-          if(item.data.header) tbl += '<tr>' + item.data.header.map(function(h){return '<th>' + h + '</th>'}).join('') + '</tr>';
-          if(item.data.rows) item.data.rows.forEach(function(r){
-            tbl += '<tr>' + r.map(function(c){return '<td>' + c + '</td>'}).join('') + '</tr>';
-          });
+          if(item.data.header) tbl += '<tr>' + item.data.header.map(function(h){return '<th>'+h+'</th>'}).join('') + '</tr>';
+          if(item.data.rows) item.data.rows.forEach(function(r){tbl+='<tr>'+r.map(function(c){return '<td>'+c+'</td>'}).join('')+'</tr>'});
           tbl += '</table>';
           secB.innerHTML += tbl;
         } else {
@@ -5821,8 +5815,7 @@ function renderHalyaPage() {
           else if(item.type==='ex') cls='halya-ex';
           else if(item.type==='poem') cls='halya-poem';
           else if(item.type==='ni') cls='halya-ni';
-          var txt = (item.text||'').replace(/(﴾[^﴿]+﴿)/g, '<span class="halya-q">$1</span>');
-          secB.innerHTML += '<div class="' + cls + '">' + txt + '</div>';
+          secB.innerHTML += '<div class="' + cls + '">' + (item.text||'') + '</div>';
         }
       });
       
@@ -5845,6 +5838,7 @@ function togHCh(n) {
     if(oa)oa.classList.remove('open');
   }
   var b=document.getElementById('bhch'+n), a=document.getElementById('ahch'+n);
+  if(!b||!a) return;
   var isOpen=b.classList.contains('open');
   if(isOpen){b.classList.remove('open');a.classList.remove('open');halyaOpenCh=null;}
   else{b.classList.add('open');a.classList.add('open');halyaOpenCh=n;
@@ -5860,6 +5854,7 @@ function togHSec(id) {
     if(oa)oa.classList.remove('open');
   }
   var b=document.getElementById('b'+id), a=document.getElementById('a'+id);
+  if(!b||!a) return;
   var isOpen=b.classList.contains('open');
   if(isOpen){b.classList.remove('open');a.classList.remove('open');halyaOpenSec=null;}
   else{b.classList.add('open');a.classList.add('open');halyaOpenSec=id;
@@ -5880,6 +5875,9 @@ function halyaSearch(q) {
     c.style.display=(!q||c.textContent.indexOf(q)!==-1)?'':'none';
   });
 }
+
+
+
 
 
 function renderTajweedPage() {
