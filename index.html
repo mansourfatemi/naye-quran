@@ -6010,6 +6010,23 @@ let recAudio=new Audio();
 
 let recIsRecording=false;
 
+// --- Web Audio Gain Boost for recorded voice playback ---
+let recAudioCtx=null, recGainNode=null, recSourceNode=null;
+function ensureRecGain(){
+  try{
+    if(!recAudioCtx){
+      recAudioCtx=new (window.AudioContext||window.webkitAudioContext)();
+      recSourceNode=recAudioCtx.createMediaElementSource(recAudio);
+      recGainNode=recAudioCtx.createGain();
+      recGainNode.gain.value=2.6;
+      recSourceNode.connect(recGainNode);
+      recGainNode.connect(recAudioCtx.destination);
+    }
+    if(recAudioCtx.state==='suspended') recAudioCtx.resume();
+  }catch(e){}
+}
+
+
 
 
 function toggleRecSection(){
@@ -6068,7 +6085,7 @@ async function toggleRecording(){
 
     
 
-    recStream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false}});
+    recStream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:true}});
 
     recChunks=[];
 
@@ -6138,6 +6155,8 @@ function playRecording(){
 
   recAudio.src=recUrl;
 
+  ensureRecGain();
+
   recAudio.play();
 
   btn.innerHTML='&#9208;';
@@ -6196,7 +6215,9 @@ function playBothSequential(){
 
     recAudio.src=recUrl;
 
-    recAudio.play();
+    ensureRecGain();
+
+  recAudio.play();
 
     recAudio.ontimeupdate=()=>{
 
