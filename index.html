@@ -289,6 +289,16 @@
 
 .rec-seekbar-fill{height:100%;background:#26c6da;border-radius:3px;width:0%;transition:width .1s linear}
 
+.rec-vol-row{display:flex;align-items:center;gap:8px;margin-top:10px;direction:rtl}
+.rec-vol-label{font-size:.72em;color:#555;white-space:nowrap;min-width:74px;text-align:right}
+.rec-vol-slider{flex:1;-webkit-appearance:none;appearance:none;height:5px;border-radius:3px;background:#c8e6c9;outline:none;cursor:pointer}
+.rec-vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:#4CAF50;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.3)}
+.rec-vol-slider::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:#4CAF50;cursor:pointer;border:none;box-shadow:0 1px 3px rgba(0,0,0,.3)}
+.rec-vol-slider.rec-vol-mine::-webkit-slider-thumb{background:#26c6da}
+.rec-vol-slider.rec-vol-mine::-moz-range-thumb{background:#26c6da}
+.rec-vol-pct{font-size:.68em;color:#888;min-width:28px;text-align:left}
+
+
 .brec{color:#4CAF50;font-size:1.1em}
 
 .brec.has-rec{color:#fff;background:#4CAF50;border-color:#4CAF50}
@@ -1367,6 +1377,17 @@
       </div>
 
       <div class="rec-seekbar" id="recSeekbar"><div class="rec-seekbar-fill" id="recSeekFill"></div></div>
+
+      <div class="rec-vol-row">
+        <span class="rec-vol-label">🔊 صدای قاری</span>
+        <input type="range" class="rec-vol-slider" id="qariVolSlider" min="0" max="100" value="100">
+        <span class="rec-vol-pct" id="qariVolPct">100</span>
+      </div>
+      <div class="rec-vol-row">
+        <span class="rec-vol-label">🎙️ صدای من</span>
+        <input type="range" class="rec-vol-slider rec-vol-mine" id="myVolSlider" min="0" max="100" value="85">
+        <span class="rec-vol-pct" id="myVolPct">85</span>
+      </div>
 
       <div class="rec-status" id="recStatus">دکمه 🎤 را بزنید تا صدای خود را ضبط کنید</div>
 
@@ -6018,13 +6039,51 @@ function ensureRecGain(){
       recAudioCtx=new (window.AudioContext||window.webkitAudioContext)();
       recSourceNode=recAudioCtx.createMediaElementSource(recAudio);
       recGainNode=recAudioCtx.createGain();
-      recGainNode.gain.value=1.4;
+      recGainNode.gain.value=volCurve(getMyVolPct())*RECVOL_MAX_GAIN;
       recSourceNode.connect(recGainNode);
       recGainNode.connect(recAudioCtx.destination);
     }
     if(recAudioCtx.state==='suspended') recAudioCtx.resume();
   }catch(e){}
 }
+
+// --- Dual logarithmic volume sliders (inspired by مدرسه تلاوت app's setVolume curve) ---
+const RECVOL_MAX_GAIN=3.0;
+function volCurve(p){
+  p=Math.max(0,Math.min(100,p));
+  if(p>=99.5) return 1;
+  const inv=Math.max(1,100-p);
+  return 1-Math.log(inv)/Math.log(100);
+}
+function getQariVolPct(){
+  const v=localStorage.getItem('nq_qariVolPct');
+  return v!==null?parseInt(v,10):100;
+}
+function getMyVolPct(){
+  const v=localStorage.getItem('nq_myVolPct');
+  return v!==null?parseInt(v,10):85;
+}
+function applyQariVol(pct){
+  au.volume=volCurve(pct);
+  localStorage.setItem('nq_qariVolPct',String(pct));
+}
+function applyMyVol(pct){
+  ensureRecGain();
+  if(recGainNode) recGainNode.gain.value=volCurve(pct)*RECVOL_MAX_GAIN;
+  localStorage.setItem('nq_myVolPct',String(pct));
+}
+function initRecVolumeSliders(){
+  const qs=document.getElementById('qariVolSlider'), ms=document.getElementById('myVolSlider');
+  const qp=document.getElementById('qariVolPct'), mp=document.getElementById('myVolPct');
+  if(!qs||!ms)return;
+  const savedQari=getQariVolPct(), savedMy=getMyVolPct();
+  qs.value=savedQari; ms.value=savedMy;
+  if(qp) qp.textContent=savedQari; if(mp) mp.textContent=savedMy;
+  applyQariVol(savedQari);
+  qs.addEventListener('input',()=>{const p=parseInt(qs.value,10);if(qp)qp.textContent=p;applyQariVol(p);});
+  ms.addEventListener('input',()=>{const p=parseInt(ms.value,10);if(mp)mp.textContent=p;applyMyVol(p);});
+}
+document.addEventListener("DOMContentLoaded",initRecVolumeSliders);
 
 
 
