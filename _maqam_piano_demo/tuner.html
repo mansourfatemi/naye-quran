@@ -340,6 +340,25 @@ function yinDetect(buf, sampleRate){
     if(minVal > 0.45) return -1;
   }
 
+  // Step 4.5 — تصحیح خطای اکتاو (هارمونیک قوی در صدای بلند → قفل زودهنگام روی نصف دوره)
+  // اگر در دو-برابر tau فعلی هم افت مشابه/قویتری هست، فرکانس واقعی پایینتر است
+  {
+    const doubleTau = bestTau * 2;
+    if(doubleTau <= tauMax){
+      const searchRadius = Math.max(1, Math.round(bestTau * 0.05));
+      const lo = Math.max(bestTau + 1, doubleTau - searchRadius);
+      const hi = Math.min(tauMax, doubleTau + searchRadius);
+      let minVal2 = Infinity, minTau2 = -1;
+      for(let t = lo; t <= hi; t++){
+        if(cmnd[t] < minVal2){ minVal2 = cmnd[t]; minTau2 = t; }
+      }
+      const OCTAVE_MARGIN = 1.1; // تا ۱۰٪ ضعیفتر هم قابل قبول است
+      if(minTau2 !== -1 && minVal2 <= cmnd[bestTau] * OCTAVE_MARGIN){
+        bestTau = minTau2;
+      }
+    }
+  }
+
   // Step 5 — parabolic interpolation
   let refined = bestTau;
   if(bestTau > 1 && bestTau < tauMax - 1){
