@@ -6018,7 +6018,7 @@ function ensureRecGain(){
       recAudioCtx=new (window.AudioContext||window.webkitAudioContext)();
       recSourceNode=recAudioCtx.createMediaElementSource(recAudio);
       recGainNode=recAudioCtx.createGain();
-      recGainNode.gain.value=2.6;
+      recGainNode.gain.value=1.4;
       recSourceNode.connect(recGainNode);
       recGainNode.connect(recAudioCtx.destination);
     }
