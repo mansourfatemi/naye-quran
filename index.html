@@ -1329,6 +1329,7 @@
     </div>
 
     <div id="nAMsg" class="na" style="display:none">🔇 این فراز فایل صوتی ندارد</div>
+    <div id="netMsg" class="na" style="display:none;color:#e67e22"></div>
 
     <div class="ctrl">
 
@@ -3999,6 +4000,61 @@ async function updateDlBtn(btn, progressEl, qariId, audioFiles){
 
 const au=document.getElementById("au");
 
+// ── مدیریت اینترنت ضعیف: نمایش وضعیت بافرینگ + تلاش مجدد خودکار ──
+let netRetryCount=0;
+const NET_MAX_RETRIES=3;
+const NET_RETRY_DELAY=2000;
+let netBufferTimer=null;
+function showNetMsg(t){var e=document.getElementById('netMsg');if(e){e.textContent=t;e.style.display='block';}}
+function hideNetMsg(){var e=document.getElementById('netMsg');if(e)e.style.display='none';}
+au.addEventListener('waiting',function(){
+  if(netBufferTimer)clearTimeout(netBufferTimer);
+  netBufferTimer=setTimeout(function(){showNetMsg('⏳ در حال بارگذاری (اینترنت ضعیف)...');},700);
+});
+au.addEventListener('stalled',function(){
+  if(netBufferTimer)clearTimeout(netBufferTimer);
+  netBufferTimer=setTimeout(function(){showNetMsg('⏳ در حال بارگذاری (اینترنت ضعیف)...');},700);
+});
+au.addEventListener('playing',function(){
+  if(netBufferTimer){clearTimeout(netBufferTimer);netBufferTimer=null;}
+  netRetryCount=0;hideNetMsg();
+});
+au.addEventListener('canplaythrough',function(){
+  if(netBufferTimer){clearTimeout(netBufferTimer);netBufferTimer=null;}
+  hideNetMsg();
+});
+au.addEventListener('error',function(){
+  if(!au.src)return;
+  if(netRetryCount<NET_MAX_RETRIES){
+    netRetryCount++;
+    showNetMsg('🔁 تلاش مجدد... ('+netRetryCount+'/'+NET_MAX_RETRIES+')');
+    var wasPlaying=pl,curTime=au.currentTime,srcNow=au.src;
+    setTimeout(function(){
+      au.src='';au.load();
+      au.src=srcNow;au.load();
+      if(curTime>0){try{au.currentTime=curTime;}catch(e){}}
+      if(wasPlaying){au.play().then(function(){pl=true;document.getElementById('pBtn').innerHTML='<span>&#9208;</span>';}).catch(function(){pl=false;});}
+    },NET_RETRY_DELAY);
+  }else{
+    showNetMsg('❌ خطا در بارگذاری — اتصال اینترنت ضعیف است. برای پخش بدون قطعی، این تلاوت را دانلود کنید (⬇️)');
+  }
+});
+// پیشبارگذاری فراز بعدی در پسزمینه — کاهش کندی هنگام رفتن به فراز بعد
+let _preloadAu=null;
+function preloadNextPhraseAudio(qari,tilawat,idx){
+  try{
+    if(!tilawat||!tilawat.faraz||idx+1>=tilawat.faraz.length)return;
+    const nf=tilawat.faraz[idx+1];
+    if(!nf||!nf.au)return;
+    const url=getAudioUrl(qari,nf);
+    if(_preloadAu){_preloadAu.src='';}
+    _preloadAu=new Audio();
+    _preloadAu.preload='auto';
+    _preloadAu.src=url;
+    _preloadAu.load();
+  }catch(e){}
+}
+
 
 
 function setColor(c){document.documentElement.style.setProperty('--qcolor',c);}
@@ -5623,11 +5679,15 @@ function upd(autoPlay){
 
   if(f.au){
 
+    netRetryCount=0;hideNetMsg();
+
     au.src=getAudioUrl(curQari,f);au.load();au.playbackRate=curSpeed;
 
     document.getElementById("nAMsg").style.display="none";
 
     document.getElementById("pTr").style.opacity="1";
+
+    preloadNextPhraseAudio(curQari,cT,cI);
 
     if(autoPlay){
 
