@@ -284,6 +284,25 @@
 .rec-play-both:disabled{opacity:.3;cursor:default}
 
 .rec-status{font-size:.72em;color:#888;text-align:center;margin-top:6px;min-height:18px}
+.rec-action-row{display:flex;gap:8px;justify-content:center;margin-top:8px}
+.rec-save-btn{flex:1;padding:7px 4px;border:none;border-radius:8px;background:#388E3C;color:#fff;font-size:.82em;cursor:pointer;font-family:inherit}
+.rec-save-btn:disabled{background:#555;color:#999;cursor:default}
+.rec-lib-btn{flex:1;padding:7px 4px;border:none;border-radius:8px;background:#1565C0;color:#fff;font-size:.82em;cursor:pointer;font-family:inherit}
+.rec-lib-modal{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:9000;display:flex;align-items:flex-end;justify-content:center}
+.rec-lib-box{background:#1a1a2e;border-radius:16px 16px 0 0;width:100%;max-width:520px;max-height:80vh;display:flex;flex-direction:column;padding:0 0 env(safe-area-inset-bottom,16px) 0}
+.rec-lib-hdr{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 10px;border-bottom:1px solid #333}
+.rec-lib-title{color:#fff;font-size:1em;font-weight:600}
+.rec-lib-close{background:none;border:none;color:#aaa;font-size:1.4em;cursor:pointer;line-height:1;padding:0 4px}
+.rec-lib-list{overflow-y:auto;flex:1;padding:8px 12px}
+.rec-lib-empty{color:#888;text-align:center;padding:32px 0;font-size:.9em}
+.rec-lib-item{background:#252545;border-radius:10px;margin-bottom:8px;padding:10px 12px}
+.rec-lib-name{color:#FFD700;font-size:.88em;font-weight:600;margin-bottom:4px}
+.rec-lib-meta{color:#aaa;font-size:.76em;line-height:1.6}
+.rec-lib-btns{display:flex;gap:6px;margin-top:8px}
+.rec-lib-btn-sm{flex:1;padding:6px 2px;border:none;border-radius:7px;font-size:.78em;cursor:pointer;font-family:inherit;font-weight:600}
+.rl-play{background:#1565C0;color:#fff}
+.rl-del{background:#c62828;color:#fff}
+.rl-share{background:#6a1b9a;color:#fff}
 
 .rec-seekbar{position:relative;height:6px;background:#c8e6c9;border-radius:3px;margin:8px 0 0;cursor:pointer}
 
@@ -1390,8 +1409,24 @@
         <span class="rec-vol-pct" id="myVolPct">85</span>
       </div>
 
+      <div class="rec-action-row">
+        <button class="rec-save-btn" id="recSaveBtn" onclick="saveRecording()" disabled>💾 ذخیره این ضبط</button>
+        <button class="rec-lib-btn" onclick="openRecLib()">📂 ضبطهایم</button>
+      </div>
+
       <div class="rec-status" id="recStatus">دکمه 🎤 را بزنید تا صدای خود را ضبط کنید</div>
 
+    </div>
+
+    <!-- modal کتابخانه ضبطها -->
+    <div class="rec-lib-modal" id="recLibModal" style="display:none" onclick="if(event.target===this)closeRecLib()">
+      <div class="rec-lib-box">
+        <div class="rec-lib-hdr">
+          <span class="rec-lib-title">📂 ضبطهای من</span>
+          <button class="rec-lib-close" onclick="closeRecLib()">&times;</button>
+        </div>
+        <div class="rec-lib-list" id="recLibList"></div>
+      </div>
     </div>
 
   </div></div>
@@ -6215,6 +6250,10 @@ async function toggleRecording(){
 
     recChunks=[];
 
+    // غیرفعال کردن دکمه ذخیره هنگام شروع ضبط جدید
+    const _sb=document.getElementById('recSaveBtn');
+    if(_sb){_sb.disabled=true;_sb.textContent='💾 ذخیره این ضبط';}
+
     recMediaRec=new MediaRecorder(recStream,{mimeType:'audio/webm;codecs=opus'});
 
     recMediaRec.ondataavailable=e=>{if(e.data.size>0)recChunks.push(e.data);};
@@ -6228,6 +6267,10 @@ async function toggleRecording(){
       recUrl=URL.createObjectURL(recBlob);
 
       recAudio.src=recUrl;
+
+      // فعال کردن دکمه ذخیره
+      const sb=document.getElementById('recSaveBtn');
+      if(sb){sb.disabled=false;sb.textContent='💾 ذخیره این ضبط';}
 
       document.getElementById('recPlayBtn').disabled=false;
 
@@ -6368,6 +6411,142 @@ function playBothSequential(){
 }
 
 
+
+// ══ کتابخانه ضبطها (IndexedDB) ══
+
+const REC_DB_NAME='nq_recordings',REC_STORE='recs';
+let _recDB=null;
+
+function openRecDB(){
+  return new Promise((res,rej)=>{
+    if(_recDB){res(_recDB);return;}
+    const req=indexedDB.open(REC_DB_NAME,1);
+    req.onupgradeneeded=e=>{
+      const db=e.target.result;
+      if(!db.objectStoreNames.contains(REC_STORE))
+        db.createObjectStore(REC_STORE,{keyPath:'id',autoIncrement:true});
+    };
+    req.onsuccess=e=>{_recDB=e.target.result;res(_recDB);};
+    req.onerror=()=>rej(req.error);
+  });
+}
+
+async function saveRecording(){
+  if(!recBlob)return;
+  try{
+    const db=await openRecDB();
+    const qN=curQari?curQari.name:'';
+    const tN=cT?cT.name:'';
+    const fN=cT&&cT.faraz[cI]?cT.faraz[cI].n:'';
+    const now=new Date();
+    const dStr=now.getFullYear()+'/'+String(now.getMonth()+1).padStart(2,'0')+'/'+String(now.getDate()).padStart(2,'0');
+    const tStr=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+    const rec={qari:qN,tilawat:tN,faraz:fN,date:dStr,time:tStr,ts:now.getTime(),blob:recBlob,mime:recBlob.type||'audio/webm'};
+    const tx=db.transaction(REC_STORE,'readwrite');
+    tx.objectStore(REC_STORE).add(rec);
+    tx.oncomplete=()=>{
+      const btn=document.getElementById('recSaveBtn');
+      if(btn){btn.textContent='✅ ذخیره شد';btn.disabled=true;}
+      const st=document.getElementById('recStatus');
+      if(st) st.textContent='ضبط در کتابخانه ذخیره شد ✔️';
+    };
+  }catch(e){
+    const st=document.getElementById('recStatus');
+    if(st) st.textContent='خطا در ذخیره: '+e.message;
+  }
+}
+
+async function openRecLib(){
+  const modal=document.getElementById('recLibModal');
+  const list=document.getElementById('recLibList');
+  if(!modal||!list)return;
+  list.innerHTML='<div class="rec-lib-empty">در حال بارگذاری...</div>';
+  modal.style.display='flex';
+  try{
+    const db=await openRecDB();
+    const tx=db.transaction(REC_STORE,'readonly');
+    const req=tx.objectStore(REC_STORE).getAll();
+    req.onsuccess=()=>{
+      const recs=[...req.result].reverse();
+      if(!recs.length){list.innerHTML='<div class="rec-lib-empty">هنوز ضبطی ذخیره نشده</div>';return;}
+      list.innerHTML='';
+      recs.forEach(r=>{
+        const item=document.createElement('div');
+        item.className='rec-lib-item';
+        item.id='rli'+r.id;
+        item.innerHTML='<div class="rec-lib-name">'+r.qari+' • '+r.tilawat+'</div>'+
+          '<div class="rec-lib-meta">فراز '+r.faraz+' &nbsp;·&nbsp; '+r.date+' · '+r.time+'</div>'+
+          '<div class="rec-lib-btns">'+
+            '<button class="rec-lib-btn-sm rl-play" onclick="recLibPlay('+r.id+')">&#9654; پخش</button>'+
+            '<button class="rec-lib-btn-sm rl-share" onclick="recLibShare('+r.id+')">&#128228; share</button>'+
+            '<button class="rec-lib-btn-sm rl-del" onclick="recLibDel('+r.id+')">&#128465; حذف</button>'+
+          '</div>';
+        list.appendChild(item);
+      });
+    };
+  }catch(e){
+    list.innerHTML='<div class="rec-lib-empty">خطا: '+e.message+'</div>';
+  }
+}
+
+function closeRecLib(){
+  const m=document.getElementById('recLibModal');
+  if(m) m.style.display='none';
+  if(_libAudio){_libAudio.pause();_libAudio=null;}
+}
+
+let _libAudio=null;
+async function recLibPlay(id){
+  try{
+    const db=await openRecDB();
+    const req=db.transaction(REC_STORE,'readonly').objectStore(REC_STORE).get(id);
+    req.onsuccess=()=>{
+      const r=req.result; if(!r)return;
+      if(_libAudio){_libAudio.pause();URL.revokeObjectURL(_libAudio.src);}
+      const url=URL.createObjectURL(r.blob);
+      _libAudio=new Audio(url);
+      _libAudio.play();
+      _libAudio.onended=()=>{URL.revokeObjectURL(url);_libAudio=null;};
+    };
+  }catch(e){}
+}
+
+async function recLibShare(id){
+  try{
+    const db=await openRecDB();
+    const req=db.transaction(REC_STORE,'readonly').objectStore(REC_STORE).get(id);
+    req.onsuccess=async()=>{
+      const r=req.result; if(!r)return;
+      const ext=r.mime.includes('webm')?'webm':'mp4';
+      const fname='rec_'+r.qari+'_f'+r.faraz+'_'+r.date.replace(/\//g,'-')+'.'+ext;
+      const file=new File([r.blob],fname,{type:r.mime});
+      if(navigator.canShare&&navigator.canShare({files:[file]})){
+        try{await navigator.share({files:[file],title:'ضبط صدا - نوای قرآن'});}catch(e){}
+      } else {
+        const url=URL.createObjectURL(r.blob);
+        const a=document.createElement('a');
+        a.href=url;a.download=fname;a.click();
+        setTimeout(()=>URL.revokeObjectURL(url),3000);
+      }
+    };
+  }catch(e){}
+}
+
+async function recLibDel(id){
+  if(!confirm('این ضبط حذف شود؟'))return;
+  try{
+    const db=await openRecDB();
+    const tx=db.transaction(REC_STORE,'readwrite');
+    tx.objectStore(REC_STORE).delete(id);
+    tx.oncomplete=()=>{
+      const el=document.getElementById('rli'+id);
+      if(el)el.remove();
+      const list=document.getElementById('recLibList');
+      if(list&&!list.querySelector('.rec-lib-item'))
+        list.innerHTML='<div class="rec-lib-empty">هنوز ضبطی ذخیره نشده</div>';
+    };
+  }catch(e){}
+}
 
 
 
