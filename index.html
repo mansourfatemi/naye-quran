@@ -6388,7 +6388,9 @@ au.addEventListener("ended",()=>{
 
   
 
-  if(rp){au.currentTime=0;au.play().then(()=>{pl=true;document.getElementById("pBtn").innerHTML="<span>&#9208;</span>";});}
+  if(rp && autoTimer){startCountdownRepeat();}
+
+  else if(rp){au.currentTime=0;au.play().then(()=>{pl=true;document.getElementById("pBtn").innerHTML="<span>&#9208;</span>";});}
 
   else if(autoTimer){startCountdown();}
 
@@ -6644,6 +6646,27 @@ function stopCountdown(){
 
   if(cd)cd.style.display="none";
 
+}
+
+function startCountdownRepeat(){
+  // هر دو rp و autoTimer فعال: بعد از countdown همان فراز تکرار میشود
+  if(!autoTimer)return;
+  stopCountdown();
+  countdownVal=(au&&au.duration&&isFinite(au.duration)&&au.duration>0)?Math.round(au.duration):20;
+  const cd=document.getElementById("timerCountdown");
+  const cn=document.getElementById("countNum");
+  if(!cd||!cn){au.currentTime=0;au.play().then(()=>{pl=true;document.getElementById("pBtn").innerHTML="<span>&#9208;</span>";});return;}
+  cd.style.display="block";
+  cn.textContent=countdownVal;
+  countdownId=setInterval(()=>{
+    countdownVal--;
+    cn.textContent=countdownVal;
+    if(countdownVal<=0){
+      stopCountdown();
+      au.currentTime=0;
+      au.play().then(()=>{pl=true;document.getElementById("pBtn").innerHTML="<span>&#9208;</span>";});
+    }
+  },1000);
 }
 
 
