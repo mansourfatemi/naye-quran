@@ -6139,7 +6139,7 @@ function initRecVolumeSliders(){
   const savedQari=getQariVolPct(), savedMy=getMyVolPct();
   qs.value=savedQari; ms.value=savedMy;
   if(qp) qp.textContent=savedQari; if(mp) mp.textContent=savedMy;
-  applyQariVol(savedQari);
+  // applyQariVol فقط هنگام باز بودن حالت تمرین اعمال میشود — نه در startup
   qs.addEventListener('input',()=>{const p=parseInt(qs.value,10);if(qp)qp.textContent=p;applyQariVol(p);});
   ms.addEventListener('input',()=>{const p=parseInt(ms.value,10);if(mp)mp.textContent=p;applyMyVol(p);});
 }
@@ -6164,8 +6164,10 @@ function toggleRecSection(){
 
   if(show){
     setTimeout(fixCtrlPos,0);
+    // باز کردن حالت تمرین: slider قاری را روی au.volume اعمال کن
+    applyQariVol(getQariVolPct());
   } else {
-    // بستن حالت تمرین: صدای قاری را به حالت عادی برگردان
+    // بستن حالت تمرین: صدای قاری را به حالت کامل برگردان
     au.volume=1.0;
   }
 
