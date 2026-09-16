@@ -6162,7 +6162,12 @@ function toggleRecSection(){
 
   btn.classList.toggle('has-rec',show);
 
-  if(show) setTimeout(fixCtrlPos,0);
+  if(show){
+    setTimeout(fixCtrlPos,0);
+  } else {
+    // بستن حالت تمرین: صدای قاری را به حالت عادی برگردان
+    au.volume=1.0;
+  }
 
 }
 
