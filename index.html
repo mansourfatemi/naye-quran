@@ -3905,7 +3905,7 @@ window.addEventListener('appinstalled',()=>{document.getElementById('ib').style.
 
 
 let curQari=null, cT=null, cI=0, pl=false, rp=false, curSpeed=1;
-let taqlidMode=false, taqlidTimer=null;
+let taqlidMode=false, taqlidTimer=null, taqlidResumeEndSec=undefined, taqlidResumeNext=null;
 
 let favs={};
 
@@ -5756,7 +5756,39 @@ if(recUrl){URL.revokeObjectURL(recUrl);recUrl=null;recBlob=null;}
 
 
 function tPlay(){
-  if(taqlidMode){stopTaqlid();return;}
+  if(taqlidMode){
+    if(pl){
+      au.pause();pl=false;
+      if(taqlidTimer){clearTimeout(taqlidTimer);taqlidTimer=null;}
+      document.getElementById('pBtn').innerHTML='<span>&#9654;</span>';
+    } else {
+      au.play().then(()=>{
+        pl=true;
+        document.getElementById('pBtn').innerHTML='<span>&#9208;</span>';
+        if(taqlidResumeEndSec!==undefined&&taqlidResumeEndSec!==null){
+          function checkMidR(){
+            if(!taqlidMode){return;}
+            if(au.currentTime>=taqlidResumeEndSec){
+              au.pause();pl=false;
+              document.getElementById('pBtn').innerHTML='<span>&#9654;</span>';
+              taqlidTimer=setTimeout(taqlidResumeNext,500);
+            } else {
+              taqlidTimer=setTimeout(checkMidR,80);
+            }
+          }
+          taqlidTimer=setTimeout(checkMidR,80);
+        } else if(taqlidResumeNext){
+          au.onended=function(){
+            if(!taqlidMode){return;}
+            au.onended=null;pl=false;
+            document.getElementById('pBtn').innerHTML='<span>&#9654;</span>';
+            taqlidTimer=setTimeout(taqlidResumeNext,500);
+          };
+        }
+      }).catch(()=>{pl=false;});
+    }
+    return;
+  }
 
   mqdPreviewActive=false;
 
@@ -5892,13 +5924,15 @@ function tRep(){rp=!rp;const b=document.getElementById("rBtn");b.classList.toggl
 
 function stopTaqlid(){
   taqlidMode=false;
+  taqlidResumeEndSec=undefined;
+  taqlidResumeNext=null;
   if(taqlidTimer){clearTimeout(taqlidTimer);taqlidTimer=null;}
   au.onended=null;
   au.pause();pl=false;
   au.playbackRate=curSpeed;
   document.getElementById('pBtn').innerHTML='<span>&#9654;</span>';
   const b=document.getElementById('tqlBtn');
-  if(b){b.textContent='&#127919;';b.classList.remove('on');}
+  if(b){b.textContent='🎯';b.classList.remove('on');}
 }
 function tTaqlid(){
   if(taqlidMode){stopTaqlid();return;}
@@ -5939,14 +5973,16 @@ function tTaqlid(){
     au.onended=null;
     au.playbackRate=step.speed;
     au.currentTime=startSec;
+    taqlidResumeEndSec=endSec;
+    taqlidResumeNext=runStep;
     if(endSec!==null){
-      // پخش تا endSec با polling
       au.onended=null;
-      au.play().then(()=>{pl=true;}).catch(()=>{});
+      au.play().then(()=>{pl=true;document.getElementById('pBtn').innerHTML='<span>&#9208;</span>';}).catch(()=>{});
       function checkMid(){
         if(!taqlidMode||cT!==savedT||cI!==savedI){stopTaqlid();return;}
         if(au.currentTime>=endSec){
           au.pause();pl=false;
+          document.getElementById('pBtn').innerHTML='<span>&#9654;</span>';
           taqlidTimer=setTimeout(runStep,PAUSE);
         } else {
           taqlidTimer=setTimeout(checkMid,80);
@@ -5954,14 +5990,14 @@ function tTaqlid(){
       }
       taqlidTimer=setTimeout(checkMid,80);
     } else {
-      // پخش تا انتها با onended
       au.onended=function(){
         if(!taqlidMode||cT!==savedT||cI!==savedI){stopTaqlid();return;}
         au.onended=null;
         pl=false;
+        document.getElementById('pBtn').innerHTML='<span>&#9654;</span>';
         taqlidTimer=setTimeout(runStep,PAUSE);
       };
-      au.play().then(()=>{pl=true;}).catch(()=>{stopTaqlid();});
+      au.play().then(()=>{pl=true;document.getElementById('pBtn').innerHTML='<span>&#9208;</span>';}).catch(()=>{stopTaqlid();});
     }
   }
   if(au.readyState>=2){runStep();}
