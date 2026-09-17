@@ -171,7 +171,7 @@
 
 .bt.on{background:#FF9800;color:#fff;border-color:#FF9800}
 
-.bspd{color:#3F51B5;font-size:.68em;font-weight:700}
+.bspd{color:#3F51B5;font-size:.68em;font-weight:700}.btql{color:#E91E63;font-size:.85em;font-weight:700}.btql.on{background:#E91E63;color:#fff;border-color:#E91E63}
 
 .bspd.on{background:#3F51B5;color:#fff;border-color:#3F51B5}
 
@@ -1367,6 +1367,7 @@
         <button class="btn brec" id="recToggleBtn" onclick="toggleRecSection()" title="حالت تمرین">&#127908;</button>
 
         <button class="btn bspd" id="speedBtn" onclick="tSpeed()" title="سرعت پخش">1x</button>
+        <button class="btn btql" id="tqlBtn" onclick="tTaqlid()" title="حالت تقلید">&#127919;</button>
 
       </div>
 
@@ -3904,6 +3905,7 @@ window.addEventListener('appinstalled',()=>{document.getElementById('ib').style.
 
 
 let curQari=null, cT=null, cI=0, pl=false, rp=false, curSpeed=1;
+let taqlidMode=false, taqlidTimer=null;
 
 let favs={};
 
@@ -5694,7 +5696,8 @@ function upd(autoPlay){
 
   // پاک کردن ضبط قبلی هنگام تعویض فراز
 
-  if(recUrl){URL.revokeObjectURL(recUrl);recUrl=null;recBlob=null;}
+  if(taqlidMode){stopTaqlid();}
+if(recUrl){URL.revokeObjectURL(recUrl);recUrl=null;recBlob=null;}
 
   recAudio.pause();recAudio.src='';
 
@@ -5753,6 +5756,7 @@ function upd(autoPlay){
 
 
 function tPlay(){
+  if(taqlidMode){stopTaqlid();return;}
 
   mqdPreviewActive=false;
 
@@ -5884,6 +5888,69 @@ function pF(ap){
 
 function tRep(){rp=!rp;const b=document.getElementById("rBtn");b.classList.toggle("on",rp);if(rp)b.style.background=curQari.color;}
 
+function stopTaqlid(){
+  taqlidMode=false;
+  if(taqlidTimer){clearTimeout(taqlidTimer);taqlidTimer=null;}
+  au.pause();pl=false;
+  au.playbackRate=curSpeed;
+  const b=document.getElementById('tqlBtn');
+  if(b){b.textContent='&#127919;';b.classList.remove('on');}
+}
+function tTaqlid(){
+  if(taqlidMode){stopTaqlid();return;}
+  if(!cT||!cT.faraz[cI]||!cT.faraz[cI].au)return;
+  taqlidMode=true;
+  rp=false;plMode=null;
+  const b=document.getElementById('tqlBtn');
+  if(b){b.textContent='&#9724;' + 'وقف';b.classList.add('on');}
+  const savedI=cI,savedT=cT;
+  const PAUSE=500;
+  const steps=[
+    {speed:0.75,start:0,end:null},
+    {speed:1,start:0,end:null},
+    {speed:1,start:0,end:null},
+    {speed:1,start:0,end:'t1'},
+    {speed:1,start:0,end:'t1'},
+    {speed:1,start:0,end:'t1'},
+    {speed:1,start:'t1',end:'t2'},
+    {speed:1,start:'t1',end:'t2'},
+    {speed:1,start:'t1',end:'t2'},
+    {speed:1,start:'t2',end:null},
+    {speed:1,start:'t2',end:null},
+    {speed:1,start:'t2',end:null},
+    {speed:1,start:0,end:null},
+    {speed:1,start:0,end:null},
+    {speed:1,start:0,end:null},
+    {speed:1,start:0,end:null}
+  ];
+  let stepIdx=0;
+  function runStep(){
+    if(!taqlidMode||cT!==savedT||cI!==savedI){stopTaqlid();return;}
+    if(stepIdx>=steps.length){stopTaqlid();return;}
+    const step=steps[stepIdx++];
+    const dur=au.duration||0;
+    const t1=dur/3,t2=(dur/3)*2;
+    const startSec=step.start==='t1'?t1:(step.start==='t2'?t2:step.start);
+    const endSec=step.end==='t1'?t1:(step.end==='t2'?t2:step.end);
+    au.playbackRate=step.speed;
+    au.currentTime=startSec;
+    au.play().then(()=>{pl=true;}).catch(()=>{});
+    function checkEnd(){
+      if(!taqlidMode||cT!==savedT||cI!==savedI){stopTaqlid();return;}
+      if(endSec!==null&&au.currentTime>=endSec){
+        au.pause();pl=false;
+        taqlidTimer=setTimeout(runStep,PAUSE);
+      } else if(endSec===null&&au.ended){
+        taqlidTimer=setTimeout(runStep,PAUSE);
+      } else {
+        taqlidTimer=setTimeout(checkEnd,100);
+      }
+    }
+    taqlidTimer=setTimeout(checkEnd,100);
+  }
+  if(au.readyState>=2){runStep();}
+  else{au.src=getAudioUrl(curQari,cT.faraz[cI]);au.load();au.addEventListener('canplay',function onR(){au.removeEventListener('canplay',onR);runStep();},{once:true});}
+}
 function tSpeed(){const speeds=[1,0.75,0.5];let idx=speeds.indexOf(curSpeed);idx=(idx+1)%speeds.length;curSpeed=speeds[idx];au.playbackRate=curSpeed;const b=document.getElementById("speedBtn");b.textContent=(curSpeed===1?"1x":curSpeed+"x");b.classList.toggle("on",curSpeed!==1);}
 
 function tFav(){
