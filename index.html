@@ -6000,6 +6000,7 @@ function tTaqlid(){
       au.play().then(()=>{pl=true;document.getElementById('pBtn').innerHTML='<span>&#9208;</span>';}).catch(()=>{stopTaqlid();});
     }
   }
+  au.onended=null;
   if(au.readyState>=2){runStep();}
   else{
     au.src=getAudioUrl(curQari,cT.faraz[cI]);
@@ -6695,6 +6696,8 @@ au.addEventListener("timeupdate",()=>{
 au.addEventListener("ended",()=>{
 
   if(taqlidMode){ return; }
+
+  if(au.onended){ return; }
 
   if(mqdPreviewActive){ return; }
 
