@@ -1,4 +1,4 @@
-const CACHE='mt-mq-v20260920185048';
+const CACHE='mt-mq-v20260921161242';
 
 const CORE=['./','./index.html','./manifest.json','./icon-192.png','./icon-512.png'];
 
@@ -2115,6 +2115,7 @@ const AUDIO=[
   "./qaris/manshawy/audio_t7_part2/7.mp3",
   "./qaris/manshawy/audio_t7_part2/8.mp3",
   "./qaris/manshawy/audio_t7_part2/9.mp3",
+  "./qaris/manshawy/audio_t8/1.mp3",
   "./qaris/manshawy/audio_t8/10.mp3",
   "./qaris/manshawy/audio_t8/100.mp3",
   "./qaris/manshawy/audio_t8/101.mp3",
