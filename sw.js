@@ -1,4 +1,4 @@
-const CACHE='mt-mq-v20260921161242';
+const CACHE='mt-mq-v20260922094911';
 
 const CORE=['./','./index.html','./manifest.json','./icon-192.png','./icon-512.png'];
 
@@ -775,6 +775,7 @@ const AUDIO=[
   "./qaris/manshawy/audio_t14/40.mp3",
   "./qaris/manshawy/audio_t14/41.mp3",
   "./qaris/manshawy/audio_t14/42.mp3",
+  "./qaris/manshawy/audio_t14/42_original.mp3",
   "./qaris/manshawy/audio_t14/43.mp3",
   "./qaris/manshawy/audio_t14/44.mp3",
   "./qaris/manshawy/audio_t14/45.mp3",
@@ -803,6 +804,7 @@ const AUDIO=[
   "./qaris/manshawy/audio_t14/66.mp3",
   "./qaris/manshawy/audio_t14/67.mp3",
   "./qaris/manshawy/audio_t14/68.mp3",
+  "./qaris/manshawy/audio_t14/69.mp3",
   "./qaris/manshawy/audio_t14/7.mp3",
   "./qaris/manshawy/audio_t14/8.mp3",
   "./qaris/manshawy/audio_t14/9.mp3",
