@@ -6498,7 +6498,7 @@ function playRecording(){
 
   }
 
-  recAudio.src=recUrl;
+  if(recAudio.src!==recUrl){recAudio.src=recUrl;}
 
   ensureRecGain();
 
