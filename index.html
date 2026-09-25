@@ -95,9 +95,9 @@
 
 .pw{padding:16px 10px;background:linear-gradient(160deg,#1a1a2e,#232345);border-radius:0}
 
-.pc{background:#fff;border-radius:16px;box-shadow:0 8px 26px rgba(0,0,0,.35);position:relative;overflow:hidden;display:flex;flex-direction:column;height:calc(100vh - 175px);height:calc(100dvh - 175px)}
+.pc{background:#fff;border:2.5px solid #4caf50;border-radius:3px;position:relative;overflow:hidden;display:flex;flex-direction:column;height:calc(100vh - 175px);height:calc(100dvh - 175px);padding:3px;box-shadow:0 4px 16px rgba(0,0,0,.3)}.pc::before{content:"";position:absolute;top:-4px;right:-4px;width:14px;height:14px;border:3px solid #2e7d32;border-width:3px 3px 0 0;z-index:3}.pc::after{content:"";position:absolute;bottom:-4px;left:-4px;width:14px;height:14px;border:3px solid #2e7d32;border-width:0 0 3px 3px;z-index:3}
 
-.fd{padding:20px 16px;text-align:center;flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.fd{padding:14px 12px;text-align:center;flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;border:1.5px solid #a5d6a7;border-radius:2px;margin:0;position:relative}.fd::before{content:"";position:absolute;top:-4px;left:-4px;width:14px;height:14px;border:3px solid #2e7d32;border-width:3px 0 0 3px;z-index:3}.fd::after{content:"";position:absolute;bottom:-4px;right:-4px;width:14px;height:14px;border:3px solid #2e7d32;border-width:0 3px 3px 0;z-index:3}
 
 .pc::before{content:"";position:absolute;top:0;left:0;right:0;height:5px;background:var(--mqcolor);z-index:2}
 
@@ -115,19 +115,15 @@
 
 .pc .corner.br{bottom:8px;right:8px;transform:scale(-1,-1)}
 
-.ayah{font-family:"Uthmanic","Traditional Arabic","Arial Unicode MS",serif;font-size:clamp(1.6em,6.0vw,2.3em);line-height:2.2;color:#1a1a2e;padding:14px 16px;background:#fafafa;border-radius:10px;margin-bottom:11px;text-align:right;overflow-wrap:break-word;word-break:break-word}
+.ayah{font-family:"Uthmanic","Traditional Arabic","Arial Unicode MS",serif;font-size:clamp(1.6em,6.0vw,2.3em);line-height:2.2;color:#1a1a2e;padding:14px 16px;background:transparent;border-radius:0;margin-bottom:11px;text-align:right;overflow-wrap:break-word;word-break:break-word}
 
-.trans{font-family:"BNazanin","Segoe UI",Tahoma,sans-serif;font-size:1.05em;color:#444;padding:12px 14px;background:#f7f7fa;border-radius:8px;border-right:4px solid var(--mqcolor);text-align:right;margin-bottom:14px;min-height:32px;line-height:1.8}
+.trans{font-family:"BNazanin","Segoe UI",Tahoma,sans-serif;font-size:1.05em;color:#444;padding:12px 14px;background:#f9fbe7;border-radius:6px;border-right:3px solid #4caf50;text-align:right;margin-bottom:14px;min-height:32px;line-height:1.8}
 
-.badge{display:inline-block;color:#fff;padding:6px 20px;border-radius:22px;font-weight:bold;margin:6px 0;font-size:.92em;position:relative}
+.badge{display:inline-flex;align-items:center;justify-content:center;color:#fff;font-weight:bold;margin:4px 0;font-size:1.05em;position:relative;width:96px;height:54px;filter:drop-shadow(0 3px 8px rgba(0,150,0,.45))}.badge::before{content:"";position:absolute;inset:0;background:#e8f5e9;clip-path:polygon(18% 0%,82% 0%,100% 22%,100% 78%,82% 100%,18% 100%,0% 78%,0% 22%);z-index:0}.badge::after{content:"";position:absolute;inset:5px;background:radial-gradient(circle at 38% 28%,#aaff33,#33cc00 45%,#156600 100%);clip-path:polygon(18% 0%,82% 0%,100% 22%,100% 78%,82% 100%,18% 100%,0% 78%,0% 22%);z-index:0}
 
-.badge::before,.badge::after{content:"";position:absolute;top:0;width:7px;height:100%;background:inherit;filter:brightness(.75)}
 
-.badge::before{left:-6px;clip-path:polygon(100% 0,100% 100%,0 50%)}
 
-.badge::after{right:-6px;clip-path:polygon(0 0,0 100%,100% 50%)}
-
-.mr{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:10px 0}
+.badge-row{display:flex;align-items:center;justify-content:center;margin:4px 0 8px}.badge-chain{display:flex;align-items:center;flex:1}.badge-chain.bleft{justify-content:flex-end}.badge-chain.bright{justify-content:flex-start}.chain-line{height:2px;width:20px;background:#4caf50;flex-shrink:0}.chain-diamond{width:7px;height:7px;background:#4caf50;transform:rotate(45deg);flex-shrink:0;margin:0 3px}.chain-arr{color:#4caf50;font-size:.9em;flex-shrink:0;margin:0 3px}.btext{position:relative;z-index:2}.frame-div{height:2px;background:linear-gradient(90deg,transparent,#4caf50 20%,#4caf50 80%,transparent);margin:8px -12px;position:relative}.frame-div::before,.frame-div::after{content:"C6";position:absolute;top:50%;transform:translateY(-50%);color:#4caf50;font-size:.6em;background:#fff;padding:0 5px;line-height:1}.frame-div::before{right:10px}.frame-div::after{left:10px}.mr{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:10px 0}
 
 .tag{border:2px solid var(--mqcolor);color:var(--mqcolor);padding:4px 13px;border-radius:18px;font-weight:bold;font-size:.85em}
 
@@ -1330,7 +1326,7 @@
 
       <div class="trans" id="tT"></div>
 
-      <div class="badge" id="fB"></div>
+      <div class="frame-div"></div><div class="badge-row"><div class="badge-chain bleft"><div class="chain-line"></div><div class="chain-diamond"></div><div class="chain-line"></div><div class="chain-arr">&#9668;</div></div><div class="badge" id="fB"><span class="btext"></span></div><div class="badge-chain bright"><div class="chain-arr">&#9658;</div><div class="chain-line"></div><div class="chain-diamond"></div><div class="chain-line"></div></div></div>
 
       <div class="mr"><span class="tag" id="mT"></span><span class="tag" id="oT"></span></div>
 
@@ -5714,13 +5710,13 @@ function upd(autoPlay){
 
   document.getElementById("tT").textContent=f.tr||"";
 
-  document.getElementById("fB").textContent="فراز "+f.n;
+  document.getElementById("fB").querySelector(".btext").textContent="فراز "+f.n;
 
   const mqc=MCOLORS[f.m]||curQari.color;
 
   setMaqamColor(mqc);
 
-  document.getElementById("fB").style.background=mqc;
+  // badge color handled by CSS gradient
 
   document.getElementById("mT").textContent=f.m;
 
