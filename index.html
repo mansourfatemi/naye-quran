@@ -304,7 +304,7 @@
 .rl-del{background:#c62828;color:#fff}
 .rl-share{background:#6a1b9a;color:#fff}
 
-.rec-seekbar{position:relative;height:6px;background:#c8e6c9;border-radius:3px;margin:8px 0 0;cursor:pointer}
+.rec-seekbar{position:relative;height:12px;background:#c8e6c9;border-radius:6px;margin:8px 0 0;cursor:pointer}
 
 .rec-seekbar-fill{height:100%;background:#26c6da;border-radius:3px;width:0%;transition:width .1s linear}
 
@@ -6519,6 +6519,24 @@ function playRecording(){
     fill.style.width='0%';
 
   };
+
+  // seek با کلیک/کشیدن روی seekbar
+  const sb=document.getElementById('recSeekbar');
+  if(sb&&!sb._recSeekBound){
+    sb._recSeekBound=true;
+    function _recSeek(e){
+      if(!recAudio.duration)return;
+      const rect=sb.getBoundingClientRect();
+      const ratio=Math.max(0,Math.min(1,(e.clientX-rect.left)/rect.width));
+      recAudio.currentTime=ratio*recAudio.duration;
+      fill.style.width=(ratio*100)+'%';
+    }
+    let _recDragging=false;
+    sb.addEventListener('pointerdown',e=>{_recDragging=true;sb.setPointerCapture(e.pointerId);_recSeek(e);});
+    sb.addEventListener('pointermove',e=>{if(_recDragging)_recSeek(e);});
+    sb.addEventListener('pointerup',()=>{_recDragging=false;});
+    sb.addEventListener('pointercancel',()=>{_recDragging=false;});
+  }
 
 }
 
