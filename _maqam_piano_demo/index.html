@@ -534,10 +534,9 @@ function buildComboDetailScale(combo){
 
 // رندر SVG صعودی/نزولی
 function drawAscDescSVG(svgEl, notes, intervals, jinsBoundary, color1, color2, label1, label2){
-  // notes: آرایه نام نتها، intervals: فواصل بین نتها، jinsBoundary: index جداکننده دو جنس
-  const W = 560, H = 130;
-  const startX = 30, noteY = 75, step = 70;
+  // notes: نام نتها، intervals: فواصل، jinsBoundary: آخرین index جنس اول (شامل نت مشترک)
   const ns = 'http://www.w3.org/2000/svg';
+  const step = 62, startX = 36, noteY = 88, W = startX*2 + step*(notes.length-1), H = 140;
 
   function el(tag, attrs){
     const e = document.createElementNS(ns, tag);
@@ -545,54 +544,68 @@ function drawAscDescSVG(svgEl, notes, intervals, jinsBoundary, color1, color2, l
     return e;
   }
   function txt(x,y,str,attrs={}){
-    const t = el('text',{x,y,'text-anchor':'middle','font-family':'Vazirmatn,Tahoma,sans-serif','font-size':'13',...attrs});
+    const t = el('text',{x,y,'text-anchor':'middle','dominant-baseline':'middle',
+      'font-family':'Vazirmatn,Tahoma,sans-serif','font-size':'12',...attrs});
     t.textContent=str; return t;
   }
 
-  svgEl.innerHTML = '';
+  svgEl.innerHTML='';
   svgEl.setAttribute('viewBox','0 0 '+W+' '+H);
+  svgEl.setAttribute('width', W);
 
   // خط اصلی
-  svgEl.appendChild(el('line',{x1:startX,y1:noteY,x2:startX+step*(notes.length-1),y2:noteY,stroke:'#888','stroke-width':'2'}));
+  svgEl.appendChild(el('line',{x1:startX,y1:noteY,x2:startX+step*(notes.length-1),y2:noteY,stroke:'#aaa','stroke-width':'2'}));
 
-  // کروشه جنس ۱
-  const b1x1 = startX, b1x2 = startX + step*(jinsBoundary);
-  const bY = 18;
-  svgEl.appendChild(el('line',{x1:b1x1,y1:bY+8,x2:b1x1,y2:bY+14,stroke:color1,'stroke-width':'2'}));
-  svgEl.appendChild(el('line',{x1:b1x1,y1:bY+14,x2:b1x2,y2:bY+14,stroke:color1,'stroke-width':'2'}));
-  svgEl.appendChild(el('line',{x1:b1x2,y1:bY+8,x2:b1x2,y2:bY+14,stroke:color1,'stroke-width':'2'}));
-  const t1 = txt((b1x1+b1x2)/2, bY+10, label1, {'font-size':'12','font-weight':'bold',fill:color1});
-  svgEl.appendChild(t1);
+  // کروشه جنس ۱ (بالا)
+  const bY=22, bH=12;
+  const bx1=startX, bx2=startX+step*jinsBoundary;
+  [el('line',{x1:bx1,y1:bY,x2:bx1,y2:bY+bH,stroke:color1,'stroke-width':'2'}),
+   el('line',{x1:bx1,y1:bY+bH,x2:bx2,y2:bY+bH,stroke:color1,'stroke-width':'2'}),
+   el('line',{x1:bx2,y1:bY,x2:bx2,y2:bY+bH,stroke:color1,'stroke-width':'2'}),
+   txt((bx1+bx2)/2,bY-6,label1,{'font-size':'11','font-weight':'bold',fill:color1})
+  ].forEach(e=>svgEl.appendChild(e));
 
-  // کروشه جنس ۲
-  const b2x1 = startX + step*jinsBoundary, b2x2 = startX + step*(notes.length-1);
-  svgEl.appendChild(el('line',{x1:b2x1,y1:bY+8,x2:b2x1,y2:bY+14,stroke:color2,'stroke-width':'2'}));
-  svgEl.appendChild(el('line',{x1:b2x1,y1:bY+14,x2:b2x2,y2:bY+14,stroke:color2,'stroke-width':'2'}));
-  svgEl.appendChild(el('line',{x1:b2x2,y1:bY+8,x2:b2x2,y2:bY+14,stroke:color2,'stroke-width':'2'}));
-  const t2 = txt((b2x1+b2x2)/2, bY+10, label2, {'font-size':'12','font-weight':'bold',fill:color2});
-  svgEl.appendChild(t2);
+  // کروشه جنس ۲ (بالا)
+  const bx3=startX+step*jinsBoundary, bx4=startX+step*(notes.length-1);
+  [el('line',{x1:bx3,y1:bY,x2:bx3,y2:bY+bH,stroke:color2,'stroke-width':'2'}),
+   el('line',{x1:bx3,y1:bY+bH,x2:bx4,y2:bY+bH,stroke:color2,'stroke-width':'2'}),
+   el('line',{x1:bx4,y1:bY,x2:bx4,y2:bY+bH,stroke:color2,'stroke-width':'2'}),
+   txt((bx3+bx4)/2,bY-6,label2,{'font-size':'11','font-weight':'bold',fill:color2})
+  ].forEach(e=>svgEl.appendChild(e));
 
-  // فواصل بین نتها
+  // فواصل (badge بین نتها)
   intervals.forEach((interval,i)=>{
     const x = startX + step*i + step/2;
     const color = i < jinsBoundary ? color1 : color2;
-    const bg = el('rect',{x:x-14,y:noteY-34,width:28,height:20,rx:'10',fill:color,opacity:'0.9'});
-    svgEl.appendChild(bg);
-    svgEl.appendChild(txt(x, noteY-20, interval, {'font-size':'11','font-weight':'bold',fill:'#fff'}));
+    svgEl.appendChild(el('rect',{x:x-13,y:noteY-30,width:26,height:18,rx:'9',fill:color}));
+    svgEl.appendChild(txt(x,noteY-21,interval,{'font-size':'10','font-weight':'bold',fill:'#fff'}));
   });
 
-  // نتها
+  // نتها (دایره + نام + شماره)
   notes.forEach((name,i)=>{
     const x = startX + step*i;
-    const color = i < jinsBoundary ? color1 : color2;
-    // دایره نت
-    svgEl.appendChild(el('circle',{cx:x,cy:noteY,r:'14',fill:color,stroke:'#fff','stroke-width':'2'}));
-    // نام نت
-    svgEl.appendChild(txt(x, noteY+5, name, {'font-size':'11','font-weight':'bold',fill:'#fff'}));
+    // نت مشترک (jinsBoundary): نصف قرمز نصف آبی — نشان داده با stroke
+    const isShared = (i === jinsBoundary);
+    const color = i <= jinsBoundary ? color1 : color2;
+    const r = 16;
+    if(isShared){
+      // دایره با دو رنگ: نصف چپ color1، نصف راست color2
+      svgEl.appendChild(el('circle',{cx:x,cy:noteY,r:r,fill:color1}));
+      // نیمه راست color2
+      const path = `M ${x} ${noteY-r} A ${r} ${r} 0 0 1 ${x} ${noteY+r} Z`;
+      const p = el('path',{d:path,fill:color2});
+      svgEl.appendChild(p);
+      svgEl.appendChild(el('circle',{cx:x,cy:noteY,r:r,fill:'none',stroke:'#fff','stroke-width':'2'}));
+    } else {
+      svgEl.appendChild(el('circle',{cx:x,cy:noteY,r:r,fill:color,stroke:'#fff','stroke-width':'2'}));
+    }
+    // نام نت داخل دایره
+    svgEl.appendChild(txt(x,noteY,name,{'font-size': name.length>3?'9':'11','font-weight':'bold',fill:'#fff'}));
     // شماره درجه زیر
-    svgEl.appendChild(txt(x, noteY+28, String(i+1), {'font-size':'11',fill:'#555'}));
+    svgEl.appendChild(txt(x,noteY+26,String(i+1),{'font-size':'11',fill:'#555'}));
   });
 }
+
 
 // نزولی: جنس حجاز (1-4) + جنس راست (4-8)
 const descNotes = ['ر','ر#','فا#','سل','لا','سی‌نیم‌بمل','دو','ر'];
