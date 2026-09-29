@@ -147,11 +147,15 @@
     <h2>حرکت صعودی و نزولی مقام حجاز</h2>
     <div class="sub">مقام حجاز در حرکت صعودی و نزولی فواصل متفاوتی دارد</div>
 
-    <div style="margin:14px 0 4px;font-weight:600;color:#e6b800">⬇️ نزولی — جنس حجاز + جنس راست</div>
-    <div class="diagwrap-scroll"><div class="diagwrap" id="descDiag"></div></div>
+    <div style="margin:14px 0 6px;font-weight:600;color:#e6b800;font-size:.95em">⬇️ نزولی — جنس حجاز + جنس راست</div>
+    <div style="overflow-x:auto;direction:ltr">
+      <svg id="svgDesc" xmlns="http://www.w3.org/2000/svg" width="560" height="130" style="display:block;min-width:420px"></svg>
+    </div>
 
-    <div style="margin:18px 0 4px;font-weight:600;color:#43a047">⬆️ صعودی — جنس کرد + جنس نهاوند</div>
-    <div class="diagwrap-scroll"><div class="diagwrap" id="ascDiag"></div></div>
+    <div style="margin:18px 0 6px;font-weight:600;color:#43a047;font-size:.95em">⬆️ صعودی — جنس کرد + جنس نهاوند</div>
+    <div style="overflow-x:auto;direction:ltr">
+      <svg id="svgAsc" xmlns="http://www.w3.org/2000/svg" width="560" height="130" style="display:block;min-width:420px"></svg>
+    </div>
 
     <div class="sub" style="margin-top:14px;font-style:italic">
       تفاوت اصلی در درجه ۲: نزولی ← ر# (نیمپرده بالا) | صعودی ← می (یک پرده بالا)
@@ -528,13 +532,79 @@ function buildComboDetailScale(combo){
   });
 }
 
-// رندر diagram صعودی/نزولی
-const DESC_OFFSETS = [0,1,4,5,7,8,11,12]; // نزولی: جنس حجاز + جنس راست
-const ASC_OFFSETS  = [0,2,4,5,7,8,11,12]; // صعودی: جنس کرد + جنس نهاوند
-const descDiag = document.getElementById('descDiag');
-const ascDiag  = document.getElementById('ascDiag');
-if(descDiag) renderIntervalDiagramGeneric(descDiag, DESC_OFFSETS, false);
-if(ascDiag)  renderIntervalDiagramGeneric(ascDiag,  ASC_OFFSETS,  false);
+// رندر SVG صعودی/نزولی
+function drawAscDescSVG(svgEl, notes, intervals, jinsBoundary, color1, color2, label1, label2){
+  // notes: آرایه نام نتها، intervals: فواصل بین نتها، jinsBoundary: index جداکننده دو جنس
+  const W = 560, H = 130;
+  const startX = 30, noteY = 75, step = 70;
+  const ns = 'http://www.w3.org/2000/svg';
+
+  function el(tag, attrs){
+    const e = document.createElementNS(ns, tag);
+    Object.entries(attrs).forEach(([k,v])=>e.setAttribute(k,v));
+    return e;
+  }
+  function txt(x,y,str,attrs={}){
+    const t = el('text',{x,y,'text-anchor':'middle','font-family':'Vazirmatn,Tahoma,sans-serif','font-size':'13',...attrs});
+    t.textContent=str; return t;
+  }
+
+  svgEl.innerHTML = '';
+  svgEl.setAttribute('viewBox','0 0 '+W+' '+H);
+
+  // خط اصلی
+  svgEl.appendChild(el('line',{x1:startX,y1:noteY,x2:startX+step*(notes.length-1),y2:noteY,stroke:'#888','stroke-width':'2'}));
+
+  // کروشه جنس ۱
+  const b1x1 = startX, b1x2 = startX + step*(jinsBoundary);
+  const bY = 18;
+  svgEl.appendChild(el('line',{x1:b1x1,y1:bY+8,x2:b1x1,y2:bY+14,stroke:color1,'stroke-width':'2'}));
+  svgEl.appendChild(el('line',{x1:b1x1,y1:bY+14,x2:b1x2,y2:bY+14,stroke:color1,'stroke-width':'2'}));
+  svgEl.appendChild(el('line',{x1:b1x2,y1:bY+8,x2:b1x2,y2:bY+14,stroke:color1,'stroke-width':'2'}));
+  const t1 = txt((b1x1+b1x2)/2, bY+10, label1, {'font-size':'12','font-weight':'bold',fill:color1});
+  svgEl.appendChild(t1);
+
+  // کروشه جنس ۲
+  const b2x1 = startX + step*jinsBoundary, b2x2 = startX + step*(notes.length-1);
+  svgEl.appendChild(el('line',{x1:b2x1,y1:bY+8,x2:b2x1,y2:bY+14,stroke:color2,'stroke-width':'2'}));
+  svgEl.appendChild(el('line',{x1:b2x1,y1:bY+14,x2:b2x2,y2:bY+14,stroke:color2,'stroke-width':'2'}));
+  svgEl.appendChild(el('line',{x1:b2x2,y1:bY+8,x2:b2x2,y2:bY+14,stroke:color2,'stroke-width':'2'}));
+  const t2 = txt((b2x1+b2x2)/2, bY+10, label2, {'font-size':'12','font-weight':'bold',fill:color2});
+  svgEl.appendChild(t2);
+
+  // فواصل بین نتها
+  intervals.forEach((interval,i)=>{
+    const x = startX + step*i + step/2;
+    const color = i < jinsBoundary ? color1 : color2;
+    const bg = el('rect',{x:x-14,y:noteY-34,width:28,height:20,rx:'10',fill:color,opacity:'0.9'});
+    svgEl.appendChild(bg);
+    svgEl.appendChild(txt(x, noteY-20, interval, {'font-size':'11','font-weight':'bold',fill:'#fff'}));
+  });
+
+  // نتها
+  notes.forEach((name,i)=>{
+    const x = startX + step*i;
+    const color = i < jinsBoundary ? color1 : color2;
+    // دایره نت
+    svgEl.appendChild(el('circle',{cx:x,cy:noteY,r:'14',fill:color,stroke:'#fff','stroke-width':'2'}));
+    // نام نت
+    svgEl.appendChild(txt(x, noteY+5, name, {'font-size':'11','font-weight':'bold',fill:'#fff'}));
+    // شماره درجه زیر
+    svgEl.appendChild(txt(x, noteY+28, String(i+1), {'font-size':'11',fill:'#555'}));
+  });
+}
+
+// نزولی: جنس حجاز (1-4) + جنس راست (4-8)
+const descNotes = ['ر','ر#','فا#','سل','لا','سی‌نیم‌بمل','دو','ر'];
+const descInts  = ['½','1½','½','1','¾','¾','1'];
+// صعودی: جنس کرد (1-4) + جنس نهاوند (4-8)
+const ascNotes  = ['ر','می','فا','سل','لا','سی‌بمل','دو#','ر'];
+const ascInts   = ['1','1','½','1','½','1½','½'];
+
+const svgDesc = document.getElementById('svgDesc');
+const svgAsc  = document.getElementById('svgAsc');
+if(svgDesc) drawAscDescSVG(svgDesc, descNotes, descInts, 3, '#c62828', '#1565c0', 'جنس حجاز', 'جنس راست');
+if(svgAsc)  drawAscDescSVG(svgAsc,  ascNotes,  ascInts,  3, '#2e7d32', '#00695c', 'جنس کرد', 'جنس نهاوند');
 
 HIJAZ_COMBOS.forEach((c,idx)=>{
   const item = document.createElement('div');
