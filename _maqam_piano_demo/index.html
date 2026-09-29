@@ -364,7 +364,7 @@ const JINS_PATTERNS = {
 const HIJAZ_COMBOS = [
   {name:'مقام حجاز (Hijaz)',                          jins2:'جنس راست',   color2:'#f4a300'},
   {name:'حجازکار / شهناز / شدعربان (Hijazkar/Shahnaz)', jins2:'جنس نیکریز', color2:'#1e88c9'},
-  {name:'حجازین',                        jins2:'جنس حجاز',    color2:'#1e88c9'},
+  {name:'حجازین',                        jins2:'جنس حجاز',    color2:'#1e88c9', offsets:[0,1,4,5,6,7,10,12]},
   {name:'حجازعجمی (فرم ۱ — با نهاوند)',   jins2:'جنس نهاوند',  color2:'#6d4c41'},
   {name:'حجازعجمی (فرم ۲ — با کرد)',      jins2:'جنس کرد',     color2:'#8e24aa'},
   {name:'عزال',                          jins2:'جنس بیات',    color2:'#2e7d32'},
@@ -374,6 +374,7 @@ const HIJAZ_COMBOS = [
 
 // محاسبه‌ی فرکانس تمام نت‌های یک ترکیب، بر پایهی ر4 (D4)
 function buildComboFreqs(combo){
+  if(combo.offsets) return combo.offsets.map(o => NOTE_FREQ.D4 * Math.pow(2, o/12));
   const R = NOTE_FREQ.D4;
   const offsets = [...JINS1_HIJAZ_OFFSETS]; // نت‌های جنس حجاز: درجه ۱ تا ۴ (افست‌ها: 0,1,4,5)
   const jinsInfo = JINS_PATTERNS[combo.jins2];
