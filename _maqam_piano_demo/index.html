@@ -149,12 +149,12 @@
 
     <div style="margin:14px 0 6px;font-weight:600;color:#e6b800;font-size:.95em">⬇️ نزولی — جنس حجاز + جنس راست</div>
     <div style="overflow-x:auto;direction:ltr">
-      <svg id="svgDesc" xmlns="http://www.w3.org/2000/svg" width="560" height="130" style="display:block;min-width:420px"></svg>
+      <svg id="svgDesc" xmlns="http://www.w3.org/2000/svg" height="140" style="display:block;width:100%;max-width:620px"></svg>
     </div>
 
     <div style="margin:18px 0 6px;font-weight:600;color:#43a047;font-size:.95em">⬆️ صعودی — جنس کرد + جنس نهاوند</div>
     <div style="overflow-x:auto;direction:ltr">
-      <svg id="svgAsc" xmlns="http://www.w3.org/2000/svg" width="560" height="130" style="display:block;min-width:420px"></svg>
+      <svg id="svgAsc" xmlns="http://www.w3.org/2000/svg" height="140" style="display:block;width:100%;max-width:620px"></svg>
     </div>
 
     <div class="sub" style="margin-top:14px;font-style:italic">
@@ -536,7 +536,7 @@ function buildComboDetailScale(combo){
 function drawAscDescSVG(svgEl, notes, intervals, jinsBoundary, color1, color2, label1, label2){
   // notes: نام نتها، intervals: فواصل، jinsBoundary: آخرین index جنس اول (شامل نت مشترک)
   const ns = 'http://www.w3.org/2000/svg';
-  const step = 62, startX = 36, noteY = 88, W = startX*2 + step*(notes.length-1), H = 140;
+  const step = 66, startX = 40, noteY = 88, W = startX*2 + step*(notes.length-1), H = 140;
 
   function el(tag, attrs){
     const e = document.createElementNS(ns, tag);
@@ -552,6 +552,7 @@ function drawAscDescSVG(svgEl, notes, intervals, jinsBoundary, color1, color2, l
   svgEl.innerHTML='';
   svgEl.setAttribute('viewBox','0 0 '+W+' '+H);
   svgEl.setAttribute('width', W);
+  svgEl.setAttribute('height', H);
 
   // خط اصلی
   svgEl.appendChild(el('line',{x1:startX,y1:noteY,x2:startX+step*(notes.length-1),y2:noteY,stroke:'#aaa','stroke-width':'2'}));
