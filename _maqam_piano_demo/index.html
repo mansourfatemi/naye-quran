@@ -471,6 +471,15 @@ function renderIntervalDiagramGeneric(containerEl, offsetsArr, compact){
 }
 
 function buildComboDetailScale(combo){
+  // اگر combo دارای offsets سفارشی باشد
+  if(combo.offsets){
+    return combo.offsets.map((o,i)=>{
+      const isQuarter = !Number.isInteger(o);
+      return {offset:o, freq: NOTE_FREQ.D4 * Math.pow(2,o/12), isQuarter,
+              label: HIJAZ_SCALE[i] ? HIJAZ_SCALE[i].label : '',
+              desc: HIJAZ_SCALE[i] ? HIJAZ_SCALE[i].desc : '', deg: i+1};
+    });
+  }
   const offsets = [...JINS1_HIJAZ_OFFSETS]; // درجه ۱ تا ۴: افست‌های 0,1,4,5
   const jinsInfo = JINS_PATTERNS[combo.jins2];
   let cum = 5; // افست درجه۴
