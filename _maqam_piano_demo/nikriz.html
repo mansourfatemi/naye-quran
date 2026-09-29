@@ -169,13 +169,13 @@ const BLACK_KEYS = [
   {name:'Cs4', label:'دو#', afterWhiteIdx:0},
   {name:'Ds4', label:'می‌بمل', afterWhiteIdx:1, deg:3, isTonic:false},
   {name:'Fs4', label:'فا#', afterWhiteIdx:3, deg:4, isTonic:false},
-  {name:'Gs4', label:'لابمل', afterWhiteIdx:4},
-  {name:'As4', label:'سیبمل', afterWhiteIdx:5, deg:7, isTonic:false}
+  {name:'Gs4', label:'لا‌بمل', afterWhiteIdx:4},
+  {name:'As4', label:'سی‌بمل', afterWhiteIdx:5, deg:7, isTonic:false}
 ];
 const WKEY_W = 44, BKEY_W = 26, TICK_W = 44;
 const KEY_SEMI={C4:0,Cs4:1,D4:2,Ds4:3,E4:4,F4:5,Fs4:6,G4:7,Gs4:8,A4:9,As4:10,B4:11,C5:12};
 function freqFromSemi(s){return 261.626*Math.pow(2,s/12);}
-const CHROM_NAMES = ['دو','دو# / ربمل','ر','ر# / می‌بمل','می','فا','فا# / سلبمل','سل','سل# / لابمل','لا','لا# / سیبمل','سی','دو (اکتاو)'];
+const CHROM_NAMES = ['دو','دو# / ر‌بمل','ر','ر# / می‌بمل','می','فا','فا# / سل‌بمل','سل','سل# / لا‌بمل','لا','لا# / سی‌بمل','سی','دو (اکتاو)'];
 const OFFSET_CENTER_PX = [22,41,66,110,129,154,173,198,217,242,286,305,330];
 function chromName(offset){
   if(Number.isInteger(offset)) return CHROM_NAMES[offset];
@@ -197,7 +197,7 @@ const NIKRIZ_SCALE = [
   {deg:4, offset:6,  label:'فا#',    desc:'یک پرده و نیم بالاتر — جهش «ثانیهی افزوده»، امضای اصلی جنس نکریز'},
   {deg:5, offset:7,  label:'سل (غماز)',       desc:'نیم‌پرده بالاتر — پایان «جنس نکریز» و شروع «جنس نهاوند» از همین نُت'},
   {deg:6, offset:9,  label:'لا',              desc:'یک پرده بالاتر — دومین نُت جنس نهاوند'},
-  {deg:7, offset:10, label:'سیبمل',              desc:'نیم‌پرده بالاتر — سومین نُت جنس نهاوند'},
+  {deg:7, offset:10, label:'سی‌بمل',              desc:'نیم‌پرده بالاتر — سومین نُت جنس نهاوند'},
   {deg:8, offset:12, label:'دو (اکتاو)',       desc:'یک پرده بالاتر — رسیدن به اکتاو، پایان مقام نکریز'},
 ];
 const NIKRIZ_INTERVALS=['1','1⁄2','1 1⁄2','1⁄2','1','1⁄2','1'];

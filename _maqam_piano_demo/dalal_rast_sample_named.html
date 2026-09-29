@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=0.5, maximum-scale=3.0, user-scalable=yes">
-<title>مقام راست — با نامهای اصیل ربعپردهای (نمونه ۲)</title>
+<title>مقام راست — با نامهای اصیل ربع‌پردهای (نمونه ۲)</title>
 <style>
   * { box-sizing: border-box; }
   body {
@@ -76,20 +76,20 @@
 <div class="container">
 
   <h1>🎼 مقام راست — نمونهٔ شماره ۲
-    <span class="sub">همان آلهٔ ربعپردهای، اما اینبار با نامهای اصیل هر ربعپرده (جدول میخائیل مشاقّه)</span>
+    <span class="sub">همان آلهٔ ربع‌پردهای، اما اینبار با نامهای اصیل هر ربع‌پرده (جدول میخائیل مشاقّه)</span>
   </h1>
 
   <section class="desc">
     <p>
       این صفحه دقیقاً مثل نمونهٔ اول است، با یک تفاوت: بهجای شمارهٔ ساده («۱»، «۲»، ...)،
-      <b>هر یک از ۲۵ کلید</b> — چه سبز/طلایی (عضو گام مقام راست) و چه خاکستری (ربعپردهٔ میانی) —
+      <b>هر یک از ۲۵ کلید</b> — چه سبز/طلایی (عضو گام مقام راست) و چه خاکستری (ربع‌پردهٔ میانی) —
       نام سنتی اصیل خودش را از جدول میخائیل مشاقّه دارد.
       <span class="badge">فقط نمونه — هنوز به صفحهٔ اصلی آموزش مقامات اضافه نشده</span>
     </p>
   </section>
 
   <section class="instrument">
-    <h2>🎹 آلهٔ ربعپردهای با نامهای اصیل</h2>
+    <h2>🎹 آلهٔ ربع‌پردهای با نامهای اصیل</h2>
     <div id="keyboard"></div>
     <div class="controls">
       <button onclick="playScale(false)">▶ نواختن گام صعودی</button>
@@ -103,7 +103,7 @@
     <h2>📏 فاصلهها با نام درجات اصیل</h2>
     <div id="intervalBar"></div>
     <p class="legend">
-      🔵 پرده کامل &nbsp;&nbsp; 🟣 سهربعپرده &nbsp;&nbsp; 🟠 نیمپرده &nbsp;&nbsp; ⚪ ربعپرده
+      🔵 پرده کامل &nbsp;&nbsp; 🟣 سهربع‌پرده &nbsp;&nbsp; 🟠 نیم‌پرده &nbsp;&nbsp; ⚪ ربع‌پرده
     </p>
   </section>
 
@@ -121,30 +121,30 @@
 const TONIC_FREQ = 261.626; // C4 = راست
 const SCALE_STEPS = [0,4,7,10,14,18,21,24];
 
-// نام سنتی هر یک از ۲۵ نقطهٔ ربعپرده (از جدول میخائیل مشاقّه، محاسبهشده نسبت به تونیک راست=دو۴)
+// نام سنتی هر یک از ۲۵ نقطهٔ ربع‌پرده (از جدول میخائیل مشاقّه، محاسبهشده نسبت به تونیک راست=دو۴)
 const NAMES = [
   {name:'راست',          west:'دو'},
   {name:'نیم زیرکوله',   west:'دو#'},
   {name:'زیرکوله',       west:'ر بمل'},
-  {name:'ثیک زیرکوله',   west:'ر نیمبمل'},
+  {name:'ثیک زیرکوله',   west:'ر نیم‌بمل'},
   {name:'دوکاه',         west:'ر'},
   {name:'نیم کردی',      west:'ر#'},
   {name:'کردی',          west:'می بمل'},
-  {name:'سیکاه',         west:'می نیمبمل'},
+  {name:'سیکاه',         west:'می نیم‌بمل'},
   {name:'نیم بوسلیک',    west:'می'},
   {name:'بوسلیک',        west:'فا / می#'},
   {name:'جهارکاه',       west:'فا'},
   {name:'نیم حجاز',      west:'فا#'},
   {name:'حجاز-صبا',      west:'سل بمل'},
-  {name:'ثیک حجاز',      west:'سل نیمبمل'},
+  {name:'ثیک حجاز',      west:'سل نیم‌بمل'},
   {name:'نوا',           west:'سل'},
   {name:'نیم حصار',      west:'سل#'},
   {name:'حصار',          west:'لا بمل'},
-  {name:'ثیک حصار',      west:'لا نیمبمل'},
+  {name:'ثیک حصار',      west:'لا نیم‌بمل'},
   {name:'حسینی',         west:'لا'},
   {name:'نیم عجم',       west:'لا#'},
   {name:'عجم',           west:'سی بمل'},
-  {name:'أوج',           west:'سی نیمبمل'},
+  {name:'أوج',           west:'سی نیم‌بمل'},
   {name:'نیم ماهور',     west:'سی'},
   {name:'ماهور',         west:'سی#'},
   {name:'کردان',         west:'دو (اکتاو)'}
@@ -179,7 +179,7 @@ function showInfo(n){
   const panel = document.getElementById('infoPanel');
   panel.textContent = isScale
     ? `${NAMES[n].name} (${NAMES[n].west}) — درجهٔ ${SCALE_STEPS.indexOf(n)+1} از مقام راست — فرکانس: ${f} هرتز`
-    : `${NAMES[n].name} (${NAMES[n].west}) — ربعپردهٔ میانی، خارج از گام راست — فرکانس: ${f} هرتز`;
+    : `${NAMES[n].name} (${NAMES[n].west}) — ربع‌پردهٔ میانی، خارج از گام راست — فرکانس: ${f} هرتز`;
 }
 
 let actx = null, activeOscs = [];
@@ -212,7 +212,7 @@ for (let i=0; i<SCALE_STEPS.length-1; i++){
   const seg = document.createElement('div');
   seg.className = 'seg ' + (size===4?'seg-whole': size===3?'seg-3q': size===2?'seg-half':'seg-q');
   seg.style.flex = size;
-  const label = size===4 ? 'پرده کامل' : size===3 ? 'سهربعپرده' : size===2 ? 'نیمپرده' : 'ربعپرده';
+  const label = size===4 ? 'پرده کامل' : size===3 ? 'سهربع‌پرده' : size===2 ? 'نیم‌پرده' : 'ربع‌پرده';
   seg.innerHTML = `${NAMES[a].name} → ${NAMES[b].name}<br>(${label})`;
   seg.onclick = () => { playInterval(a,b); showInfo(a); setTimeout(()=>showInfo(b), 550); };
   bar.appendChild(seg);

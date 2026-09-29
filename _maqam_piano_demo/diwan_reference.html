@@ -49,7 +49,7 @@
 <div class="app">
   <div class="header">
     <h1>📖 جدول کامل دیوان</h1>
-    <div class="sub">تمام ۴۹ پرده/ربعپرده سُلم موسیقی عربی — ۲ اکتاو کامل<br>از یکاه تا جواب نوا</div>
+    <div class="sub">تمام ۴۹ پرده/ربع‌پرده سُلم موسیقی عربی — ۲ اکتاو کامل<br>از یکاه تا جواب نوا</div>
     <button class="backbtn" onclick="history.back()">← بازگشت</button>
   </div>
 
@@ -94,13 +94,13 @@
 <script>
 function toFa(n){ return n.toString().replace(/[0-9]/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]); }
 
-const WEST_NAMES_BASE = ['دو','دو#/ربمل','ر','ر#/می‌بمل','می','فا','فا#/سل‌بمل','سل','سل#/لابمل','لا','لا#/سی‌بمل','سی'];
+const WEST_NAMES_BASE = ['دو','دو#/ر‌بمل','ر','ر#/می‌بمل','می','فا','فا#/سل‌بمل','سل','سل#/لا‌بمل','لا','لا#/سی‌بمل','سی'];
 function westName(offset){
   const oct = Math.floor(offset/12);
   const local = ((offset%12)+12)%12;
   if(Number.isInteger(local)) return WEST_NAMES_BASE[local] + (oct!==0 ? (oct>0?'+'+oct:oct) : '');
   const lo = WEST_NAMES_BASE[Math.floor(local)];
-  return 'ربعپرده نزدیک '+lo;
+  return 'ربع‌پرده نزدیک '+lo;
 }
 
 // نام اصیل هر پرده — بازبینی نهایی بر اساس دو تصویر رسمی (جدول اصوات + نتنویسی شمارهگذاریشدهی دیوان اول/دوم)
@@ -185,7 +185,7 @@ renderDiwan('diwan2', 24, 48);
 // این یک شبیهسازی ساده است: فاصلهی عمودی هر نُت متناسب با فاصلهی نیم‌پرده‌ای‌اش از خط سوم حامل (فرض: راست/کردان روی خط سوم)
 function drawStaff(svgId, fromIdx, toIdx, refOffset){
   const svg = document.getElementById(svgId);
-  const stepPx = 5; // فاصلهی عمودی هر نیمپرده (px) — تقریبی، نه دقیق حرفه‌ای
+  const stepPx = 5; // فاصلهی عمودی هر نیم‌پرده (px) — تقریبی، نه دقیق حرفه‌ای
   const startX = 30, gapX = 34;
   const width = startX + (toIdx-fromIdx+1)*gapX + 20;
   svg.setAttribute('width', width);
@@ -223,7 +223,7 @@ function drawStaff(svgId, fromIdx, toIdx, refOffset){
     const fillColor = pt.off===0 ? '#c99b1f' : (isQuarter ? '#b71c1c' : '#1a1a2e');
     html += '<ellipse cx="'+x+'" cy="'+y+'" rx="6" ry="4.5" fill="'+fillColor+'" transform="rotate(-18 '+x+' '+y+')"/>';
     if(isQuarter){
-      html += '<text x="'+(x-16)+'" y="'+(y+4)+'" font-size="11" fill="#b71c1c" font-weight="bold">d</text>'; // نماد تقریبی نیمبمل (کوارتر تون)
+      html += '<text x="'+(x-16)+'" y="'+(y+4)+'" font-size="11" fill="#b71c1c" font-weight="bold">d</text>'; // نماد تقریبی نیم‌بمل (کوارتر تون)
     }
     // نام زیر نت — چرخانده برای خوانایی
     html += '<text x="'+x+'" y="155" font-size="9" fill="#555" text-anchor="middle" transform="rotate(-40 '+x+' 150)">'+pt.auth+'</text>';
