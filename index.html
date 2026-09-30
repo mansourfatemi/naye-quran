@@ -4230,7 +4230,7 @@ function preloadNextPhraseAudio(qari,tilawat,idx){
 
 function setColor(c){document.documentElement.style.setProperty('--qcolor',c);}
 
-function getAudioUrl(qari,f){ return f.auFull || ("https://archive.org/download/naye-quran-audio/qaris/"+qari.id+"/"+f.au); }
+function getAudioUrl(qari,f){ if(f.auFull) return f.auFull; var base="https://archive.org/download/naye-quran-audio/"; return (f.au && f.au.indexOf("audio_t")===0) ? base+f.au : base+"qaris/"+qari.id+"/"+f.au; }
 
 function openAboutPage(){
 
