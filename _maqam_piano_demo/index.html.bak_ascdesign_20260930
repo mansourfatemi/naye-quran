@@ -162,11 +162,20 @@
     </div>
   </div>
 
-    
+    <!-- ۲) درجات مقام و نامگذاری آنها + دو جنس سازنده -->
+  <div class="card">
+    <h2>درجات مقام حجاز و نغمات آن</h2>
+    <div class="sub">مقام حجاز از دو جنس ساخته شده: جنس حجاز (۱–۴) + جنس راست (۴–۸)</div>
+    <div class="diagwrap-scroll"><div class="diagwrap">
+      <div class="layers2" id="layers2"></div>
+      <div class="numrow2" id="numrow2"></div>
+      <div class="degnames" id="degnames"></div>
+    </div></div>
+  </div>
 
   <!-- ۳) پیانوی تعاملی -->
   <div class="card">
-    <h2>پیانوی تعاملی مقام حجاز</h2>
+    <h2>حجاز — از ر (D) شروع می‌شود</h2>
     <div class="sub">روی «پخش پی‌در‌پی» بزنید یا خودتان روی هر کلید ضربه بزنید</div>
 
     <div class="explain-box idle" id="explainBox">
@@ -206,15 +215,6 @@
 <div class="app" id="detailView" style="display:none"></div>
 
 <script>
-
-
-
-
-
-
-
-
-
 function toFa(n){ return n.toString().replace(/[0-9]/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]); }
 // ── ساخت توالی رفتوبرگشت: یکبار کامل صعودی (از ابتدا تا انتها)، سپس یکبار کامل نزولی (از انتها تا ابتدا) ──
 // هر دو بخش کامل هستند و نُت آخر/اول هرکدام حذف نمی‌شود (حتی اگر باعث شود نُت اوج یکبار پشتسرهم دوبار نواخته شود)
@@ -258,8 +258,8 @@ const HIJAZ_SCALE = [
   {deg:3, type:'black', name:'Fs4', label:'فا# (سل بمل)',   desc:'یک پرده و نیم بالاتر — این فاصلهٔ بزرگ، هویت اصلی صدای حجاز را می‌سازد'},
   {deg:4, type:'white', name:'G4',  label:'سل',            desc:'نیم‌پرده بالاتر — پایان «جنس حجاز» و شروع «جنس راست»'},
   {deg:5, type:'white', name:'A4',  label:'لا',            desc:'یک پرده بالاتر — دومین نُت جنس راست'},
-  {deg:6, type:'quarter', name:'Q', label:'سی نیم‌بمل',     desc:'سه‌ربع پرده بالاتر — این نُت «ربع‌پرده» است و بین دو کلید معمولی پیانو قرار دارد', freq:QUARTER_FREQ},
-  {deg:7, type:'white', name:'C5', label:'دو',             desc:'سه‌ربع پرده بالاتر — پایان «جنس راست»، نُتی کاملاً طبیعی (بدون بمل/دیز)'},
+  {deg:6, type:'quarter', name:'Q', label:'سی نیم‌بمل',     desc:'سهربع پرده بالاتر — این نُت «ربع‌پرده» است و بین دو کلید معمولی پیانو قرار دارد', freq:QUARTER_FREQ},
+  {deg:7, type:'white', name:'C5', label:'دو',             desc:'سهربع پرده بالاتر — پایان «جنس راست»، نُتی کاملاً طبیعی (بدون بمل/دیز)'},
   {deg:8, type:'white', name:'D5',  label:'ر (اکتاو)',      desc:'یک پرده بالاتر — رسیدن به اکتاو، پایان مقام حجاز'},
 ];
 
@@ -286,9 +286,6 @@ HIJAZ_INTERVALS.forEach((f,i)=>{
   c.className = 'frac-chip';
   c.style.left = ((i+0.5)*TICK_W) + 'px';
   c.textContent = f;
-  c.style.cursor = 'pointer';
-  c.title = 'کلیک کنید تا صدای نت بعدی پخش شود';
-  c.onclick = ()=>{ ensureCtx(); const freq = NOTE_FREQ.D4 * Math.pow(2, HIJAZ_OFFSETS[i+1]/12); playNote(freq, null, null); };
   fracrow.appendChild(c);
 });
 const numrow = document.getElementById('numrow');
@@ -332,7 +329,6 @@ const TWO_JINS = [
   {name:'جنس راست', startDeg:4, endDeg:8, color:'#f4a300'},
   {name:'جنس حجاز',  startDeg:1, endDeg:4, color:'#1e88c9'},
 ];
-try{
 const layers2 = document.getElementById('layers2');
 TWO_JINS.forEach(j=>{
   const row = document.createElement('div');
@@ -366,7 +362,6 @@ DEG_NAMES.forEach(d=>{
   s.textContent = d.name;
   degnames.appendChild(s);
 });
-}catch(e){ /* elements removed */ }
 
 // ══════════ جدول ترکیبات مقام حجاز (قابل پخش) ══════════
 // جنس اول همیشه «جنس حجاز» روی درجه ۱ است: فاصله‌ها 1⁄2،1 1⁄2،1⁄2 (افست‌های نیم‌پرده: 0,1,4,5)
@@ -389,11 +384,14 @@ const JINS_PATTERNS = {
   'ثلاثی سهگاه':   {mode:'connector', pattern:[1.5,1.5]},     // بدون تغییر
 };
 const HIJAZ_COMBOS = [
+  {name:'مقام حجاز (Hijaz)',                          jins2:'جنس راست',   color2:'#f4a300'},
   {name:'حجازکار / شهناز / شدعربان (Hijazkar/Shahnaz)', jins2:'جنس نیکریز', color2:'#1e88c9'},
   {name:'حجازین',                        jins2:'جنس حجاز',    color2:'#1e88c9', offsets:[0,1,4,5,6,7,10,12]},
+  {name:'حجازعجمی (فرم ۱ — با نهاوند)',   jins2:'جنس نهاوند',  color2:'#6d4c41'},
+  {name:'حجازعجمی (فرم ۲ — با کرد)',      jins2:'جنس کرد',     color2:'#8e24aa'},
   {name:'عزال',                          jins2:'جنس بیات',    color2:'#2e7d32'},
   {name:'زنکران (Zanjaran)',              jins2:'جنس عجم',     color2:'#c62828'},
-  {name:'سوزدل (Suzidil)', jins2:'جنس نیکریز', color2:'#6a1b9a', offsets:[0,1,4,5,7,8,11,12]},
+  {name:'حجاز (فرم ۲)',                  jins2:'ثلاثی سهگاه', color2:'#455a64'},
 ];
 
 // محاسبه‌ی فرکانس تمام نت‌های یک ترکیب، بر پایهی ر4 (D4)
@@ -479,9 +477,6 @@ function renderIntervalDiagramGeneric(containerEl, offsetsArr, compact){
     chip.className = 'frac-chip';
     chip.style.left = ((idx+0.5)*TICK_W) + 'px';
     chip.textContent = DIFF_LABELS[diff] || diff;
-    chip.style.cursor = 'pointer';
-    chip.title = 'کلیک کنید تا صدای نت بعدی پخش شود';
-    (function(semitone){ chip.onclick = ()=>{ ensureCtx(); const freq = NOTE_FREQ.D4 * Math.pow(2, semitone/12); playNote(freq, null, null); }; })(offsetsArr[idx+1]);
     fracrow.appendChild(chip);
   }
   containerEl.appendChild(fracrow);
@@ -617,9 +612,13 @@ function drawAscDescSVG(svgEl, notes, intervals, jinsBoundary, color1, color2, l
 const descNotes = ['ر','ر#','فا#','سل','لا','سی‌نیم‌بمل','دو','ر'];
 const descInts  = ['½','1½','½','1','¾','¾','1'];
 // صعودی: جنس کرد (1-4) + جنس نهاوند (4-8)
-const ascNotes  = ['ر','می','فا','سل','لا','لا#','دو#','ر'];
+const ascNotes  = ['ر','می','فا','سل','لا','سی‌بمل','دو#','ر'];
 const ascInts   = ['1','1','½','1','½','1½','½'];
 
+const svgDesc = document.getElementById('svgDesc');
+const svgAsc  = document.getElementById('svgAsc');
+if(svgDesc) drawAscDescSVG(svgDesc, descNotes, descInts, 3, '#c62828', '#1565c0', 'جنس حجاز', 'جنس راست');
+if(svgAsc)  drawAscDescSVG(svgAsc,  ascNotes,  ascInts,  3, '#2e7d32', '#00695c', 'جنس کرد', 'جنس نهاوند');
 
 HIJAZ_COMBOS.forEach((c,idx)=>{
   const item = document.createElement('div');
@@ -652,80 +651,6 @@ let detailScale = [];
 let detailKeyElements = {};
 let detailSeqTimer = null;
 let detailLooping = false;
-
-function drawAscDescSVG3(svgEl, notes, intervals, b1, b2, c1, c2, c3, l1, l2, l3){
-  const ns = 'http://www.w3.org/2000/svg';
-  const step = 70, startX = 44, noteY = 80, H = 185;
-  const W = startX * 2 + step * (notes.length - 1);
-
-  function el(tag, attrs){
-    const e = document.createElementNS(ns, tag);
-    Object.entries(attrs).forEach(([k,v]) => e.setAttribute(k,v));
-    return e;
-  }
-  function txt(x, y, str, attrs={}){
-    const t = el('text',{x,y,'text-anchor':'middle','dominant-baseline':'middle',
-      'font-family':'Vazirmatn,Tahoma,sans-serif','font-size':'12',...attrs});
-    t.textContent=str; return t;
-  }
-
-  svgEl.innerHTML='';
-  svgEl.setAttribute('viewBox','0 0 '+W+' '+H);
-  svgEl.setAttribute('width', W);
-  svgEl.setAttribute('height', H);
-
-  // کروشه جنس 1 بالا (ردیف 1)
-  const bY1=8, bH=14;
-  const bx1=startX, bx2=startX+step*b1;
-  [el('line',{x1:bx1+1,y1:bY1,x2:bx1+1,y2:bY1+bH,stroke:c1,'stroke-width':'2.5'}),
-   el('line',{x1:bx1,y1:bY1,x2:bx2,y2:bY1,stroke:c1,'stroke-width':'2.5'}),
-   el('line',{x1:bx2-1,y1:bY1,x2:bx2-1,y2:bY1+bH,stroke:c1,'stroke-width':'2.5'}),
-   txt((bx1+bx2)/2,bY1-7,l1,{'font-size':'11','font-weight':'bold',fill:c1})
-  ].forEach(e=>svgEl.appendChild(e));
-
-  // کروشه جنس 2 بالا (ردیف 2 — overlap)
-  const bY2=26;
-  const bx3=startX+step*1, bx4=startX+step*b2;
-  [el('line',{x1:bx3+1,y1:bY2,x2:bx3+1,y2:bY2+bH,stroke:c2,'stroke-width':'2.5'}),
-   el('line',{x1:bx3,y1:bY2,x2:bx4,y2:bY2,stroke:c2,'stroke-width':'2.5'}),
-   el('line',{x1:bx4-1,y1:bY2,x2:bx4-1,y2:bY2+bH,stroke:c2,'stroke-width':'2.5'}),
-   txt((bx3+bx4)/2,bY2-7,l2,{'font-size':'11','font-weight':'bold',fill:c2})
-  ].forEach(e=>svgEl.appendChild(e));
-
-  // کروشه جنس 3 بالا (ردیف 1)
-  const bx5=startX+step*b2, bx6=startX+step*(notes.length-1);
-  [el('line',{x1:bx5+1,y1:bY1,x2:bx5+1,y2:bY1+bH,stroke:c3,'stroke-width':'2.5'}),
-   el('line',{x1:bx5,y1:bY1,x2:bx6,y2:bY1,stroke:c3,'stroke-width':'2.5'}),
-   el('line',{x1:bx6-1,y1:bY1,x2:bx6-1,y2:bY1+bH,stroke:c3,'stroke-width':'2.5'}),
-   txt((bx5+bx6)/2,bY1-7,l3,{'font-size':'11','font-weight':'bold',fill:c3})
-  ].forEach(e=>svgEl.appendChild(e));
-
-  // خط اصلی
-  svgEl.appendChild(el('line',{x1:startX,y1:noteY,x2:startX+step*(notes.length-1),y2:noteY,stroke:'#555','stroke-width':'2'}));
-
-  // نتها
-  notes.forEach((name,i)=>{
-    const x = startX+step*i;
-    const isTonic = (i===0||i===notes.length-1);
-    const c = i<b1 ? c1 : i<b2 ? c2 : c3;
-    const r = isTonic ? 19 : 16;
-    svgEl.appendChild(el('circle',{cx:x,cy:noteY,r:r,fill:c}));
-    if(isTonic) svgEl.appendChild(el('circle',{cx:x,cy:noteY,r:r+3,fill:'none',stroke:c,'stroke-width':'2','opacity':'0.5'}));
-    svgEl.appendChild(txt(x,noteY,String(i+1),{'font-size':'11','font-weight':'bold',fill:'#fff'}));
-    svgEl.appendChild(txt(x,noteY+r+13,name,{'font-size':'12','font-weight':'bold',fill:'#ddd'}));
-  });
-
-  // فواصل زیر نتها
-  intervals.forEach((interval,i)=>{
-    const x = startX+step*i+step/2;
-    const c = i<b1 ? c1 : i<b2 ? c2 : c3;
-    svgEl.appendChild(el('line',{x1:x,y1:noteY+22,x2:x,y2:noteY+32,stroke:c,'stroke-width':'1.5','stroke-dasharray':'3,2'}));
-    svgEl.appendChild(el('rect',{x:x-16,y:noteY+33,width:32,height:19,rx:'9',fill:c,'opacity':'0.2'}));
-    svgEl.appendChild(el('rect',{x:x-16,y:noteY+33,width:32,height:19,rx:'9',fill:'none',stroke:c,'stroke-width':'1.5'}));
-    svgEl.appendChild(txt(x,noteY+42,interval,{'font-size':'11','font-weight':'bold',fill:c}));
-  });
-}
-
 
 function renderDetailPiano(container, scaleArr){
   container.innerHTML = '';
@@ -817,11 +742,25 @@ function openComboDetail(combo){
       '<div class="sub">جنس حجاز (۱–۴) + '+combo.jins2+'</div>'+
       '<div style="overflow-x:auto;direction:ltr"><div id="detailDiag"></div></div>'+
     '</div>'+
+    '<div class="card">'+
+      '<h2>نواختن نُت‌های '+combo.name+'</h2>'+
+      '<div class="sub">روی «پخش پی‌در‌پی» بزنید یا خودتان روی هر کلید ضربه بزنید</div>'+
+      '<div class="explain-box idle" id="detailExplainBox">'+
+        '<div class="name" id="detailExplainName">برای شروع، پخش را بزنید</div>'+
+        '<div class="desc" id="detailExplainDesc">هر نُت که نواخته شود، اینجا توضیح آن نمایش داده می‌شود.</div>'+
+      '</div>'+
+      '<div class="piano-wrap"><div class="piano" id="detailPiano"></div></div>'+
+      '<div class="controls">'+
+        '<button class="btn btn-play" id="detailPlayBtn">▶ پخش پی‌در‌پی</button>'+
+        '<button class="btn btn-loop" id="detailLoopBtn">🔁 تکرار</button>'+
+        '<button class="btn btn-fullscreen" id="detailFsBtn">⛶ تمام‌صفحه</button>'+
+      '</div>'+
     '</div>'+
     '<div class="legend-title">📋 لیست کامل نُت‌های '+combo.name+'</div>'+
     '<ul class="legend-list" id="detailLegendList"></ul>';
 
   renderIntervalDiagramGeneric(document.getElementById('detailDiag'), detailScale.map(s=>s.offset));
+  renderDetailPiano(document.getElementById('detailPiano'), detailScale);
 
   const legendList = document.getElementById('detailLegendList');
   detailScale.forEach(s=>{
@@ -1013,13 +952,6 @@ document.addEventListener('click', function(e){
     if(wrap){ wrap.style.transform = 'none'; }
   }
 });
-</script>
-
-<script>
-var _e1=document.getElementById('svgDesc');
-var _e2=document.getElementById('svgAsc');
-if(_e1) drawAscDescSVG(_e1,['ر','ر#','فا#','سل','لا','سی‌نیم‌بمل','دو','ر'],['½','1½','½','1','¾','¾','1'],3,'#c62828','#1565c0','جنس حجاز','جنس راست');
-if(_e2) drawAscDescSVG3(_e2,['ر','می','فا','سل','لا','لا#','دو#','ر'],['1','1','½','1','½','1½','½'],3,4,'#2e7d32','#00695c','#c62828','جنس کرد','جنس نهاوند','جنس حجاز');
 </script>
 </body>
 </html>

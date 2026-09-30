@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><title>SVG Test</title></head>
+<body>
+<svg id="svgDesc" xmlns="http://www.w3.org/2000/svg" height="200" style="display:block;border:1px solid red;width:600px"></svg>
+<svg id="svgAsc"  xmlns="http://www.w3.org/2000/svg" height="200" style="display:block;border:1px solid blue;width:600px;margin-top:10px"></svg>
+
+<script>
+function drawAscDescSVG(svgEl, notes, intervals, jinsBoundary, color1, color2, label1, label2){
+  const ns = 'http://www.w3.org/2000/svg';
+  const step = 70, startX = 44, noteY = 70, H = 165;
+  const W = startX * 2 + step * (notes.length - 1);
+  function el(tag, attrs){ const e=document.createElementNS(ns,tag); Object.entries(attrs).forEach(([k,v])=>e.setAttribute(k,v)); return e; }
+  function txt(x,y,str,attrs={}){ const t=el('text',{x,y,'text-anchor':'middle','dominant-baseline':'middle','font-family':'Tahoma','font-size':'12',...attrs}); t.textContent=str; return t; }
+  svgEl.innerHTML='';
+  svgEl.setAttribute('viewBox','0 0 '+W+' '+H);
+  svgEl.setAttribute('width',W);
+  svgEl.setAttribute('height',H);
+  svgEl.appendChild(el('line',{x1:startX,y1:noteY,x2:startX+step*(notes.length-1),y2:noteY,stroke:'#555','stroke-width':'2'}));
+  notes.forEach((name,i)=>{ const x=startX+step*i; const r=16; const c=i<=jinsBoundary?color1:color2; svgEl.appendChild(el('circle',{cx:x,cy:noteY,r,fill:c})); svgEl.appendChild(txt(x,noteY,String(i+1),{'fill':'#fff','font-weight':'bold'})); svgEl.appendChild(txt(x,noteY+r+13,name,{'fill':'#ddd','font-weight':'bold'})); });
+  intervals.forEach((iv,i)=>{ const x=startX+step*i+step/2; const c=i<jinsBoundary?color1:color2; svgEl.appendChild(el('rect',{x:x-16,y:noteY+22,width:32,height:19,rx:'9',fill:c,'opacity':'0.3'})); svgEl.appendChild(txt(x,noteY+31,iv,{'fill':c,'font-weight':'bold'})); });
+}
+
+const descNotes = ['\u0631','\u0631#','\u0641\u0627#','\u0633\u0644','\u0644\u0627','SI','\u062F\u0648','\u0631'];
+const descInts  = ['\u00BD','1\u00BD','\u00BD','1','\u00BE','\u00BE','1'];
+const svgDesc = document.getElementById('svgDesc');
+console.log('svgDesc:', svgDesc);
+drawAscDescSVG(svgDesc, descNotes, descInts, 3, '#c62828', '#1565c0', 'جنس حجاز', 'جنس راست');
+console.log('done');
+</script>
+</body>
+</html>

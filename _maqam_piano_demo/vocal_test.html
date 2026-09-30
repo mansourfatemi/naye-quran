@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>تست آوای انسانی</title>
+<style>
+body{font-family:Tahoma,sans-serif;background:#1a1a2e;color:#eee;display:flex;flex-direction:column;align-items:center;padding:30px;gap:16px}
+h2{color:#e6b800;margin:0}
+.sub{color:#aaa;font-size:.9em}
+.keys{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:10px}
+button.key{background:#2a2a4a;border:2px solid #e6b800;color:#e6b800;padding:14px 20px;border-radius:10px;font-size:1.1em;cursor:pointer;min-width:70px;transition:.15s}
+button.key:hover{background:#e6b800;color:#1a1a2e}
+button.key.active{background:#e6b800;color:#1a1a2e;transform:scale(1.08)}
+.mode-row{display:flex;gap:12px;margin-top:8px}
+button.mode{background:#2a2a4a;border:2px solid #555;color:#ccc;padding:8px 18px;border-radius:8px;cursor:pointer;font-size:.95em}
+button.mode.on{border-color:#e6b800;color:#e6b800}
+</style>
+</head>
+<body>
+<h2>تست آوای انسانی</h2>
+<div class="sub">مقام حجاز — از ر (D4)</div>
+
+<div class="mode-row">
+  <button class="mode on" id="mPiano" onclick="setMode('piano')">🎹 پیانو</button>
+  <button class="mode" id="mVoice" onclick="setMode('voice')">🎤 آواز</button>
+  <button class="mode" id="mFlute" onclick="setMode('flute')">🪈 نای</button>
+</div>
+
+<div class="keys">
+  <button class="key" onclick="play(293.665)">ر<br><small>D4</small></button>
+  <button class="key" onclick="play(311.127)">ر#<br><small>D#4</small></button>
+  <button class="key" onclick="play(369.994)">فا#<br><small>F#4</small></button>
+  <button class="key" onclick="play(391.995)">سل<br><small>G4</small></button>
+  <button class="key" onclick="play(440.000)">لا<br><small>A4</small></button>
+  <button class="key" onclick="play(479.88)">سینیمبمل<br><small>~A#43⁄4</small></button>
+  <button class="key" onclick="play(523.251)">دو<br><small>C5</small></button>
+  <button class="key" onclick="play(587.330)">ر<br><small>D5</small></button>
+</div>
+
+<button class="key" style="margin-top:16px;width:200px" onclick="playAll()">▶ پخش کامل مقام</button>
+
+<script>
+let ctx, mode = 'piano';
+function ensureCtx(){ if(!ctx) ctx = new (window.AudioContext||window.webkitAudioContext)(); }
+function setMode(m){
+  mode = m;
+  document.querySelectorAll('.mode').forEach(b => b.classList.remove('on'));
+  document.getElementById('m'+m.charAt(0).toUpperCase()+m.slice(1)).classList.add('on');
+}
+
+function play(freq, duration=1.0){
+  ensureCtx();
+  const t = ctx.currentTime;
+  const gain = ctx.createGain();
+  gain.connect(ctx.destination);
+
+  if(mode === 'piano'){
+    // پیانو: sine + harmonics با decay سریع
+    [1,2,4].forEach((h,i) => {
+      const o = ctx.createOscillator();
+      const g = ctx.createGain();
+      o.type = 'sine';
+      o.frequency.value = freq * h;
+      g.gain.setValueAtTime([0.5,0.3,0.1][i], t);
+      g.gain.exponentialRampToValueAtTime(0.001, t + duration);
+      o.connect(g); g.connect(ctx.destination);
+      o.start(t); o.stop(t + duration);
+    });
+
+  } else if(mode === 'voice'){
+    // آواز: چند harmonic با envelope شبیه صدای انسان
+    const harmonics = [
+      {h:1, g:0.6}, {h:2, g:0.4}, {h:3, g:0.25},
+      {h:4, g:0.15}, {h:5, g:0.1}, {h:6, g:0.05}
+    ];
+    harmonics.forEach(({h, g: gv}) => {
+      const o = ctx.createOscillator();
+      const g = ctx.createGain();
+      // vibrato
+      const vib = ctx.createOscillator();
+      const vibGain = ctx.createGain();
+      vib.frequency.value = 5.5;
+      vibGain.gain.value = freq * 0.008;
+      vib.connect(vibGain); vibGain.connect(o.frequency);
+      vib.start(t + 0.15); vib.stop(t + duration);
+
+      o.type = 'sine';
+      o.frequency.value = freq * h;
+      // envelope: attack -> sustain -> release
+      g.gain.setValueAtTime(0, t);
+      g.gain.linearRampToValueAtTime(gv, t + 0.08);
+      g.gain.setValueAtTime(gv, t + duration - 0.15);
+      g.gain.linearRampToValueAtTime(0, t + duration);
+      o.connect(g); g.connect(ctx.destination);
+      o.start(t); o.stop(t + duration);
+    });
+
+  } else if(mode === 'flute'){
+    // نای: sine + کمی noise + vibrato
+    const o = ctx.createOscillator();
+    const g = ctx.createGain();
+    o.type = 'sine';
+    o.frequency.value = freq;
+    const vib = ctx.createOscillator();
+    const vibGain = ctx.createGain();
+    vib.frequency.value = 6;
+    vibGain.gain.value = freq * 0.012;
+    vib.connect(vibGain); vibGain.connect(o.frequency);
+    vib.start(t+0.1); vib.stop(t+duration);
+    g.gain.setValueAtTime(0, t);
+    g.gain.linearRampToValueAtTime(0.5, t+0.05);
+    g.gain.setValueAtTime(0.5, t+duration-0.1);
+    g.gain.linearRampToValueAtTime(0, t+duration);
+    o.connect(g); g.connect(ctx.destination);
+    o.start(t); o.stop(t+duration);
+  }
+}
+
+function playAll(){
+  ensureCtx();
+  const notes = [293.665,311.127,369.994,391.995,440.000,479.88,523.251,587.330];
+  notes.forEach((f,i) => {
+    setTimeout(()=> play(f, 0.9), i * 700);
+  });
+}
+</script>
+</body>
+</html>

@@ -211,10 +211,6 @@
 
 
 
-
-
-
-
 function toFa(n){ return n.toString().replace(/[0-9]/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]); }
 // ── ساخت توالی رفتوبرگشت: یکبار کامل صعودی (از ابتدا تا انتها)، سپس یکبار کامل نزولی (از انتها تا ابتدا) ──
 // هر دو بخش کامل هستند و نُت آخر/اول هرکدام حذف نمی‌شود (حتی اگر باعث شود نُت اوج یکبار پشتسرهم دوبار نواخته شود)
@@ -391,9 +387,11 @@ const JINS_PATTERNS = {
 const HIJAZ_COMBOS = [
   {name:'حجازکار / شهناز / شدعربان (Hijazkar/Shahnaz)', jins2:'جنس نیکریز', color2:'#1e88c9'},
   {name:'حجازین',                        jins2:'جنس حجاز',    color2:'#1e88c9', offsets:[0,1,4,5,6,7,10,12]},
+  {name:'حجازعجمی (فرم ۱ — با نهاوند)',   jins2:'جنس نهاوند',  color2:'#6d4c41'},
+  {name:'حجازعجمی (فرم ۲ — با کرد)',      jins2:'جنس کرد',     color2:'#8e24aa'},
   {name:'عزال',                          jins2:'جنس بیات',    color2:'#2e7d32'},
   {name:'زنکران (Zanjaran)',              jins2:'جنس عجم',     color2:'#c62828'},
-  {name:'سوزدل (Suzidil)', jins2:'جنس نیکریز', color2:'#6a1b9a', offsets:[0,1,4,5,7,8,11,12]},
+  {name:'حجاز (فرم ۲)',                  jins2:'ثلاثی سهگاه', color2:'#455a64'},
 ];
 
 // محاسبه‌ی فرکانس تمام نت‌های یک ترکیب، بر پایهی ر4 (D4)
@@ -817,11 +815,25 @@ function openComboDetail(combo){
       '<div class="sub">جنس حجاز (۱–۴) + '+combo.jins2+'</div>'+
       '<div style="overflow-x:auto;direction:ltr"><div id="detailDiag"></div></div>'+
     '</div>'+
+    '<div class="card">'+
+      '<h2>نواختن نُت‌های '+combo.name+'</h2>'+
+      '<div class="sub">روی «پخش پی‌در‌پی» بزنید یا خودتان روی هر کلید ضربه بزنید</div>'+
+      '<div class="explain-box idle" id="detailExplainBox">'+
+        '<div class="name" id="detailExplainName">برای شروع، پخش را بزنید</div>'+
+        '<div class="desc" id="detailExplainDesc">هر نُت که نواخته شود، اینجا توضیح آن نمایش داده می‌شود.</div>'+
+      '</div>'+
+      '<div class="piano-wrap"><div class="piano" id="detailPiano"></div></div>'+
+      '<div class="controls">'+
+        '<button class="btn btn-play" id="detailPlayBtn">▶ پخش پی‌در‌پی</button>'+
+        '<button class="btn btn-loop" id="detailLoopBtn">🔁 تکرار</button>'+
+        '<button class="btn btn-fullscreen" id="detailFsBtn">⛶ تمام‌صفحه</button>'+
+      '</div>'+
     '</div>'+
     '<div class="legend-title">📋 لیست کامل نُت‌های '+combo.name+'</div>'+
     '<ul class="legend-list" id="detailLegendList"></ul>';
 
   renderIntervalDiagramGeneric(document.getElementById('detailDiag'), detailScale.map(s=>s.offset));
+  renderDetailPiano(document.getElementById('detailPiano'), detailScale);
 
   const legendList = document.getElementById('detailLegendList');
   detailScale.forEach(s=>{
