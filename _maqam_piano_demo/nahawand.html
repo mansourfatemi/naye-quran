@@ -613,10 +613,29 @@ function drawAscDescSVG3(svgEl, notes, intervals, b1, b2, c1, c2, c3, l1, l2, l3
   notes.forEach((name,i)=>{
     const x=startX+step*i;
     const isTonic=(i===0||i===notes.length-1);
-    const c=i<b1?c1:i<b2?c2:c3;
+    // رنگ: اگر نت در چند جنس است → split circle
+    const inJ1 = i<=b1-1;
+    const inJ2 = i>=_b0 && i<=b2-1;
+    const inJ3 = i>=b2-1;
     const r=isTonic?19:16;
-    svgEl.appendChild(el('circle',{cx:x,cy:noteY,r:r,fill:c}));
-    if(isTonic) svgEl.appendChild(el('circle',{cx:x,cy:noteY,r:r+3,fill:'none',stroke:c,'stroke-width':'2',opacity:'0.5'}));
+    // تعداد جنسهایی که این نت در آنها است
+    const jins = [inJ1?c1:null, inJ2?c2:null, inJ3?c3:null].filter(Boolean);
+    if(jins.length===3){
+      // سه رنگ: کرد+عجم+نهاوند
+      svgEl.appendChild(el('circle',{cx:x,cy:noteY,r:r,fill:c1}));
+      svgEl.appendChild(el('path',{d:`M ${x} ${noteY-r} A ${r} ${r} 0 0 1 ${x+r} ${noteY} L ${x} ${noteY} Z`,fill:c2}));
+      svgEl.appendChild(el('path',{d:`M ${x+r} ${noteY} A ${r} ${r} 0 0 1 ${x} ${noteY+r} L ${x} ${noteY} Z`,fill:c3}));
+      svgEl.appendChild(el('circle',{cx:x,cy:noteY,r:r,fill:'none',stroke:'#fff','stroke-width':'1.5'}));
+    } else if(jins.length===2){
+      svgEl.appendChild(el('circle',{cx:x,cy:noteY,r:r,fill:jins[0]}));
+      const path=`M ${x} ${noteY-r} A ${r} ${r} 0 0 1 ${x} ${noteY+r} Z`;
+      svgEl.appendChild(el('path',{d:path,fill:jins[1]}));
+      svgEl.appendChild(el('circle',{cx:x,cy:noteY,r:r,fill:'none',stroke:'#fff','stroke-width':'1.5'}));
+    } else {
+      const c=jins[0]||c1;
+      svgEl.appendChild(el('circle',{cx:x,cy:noteY,r:r,fill:c,stroke:'#fff','stroke-width':'2'}));
+      if(isTonic) svgEl.appendChild(el('circle',{cx:x,cy:noteY,r:r+3,fill:'none',stroke:c,'stroke-width':'2',opacity:'0.5'}));
+    }
     svgEl.appendChild(txt(x,noteY,String(i+1),{'font-size':'11','font-weight':'bold',fill:'#fff'}));
     svgEl.appendChild(txt(x,noteY+r+13,name,{'font-size':name.length>4?'9':'12','font-weight':'bold',fill:'#ddd'}));
   });
