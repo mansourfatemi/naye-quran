@@ -666,7 +666,10 @@ document.addEventListener('click', function(e){
     if(fsActiveCard === card) fsActiveCard = null;
     var wrap = card.querySelector('.piano-wrap');
     if(wrap){ wrap.style.transform = 'none'; }
-  }(function(){
+  }
+});
+
+(function(){
   var svg = document.getElementById('svgBayatiJins');
   if(!svg) return;
 
