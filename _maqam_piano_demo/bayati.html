@@ -421,6 +421,57 @@ document.getElementById('loopBtn').onclick=(e)=>{ looping=!looping; e.target.cla
 
 // ══════════ ترکیبات مقام بیات (قابل پخش، همه بر اساس overlap خالص از درجه۴) ══════════
 const BAYATI1_OFFSETS=[0,1.5,3,5]; // جنس بیات: درجه۱ تا ۴
+function openComboDetail(combo){
+  stopSequence(); stopComboSequence();
+  const scale=buildComboScale(combo);
+  const dv=document.getElementById('detailView');
+  dv.innerHTML=
+    '<div class="header">'+
+      '<h1>'+combo.name+'</h1>'+
+      '<div class="sub">جنس بیات (۱–۴) + '+combo.jins2Label+'</div>'+
+      '<button id="detailBackBtn" style="margin-top:10px;border:none;background:rgba(255,255,255,.15);color:#fff;border-radius:20px;padding:6px 16px;font-size:.78em;cursor:pointer">← بازگشت</button>'+
+    '</div>'+
+    '<div class="card">'+
+      '<h2>فواصل موسیقایی '+combo.name+'</h2>'+
+      '<div style="overflow-x:auto;direction:ltr"><div id="detailDiag"></div></div>'+
+    '</div>'+
+    '<div class="legend-title">نُتهای '+combo.name+'</div>'+
+    '<ul class="legend-list" id="detailLegList"></ul>'+
+    '<div style="text-align:center;margin:12px 0">'+
+      '<button id="detailPlayBtn" style="background:#2e7d32;color:#fff;border:none;border-radius:20px;padding:8px 24px;font-size:1em;cursor:pointer">▶ پخش</button>'+
+    '</div>';
+
+  renderIntervalDiagramGeneric(document.getElementById('detailDiag'), scale.map(s=>s.offset), combo.color2, 4);
+
+  const ll=document.getElementById('detailLegList');
+  scale.forEach(s=>{
+    const li=document.createElement('li');
+    const col=s.deg<=4?'#2e7d32':combo.color2;
+    li.innerHTML='<span><span class="deg-chip" style="background:'+col+'">'+s.deg+'</span> '+s.label+'</span><span style="color:#999;font-size:.85em">'+s.jins+'</span>';
+    li.style.cursor='pointer';
+    li.onclick=()=>{ ensureCtx(); playNote(s.freq,null); };
+    ll.appendChild(li);
+  });
+
+  document.getElementById('detailBackBtn').onclick=closeComboDetail;
+  document.getElementById('detailPlayBtn').onclick=()=>{
+    ensureCtx();
+    const freqs=buildRoundTrip(buildComboOffsets(combo).map(o=>freqFromOffset(o)));
+    let i=0;
+    function step(){ if(i>=freqs.length) return; playNote(freqs[i],null); i++; setTimeout(step,650); }
+    step();
+  };
+
+  document.getElementById('mainView').style.display='none';
+  dv.style.display='block';
+  window.scrollTo(0,0);
+}
+function closeComboDetail(){
+  document.getElementById('detailView').style.display='none';
+  document.getElementById('mainView').style.display='block';
+  window.scrollTo(0,0);
+}
+
 function buildComboOffsets(combo){
   const offs=[...BAYATI1_OFFSETS];
   const pattern=JINS_PATTERNS[combo.jins2];
@@ -514,6 +565,8 @@ BAYATI_COMBOS.forEach((c,idx)=>{
     '<div style="overflow-x:auto;direction:ltr;padding-top:2px"><div id="combodiag-'+idx+'"></div></div>';
   const btn=item.querySelector('.combo-playbtn');
   btn.onclick=(e)=>{ e.stopPropagation(); if(activeComboBtn===btn){ stopComboSequence(); return; } playComboSequence(c, btn); };
+  item.style.cursor='pointer';
+  item.onclick=()=>{ stopComboSequence(); openComboDetail(c); };
 
   // ردیف دایرههای قابل کلیک
   const scale=buildComboScale(c);
@@ -767,5 +820,6 @@ document.addEventListener('click', function(e){
 })();
 </script>
 
+<div id="detailView" style="display:none"></div>
 </body>
 </html>
