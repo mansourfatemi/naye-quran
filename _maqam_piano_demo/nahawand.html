@@ -132,6 +132,19 @@
   </div>
 
   <div class="card">
+    <h2>⇕ مسیر صعودی و نزولی مقام نهاوند</h2>
+    <div class="sub">مقام نهاوند در مسیر صعودی و نزولی دو ساختار متفاوت دارد</div>
+    <div style="margin-top:12px">
+      <div style="font-weight:bold;color:#e65100;margin-bottom:6px">▲ صعودی — جنس نهاوند + جنس حجاز</div>
+      <div style="overflow-x:auto;direction:ltr"><div id="diagAsc"></div></div>
+    </div>
+    <div style="margin-top:18px">
+      <div style="font-weight:bold;color:#5c6bc0;margin-bottom:6px">▼ نزولی — جنس کرد + جنس نهاوند (عجم)</div>
+      <div style="overflow-x:auto;direction:ltr"><div id="diagDesc"></div></div>
+    </div>
+  </div>
+
+  <div class="card">
     <h2>نهاوند — از دو (C) شروع می‌شود</h2>
     <div class="sub">روی «پخش پی‌در‌پی» بزنید یا خودتان روی هر کلید ضربه بزنید</div>
 
@@ -257,7 +270,39 @@ for(let i=0;i<8;i++){
   const s=document.createElement('span'); s.style.left=(i*TICK_W)+'px'; s.textContent=toFa(i+1);
   numrow.appendChild(s);
 }
-const NAHAWAND_NAMES=['راست','دوکاه','سه‌گاه','چهارگاه','نوا','حسینی','اوج','کردان']; // نام‌های دیوان موسیقی عربی از نت دو (Do/C)
+const // صعودی/نزولی
+const ASC_OFFSETS=[0,2,3,5,7,8,11,12];
+const DESC_OFFSETS=[0,2,3,5,7,9,10,12];
+const DL2={1:'1/2',1.5:'3/4',2:'1',3:'1½'};
+function renderAscDesc(elId,offsets,c1,c2){
+  const el=document.getElementById(elId); if(!el) return;
+  el.innerHTML=''; el.className='diagwrap';
+  el.style.width=((offsets.length-1)*TICK_W)+'px';
+  const tl=document.createElement('div'); tl.className='tickline';
+  offsets.forEach((o,i)=>{ const t=document.createElement('div'); t.className='tick'+(i===0||i===offsets.length-1?' end':''); t.style.left=(i*TICK_W)+'px'; tl.appendChild(t); });
+  el.appendChild(tl);
+  const fr=document.createElement('div'); fr.className='fracrow';
+  for(let i=0;i<offsets.length-1;i++){
+    const diff=Math.round((offsets[i+1]-offsets[i])*2)/2;
+    const chip=document.createElement('div');
+    chip.className='frac-chip'+(diff===3?' big':'');
+    chip.style.left=((i+0.5)*TICK_W)+'px';
+    chip.textContent=DL2[diff]||diff;
+    chip.style.background=i<4?c1:c2;
+    chip.style.cursor='pointer';
+    chip.title='کلیک برای صدا';
+    (function(s){ chip.onclick=()=>{ ensureCtx(); playNote(NOTE_FREQ_C4*Math.pow(2,s/12),null); }; })(offsets[i+1]);
+    fr.appendChild(chip);
+  }
+  el.appendChild(fr);
+  const nr=document.createElement('div'); nr.className='numrow';
+  offsets.forEach((o,i)=>{ const s=document.createElement('span'); s.style.left=(i*TICK_W)+'px'; s.textContent=toFa(i+1); nr.appendChild(s); });
+  el.appendChild(nr);
+}
+renderAscDesc('diagAsc', ASC_OFFSETS, '#e65100','#c62828');
+renderAscDesc('diagDesc',DESC_OFFSETS,'#5c6bc0','#e65100');
+
+NAHAWAND_NAMES=['راست','دوکاه','سه‌گاه','چهارگاه','نوا','حسینی','اوج','کردان']; // نام‌های دیوان موسیقی عربی از نت دو (Do/C)
 const namerow=document.getElementById('namerow');
 NAHAWAND_NAMES.forEach((nm,i)=>{
   const s=document.createElement('span'); s.style.left=(i*TICK_W)+'px'; s.textContent=nm;
