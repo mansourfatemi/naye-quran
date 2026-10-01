@@ -579,7 +579,7 @@ document.addEventListener('click', function(e){
 });
 
 
-function drawAscDescSVG3(svgEl, notes, intervals, b1, b2, c1, c2, c3, l1, l2, l3){
+function drawAscDescSVG3(svgEl, notes, intervals, b1, b2, c1, c2, c3, l1, l2, l3, b0){
   const ns='http://www.w3.org/2000/svg';
   const step=66, startX=44, noteY=80, H=185;
   const W=startX*2+step*(notes.length-1);
@@ -596,7 +596,8 @@ function drawAscDescSVG3(svgEl, notes, intervals, b1, b2, c1, c2, c3, l1, l2, l3
    txt((bx1+bx2)/2,bY1-7,l1,{'font-size':'11','font-weight':'bold',fill:c1})
   ].forEach(e=>svgEl.appendChild(e));
   const bY2=26;
-  const bx3=startX+step*1,bx4=startX+step*b2;
+  const _b0=(b0!==undefined?b0:1);
+  const bx3=startX+step*_b0,bx4=startX+step*b2;
   [el('line',{x1:bx3+1,y1:bY2,x2:bx3+1,y2:bY2+bH,stroke:c2,'stroke-width':'2.5'}),
    el('line',{x1:bx3,y1:bY2,x2:bx4,y2:bY2,stroke:c2,'stroke-width':'2.5'}),
    el('line',{x1:bx4-1,y1:bY2,x2:bx4-1,y2:bY2+bH,stroke:c2,'stroke-width':'2.5'}),
@@ -682,7 +683,7 @@ function drawNahawandAscDescSVG(svgEl, notes, intervals, jinsBoundary, color1, c
 var _sa=document.getElementById('svgAsc');
 var _sd=document.getElementById('svgDesc');
 if(_sa) drawNahawandAscDescSVG(_sa,['دو','ر','می‌بمل','فا','سل','لابمل','سی','دو'],['1','½','1','1','½','1½','½'],4,'#e65100','#c62828','جنس نهاوند','جنس حجاز');
-if(_sd) drawAscDescSVG3(_sd,['دو','ر','می‌بمل','فا','سل','لا‌بمل','سی‌بمل','دو'],['1','1','½','1','1','½','1'],4,6,'#2e7d32','#7b1fa2','#e65100','جنس کرد','جنس عجم','جنس نهاوند');
+if(_sd) drawAscDescSVG3(_sd,['دو','ر','می‌بمل','فا','سل','لا‌بمل','سی‌بمل','دو'],['1','1','½','1','1','½','1'],4,6,'#2e7d32','#7b1fa2','#e65100','جنس کرد','جنس عجم','جنس نهاوند',2);
 </script>
 </body>
 </html>
