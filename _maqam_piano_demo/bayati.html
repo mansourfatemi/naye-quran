@@ -673,7 +673,7 @@ document.addEventListener('click', function(e){
 
   var c1='#2e7d32', c2='#e65100', c3='#1565c0', c4='#6a1b9a';
   var ns='http://www.w3.org/2000/svg';
-  var step=70, startX=44, noteY=90, H=185, N=notes.length;
+  var step=70, startX=44, noteY=120, H=220, N=notes.length;
   var W=startX*2+step*(N-1);
 
   svg.innerHTML='';
@@ -703,10 +703,10 @@ document.addEventListener('click', function(e){
 
   // 4 کروشه در دو ردیف
   var X = function(i){ return startX+step*i; };
-  bracket(X(0), X(3), 6,  12, c1, 'جنس بیات');       // بیات deg1-4 ردیف1
-  bracket(X(2), X(5), 22, 12, c2, 'جنس عجم');              // عجم deg3-6 ردیف2
-  bracket(X(4), X(7), 6,  12, c3, 'جنس کرد');              // کرد deg5-8 ردیف1
-  bracket(X(3), X(6), 38, 12, c4, 'جنس نهاوند'); // نهاوند deg5-8 ردیف3
+  bracket(X(0), X(3),  8, 12, c1, 'جنس بیات');
+  bracket(X(2), X(5), 28, 12, c2, 'جنس عجم');
+  bracket(X(3), X(6), 48, 12, c4, 'جنس نهاوند');
+  bracket(X(4), X(7), 68, 12, c3, 'جنس کرد');
 
   // خط اصلی
   svg.appendChild(el('line',{x1:X(0),y1:noteY,x2:X(N-1),y2:noteY,stroke:'#555','stroke-width':'2'}));
