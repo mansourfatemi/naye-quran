@@ -455,7 +455,8 @@ NAHAWAND_COMBOS.forEach((c,idx)=>{
   const btn=item.querySelector('.combo-playbtn');
   btn.onclick=(e)=>{ e.stopPropagation(); if(activeComboBtn===btn){ stopComboSequence(); return; } playComboSequence(c, btn); };
   comboList.appendChild(item);
-  renderIntervalDiagramGeneric(item.querySelector('#combodiag-'+idx), buildComboScale(c).map(s=>s.offset));
+  const diagEl=document.getElementById('combodiag-'+idx);
+  if(diagEl) renderIntervalDiagramGeneric(diagEl, buildComboScale(c).map(s=>s.offset));
 });
 
 // ══════════ صفحه‌ی جزئیات هر ترکیب ══════════
