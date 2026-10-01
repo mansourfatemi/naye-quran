@@ -212,7 +212,7 @@ function centerForOffset(offset){
   const lo = OFFSET_CENTER_PX[Math.floor(offset)], hi = OFFSET_CENTER_PX[Math.ceil(offset)];
   return (lo+hi)/2;
 }
-const DIFF_LABELS={1:'1⁄2',1.5:'3⁄4',2:'1',3:'1 1⁄2'};
+const DIFF_LABELS={1:'1/2',1.5:'3/4',2:'1',3:'1½'};
 
 // ── توالی ۸ نُت مقام نهاوند (جنس نهاوند [۱،1⁄2،۱،۱] + جنس حجاز overlap از درجه۵ [1⁄2،۱1⁄2،1⁄2]) ──
 const NAHAWAND_SCALE = [
@@ -451,7 +451,6 @@ NAHAWAND_COMBOS.forEach((c,idx)=>{
     '<div style="overflow-x:auto;direction:ltr;padding-top:2px"><div id="combodiag-'+idx+'"></div></div>';
   const btn=item.querySelector('.combo-playbtn');
   btn.onclick=(e)=>{ e.stopPropagation(); if(activeComboBtn===btn){ stopComboSequence(); return; } playComboSequence(c, btn); };
-  item.onclick=()=>{ stopComboSequence(); openComboDetail(c); };
   comboList.appendChild(item);
   renderIntervalDiagramGeneric(item.querySelector('#combodiag-'+idx), buildComboScale(c).map(s=>s.offset));
 });
@@ -505,54 +504,6 @@ function playDetailSequence(){
     i++; detailSeqTimer=setTimeout(step,750);
   }
   step();
-}
-function openComboDetail(combo){
-  stopSequence();
-  detailScale=buildComboScale(combo);
-  detailLooping=false;
-  const jins2Label = combo.custom ? combo.custom.jinsRanges[1].name : combo.jins2;
-  const dv=document.getElementById('detailView');
-  dv.innerHTML =
-    '<div class="header">'+
-      '<h1>🎻 '+combo.name+'</h1>'+
-      '<div class="sub">جنس نهاوند + '+jins2Label+'</div>'+
-      '<button id="detailBackBtn" style="margin-top:10px;border:none;background:rgba(255,255,255,.15);color:#fff;border-radius:20px;padding:6px 16px;font-size:.78em;cursor:pointer">← بازگشت</button>'+
-    '</div>'+
-    '<div class="card">'+
-      '<h2>فواصل موسیقایی '+combo.name+'</h2>'+
-      '<div style="overflow-x:auto;direction:ltr"><div id="detailDiag"></div></div>'+
-    '</div>'+
-    '<div class="card">'+
-      '<h2>نواختن نُت‌های '+combo.name+'</h2>'+
-      '<div class="sub">روی «پخش پی‌در‌پی» بزنید یا خودتان روی هر کلید ضربه بزنید</div>'+
-      '<div class="explain-box idle" id="detailExplainBox">'+
-        '<div class="name" id="detailExplainName">برای شروع، پخش را بزنید</div>'+
-        '<div class="desc" id="detailExplainDesc">هر نُت که نواخته شود، اینجا توضیح آن نمایش داده می‌شود.</div>'+
-      '</div>'+
-      '<div class="piano-wrap"><div class="piano" id="detailPiano"></div></div>'+
-      '<div class="controls">'+
-        '<button class="btn btn-play" id="detailPlayBtn">▶ پخش پی‌در‌پی</button>'+
-        '<button class="btn btn-loop" id="detailLoopBtn">🔁 تکرار</button>'+
-        '<button class="btn btn-fullscreen" id="detailFsBtn">⛶ تمام‌صفحه</button>'+
-      '</div>'+
-    '</div>'+
-    '<div class="legend-title">📋 لیست کامل نُت‌های '+combo.name+'</div>'+
-    '<ul class="legend-list" id="detailLegendList"></ul>';
-
-  renderIntervalDiagramGeneric(document.getElementById('detailDiag'), detailScale.map(s=>s.offset));
-  renderDetailPiano(document.getElementById('detailPiano'), detailScale);
-  const legendList=document.getElementById('detailLegendList');
-  detailScale.forEach(s=>{
-    const li=document.createElement('li');
-    li.innerHTML='<span><span class="deg-chip">'+toFa(s.deg)+'</span> '+s.label+'</span><span style="color:#999;font-size:.85em">'+s.jins+'</span>';
-    legendList.appendChild(li);
-  });
-  document.getElementById('detailBackBtn').onclick=closeComboDetail;
-  document.getElementById('detailPlayBtn').onclick=()=>{ ensureCtx(); playDetailSequence(); };
-  document.getElementById('detailLoopBtn').onclick=(e)=>{ detailLooping=!detailLooping; e.target.classList.toggle('on',detailLooping); };
-  document.getElementById('mainView').style.display='none';
-  dv.style.display='block';
-  window.scrollTo(0,0);
 }
 function closeComboDetail(){
   stopDetailSequence();
