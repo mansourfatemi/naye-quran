@@ -579,7 +579,7 @@ document.addEventListener('click', function(e){
 });
 
 
-function drawAscDescSVG3(svgEl, notes, intervals, b1, b2, c1, c2, c3, l1, l2, l3, b0){
+function drawAscDescSVG3(svgEl, notes, intervals, b1_end, b2_start, b2_end, b3_start, c1, c2, c3, l1, l2, l3){
   const ns='http://www.w3.org/2000/svg';
   const step=66, startX=44, noteY=80, H=185;
   const W=startX*2+step*(notes.length-1);
@@ -588,48 +588,53 @@ function drawAscDescSVG3(svgEl, notes, intervals, b1, b2, c1, c2, c3, l1, l2, l3
   svgEl.innerHTML='';
   svgEl.setAttribute('viewBox','0 0 '+W+' '+H);
   svgEl.setAttribute('width',W); svgEl.setAttribute('height',H);
-  const bY1=8,bH=14;
-  const bx1=startX,bx2=startX+step*b1;
+
+  // کروشه جنس 1 - ردیف بالا
+  const bY1=8, bH=14;
+  const bx1=startX, bx2=startX+step*(b1_end+1);
   [el('line',{x1:bx1+1,y1:bY1,x2:bx1+1,y2:bY1+bH,stroke:c1,'stroke-width':'2.5'}),
    el('line',{x1:bx1,y1:bY1,x2:bx2,y2:bY1,stroke:c1,'stroke-width':'2.5'}),
    el('line',{x1:bx2-1,y1:bY1,x2:bx2-1,y2:bY1+bH,stroke:c1,'stroke-width':'2.5'}),
    txt((bx1+bx2)/2,bY1-7,l1,{'font-size':'11','font-weight':'bold',fill:c1})
   ].forEach(e=>svgEl.appendChild(e));
+
+  // کروشه جنس 2 - ردیف پایین (overlap)
   const bY2=26;
-  const _b0=(b0!==undefined?b0:1);
-  const bx3=startX+step*_b0,bx4=startX+step*b2;
+  const bx3=startX+step*b2_start, bx4=startX+step*(b2_end+1);
   [el('line',{x1:bx3+1,y1:bY2,x2:bx3+1,y2:bY2+bH,stroke:c2,'stroke-width':'2.5'}),
    el('line',{x1:bx3,y1:bY2,x2:bx4,y2:bY2,stroke:c2,'stroke-width':'2.5'}),
    el('line',{x1:bx4-1,y1:bY2,x2:bx4-1,y2:bY2+bH,stroke:c2,'stroke-width':'2.5'}),
    txt((bx3+bx4)/2,bY2-7,l2,{'font-size':'11','font-weight':'bold',fill:c2})
   ].forEach(e=>svgEl.appendChild(e));
-  const bx5=startX+step*b2,bx6=startX+step*(notes.length-1);
+
+  // کروشه جنس 3 - ردیف بالا
+  const bx5=startX+step*b3_start, bx6=startX+step*(notes.length-1);
   [el('line',{x1:bx5+1,y1:bY1,x2:bx5+1,y2:bY1+bH,stroke:c3,'stroke-width':'2.5'}),
    el('line',{x1:bx5,y1:bY1,x2:bx6,y2:bY1,stroke:c3,'stroke-width':'2.5'}),
    el('line',{x1:bx6-1,y1:bY1,x2:bx6-1,y2:bY1+bH,stroke:c3,'stroke-width':'2.5'}),
    txt((bx5+bx6)/2,bY1-7,l3,{'font-size':'11','font-weight':'bold',fill:c3})
   ].forEach(e=>svgEl.appendChild(e));
+
+  // خط اصلی
   svgEl.appendChild(el('line',{x1:startX,y1:noteY,x2:startX+step*(notes.length-1),y2:noteY,stroke:'#555','stroke-width':'2'}));
+
+  // نتها با رنگ overlap
   notes.forEach((name,i)=>{
     const x=startX+step*i;
     const isTonic=(i===0||i===notes.length-1);
-    // رنگ: اگر نت در چند جنس است → split circle
-    const inJ1 = i<=b1-1;
-    const inJ2 = i>=_b0 && i<=b2-1;
-    const inJ3 = i>=b2-1;
+    const inJ1 = i<=b1_end;
+    const inJ2 = i>=b2_start && i<=b2_end;
+    const inJ3 = i>=b3_start;
     const r=isTonic?19:16;
-    // تعداد جنسهایی که این نت در آنها است
-    const jins = [inJ1?c1:null, inJ2?c2:null, inJ3?c3:null].filter(Boolean);
-    if(jins.length===3){
-      // سه رنگ: کرد+عجم+نهاوند
+    const jins=[inJ1?c1:null,inJ2?c2:null,inJ3?c3:null].filter(Boolean);
+    if(jins.length>=3){
       svgEl.appendChild(el('circle',{cx:x,cy:noteY,r:r,fill:c1}));
       svgEl.appendChild(el('path',{d:`M ${x} ${noteY-r} A ${r} ${r} 0 0 1 ${x+r} ${noteY} L ${x} ${noteY} Z`,fill:c2}));
       svgEl.appendChild(el('path',{d:`M ${x+r} ${noteY} A ${r} ${r} 0 0 1 ${x} ${noteY+r} L ${x} ${noteY} Z`,fill:c3}));
       svgEl.appendChild(el('circle',{cx:x,cy:noteY,r:r,fill:'none',stroke:'#fff','stroke-width':'1.5'}));
     } else if(jins.length===2){
       svgEl.appendChild(el('circle',{cx:x,cy:noteY,r:r,fill:jins[0]}));
-      const path=`M ${x} ${noteY-r} A ${r} ${r} 0 0 1 ${x} ${noteY+r} Z`;
-      svgEl.appendChild(el('path',{d:path,fill:jins[1]}));
+      svgEl.appendChild(el('path',{d:`M ${x} ${noteY-r} A ${r} ${r} 0 0 1 ${x} ${noteY+r} Z`,fill:jins[1]}));
       svgEl.appendChild(el('circle',{cx:x,cy:noteY,r:r,fill:'none',stroke:'#fff','stroke-width':'1.5'}));
     } else {
       const c=jins[0]||c1;
@@ -639,9 +644,11 @@ function drawAscDescSVG3(svgEl, notes, intervals, b1, b2, c1, c2, c3, l1, l2, l3
     svgEl.appendChild(txt(x,noteY,String(i+1),{'font-size':'11','font-weight':'bold',fill:'#fff'}));
     svgEl.appendChild(txt(x,noteY+r+13,name,{'font-size':name.length>4?'9':'12','font-weight':'bold',fill:'#ddd'}));
   });
+
+  // فواصل زیر
   intervals.forEach((interval,i)=>{
     const x=startX+step*i+step/2;
-    const c=i<b1?c1:i<b2?c2:c3;
+    const c=i<b1_end?c1:i<b3_start?c2:c3;
     svgEl.appendChild(el('line',{x1:x,y1:noteY+22,x2:x,y2:noteY+32,stroke:c,'stroke-width':'1.5','stroke-dasharray':'3,2'}));
     svgEl.appendChild(el('rect',{x:x-16,y:noteY+33,width:32,height:19,rx:'9',fill:c,opacity:'0.2'}));
     svgEl.appendChild(el('rect',{x:x-16,y:noteY+33,width:32,height:19,rx:'9',fill:'none',stroke:c,'stroke-width':'1.5'}));
@@ -702,7 +709,7 @@ function drawNahawandAscDescSVG(svgEl, notes, intervals, jinsBoundary, color1, c
 var _sa=document.getElementById('svgAsc');
 var _sd=document.getElementById('svgDesc');
 if(_sa) drawNahawandAscDescSVG(_sa,['دو','ر','می‌بمل','فا','سل','لابمل','سی','دو'],['1','½','1','1','½','1½','½'],4,'#e65100','#c62828','جنس نهاوند','جنس حجاز');
-if(_sd) drawAscDescSVG3(_sd,['دو','ر','می‌بمل','فا','سل','لا‌بمل','سی‌بمل','دو'],['1','1','½','1','1','½','1'],4,5,'#2e7d32','#7b1fa2','#e65100','جنس کرد','جنس عجم','جنس نهاوند',2);
+if(_sd) drawAscDescSVG3(_sd,['دو','ر','می‌بمل','فا','سل','لا‌بمل','سی‌بمل','دو'],['1','1','½','1','1','½','1'],3,2,5,4,'#2e7d32','#7b1fa2','#e65100','جنس کرد','جنس عجم','جنس نهاوند');
 </script>
 </body>
 </html>
