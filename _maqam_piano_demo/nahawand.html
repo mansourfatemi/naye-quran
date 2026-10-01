@@ -578,13 +578,15 @@ document.addEventListener('click', function(e){
 
 function drawAscDescSVG3(svgEl, notes, intervals, b1_end, b2_start, b2_end, b3_start, c1, c2, c3, l1, l2, l3){
   const ns='http://www.w3.org/2000/svg';
-  const step=66, startX=44, noteY=80, H=185;
+  const _r3=svgEl.parentElement?svgEl.parentElement.getBoundingClientRect().width:0;
+  const containerW3=_r3>50?_r3:(window.innerWidth>50?window.innerWidth-32:340);
+  const step=Math.min(58,Math.floor((containerW3-56)/(notes.length-1))), startX=Math.floor(step*0.65), noteY=80, H=185;
   const W=startX*2+step*(notes.length-1);
   function el(tag,attrs){ const e=document.createElementNS(ns,tag); Object.entries(attrs).forEach(([k,v])=>e.setAttribute(k,v)); return e; }
   function txt(x,y,str,attrs={}){ const t=el('text',{x,y,'text-anchor':'middle','dominant-baseline':'middle','font-family':'Vazirmatn,Tahoma,sans-serif','font-size':'12',...attrs}); t.textContent=str; return t; }
   svgEl.innerHTML='';
   svgEl.setAttribute('viewBox','0 0 '+W+' '+H);
-  svgEl.setAttribute('width',W); svgEl.setAttribute('height',H);
+  svgEl.setAttribute('width','100%'); svgEl.setAttribute('height',H); svgEl.style.maxWidth=W+'px';
 
   // کروشه جنس 1 - ردیف بالا
   const bY1=8, bH=14;
