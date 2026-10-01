@@ -523,6 +523,9 @@ function renderIntervalDiagramGeneric(containerEl, offsetsArr, color2, splitIdx)
     const chip=document.createElement('div'); chip.className='frac-chip';
     chip.style.left=((idx+0.5)*TICK_W)+'px'; chip.textContent=DIFF_LABELS[diff]||diff;
     if(color2 && splitIdx!==undefined && idx>=splitIdx){ chip.style.background=color2; }
+    chip.style.cursor='pointer';
+    chip.title='کلیک کنید تا صدای این نُت پخش شود';
+    (function(semitone){ chip.onclick=()=>{ ensureCtx(); playNote(NOTE_FREQ_D4*Math.pow(2,semitone/12),null); }; })(offsetsArr[idx+1]);
     fr.appendChild(chip);
   }
   containerEl.appendChild(fr);
