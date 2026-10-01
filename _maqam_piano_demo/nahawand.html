@@ -643,6 +643,13 @@ function drawAscDescSVG3(svgEl, notes, intervals, b1_end, b2_start, b2_end, b3_s
     }
     svgEl.appendChild(txt(x,noteY,String(i+1),{'font-size':'11','font-weight':'bold',fill:'#fff'}));
     svgEl.appendChild(txt(x,noteY+r+13,name,{'font-size':name.length>4?'9':'12','font-weight':'bold',fill:'#ddd'}));
+    // کلیک برای صدا - محاسبه offset از intervals
+    const _s2={'1':2,'½':1,'1½':3,'¾':1.5,'1⅟2':1,'11⅟2':3,'3⅟4':1.5};
+    let _cum2=0; for(let _k=0;_k<i;_k++){ _cum2+=_s2[intervals[_k]]||(_s2[String(intervals[_k])]||0); }
+    const _fr2=NOTE_FREQ_C4*Math.pow(2,_cum2/12);
+    const _hit2=el('circle',{cx:x,cy:noteY,r:r,fill:'transparent',style:'cursor:pointer'});
+    _hit2.addEventListener('click',()=>{ ensureCtx(); playNote(_fr2,null); });
+    svgEl.appendChild(_hit2);
   });
 
   // فواصل زیر
