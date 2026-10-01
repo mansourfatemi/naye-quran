@@ -421,6 +421,13 @@ document.getElementById('loopBtn').onclick=(e)=>{ looping=!looping; e.target.cla
 
 // ══════════ ترکیبات مقام بیات (قابل پخش، همه بر اساس overlap خالص از درجه۴) ══════════
 const BAYATI1_OFFSETS=[0,1.5,3,5]; // جنس بیات: درجه۱ تا ۴
+function buildComboOffsets(combo){
+  const offs=[...BAYATI1_OFFSETS];
+  const pattern=JINS_PATTERNS[combo.jins2];
+  let cum=5;
+  pattern.forEach(p=>{ cum+=p; offs.push(cum); });
+  return offs;
+}
 const JINS_PATTERNS={
   'جنس نهاوند':          [2,1,2,2],     // ۱،1⁄2،۱،۱ — پنتاکورد، overlap (فرم اصلی/رایج بیات) — تأیید شده با تصویر Maqamat app
   'جنس راست':            [2,1.5,1.5,2], // ۱،3⁄4،3⁄4،۱ — پنتاکورد، overlap = دقیقاً معادل «حسینی» (تأیید شده با تصویر maqamworld و اپ ایرانی)
@@ -484,7 +491,7 @@ function stopComboSequence(){
 }
 function playComboSequence(combo, btn){
   stopSequence(); stopComboSequence(); ensureCtx();
-  const freqs=buildRoundTrip(buildComboScale(combo).map(s=>freqFromOffset(s.offset)));
+  const freqs=buildRoundTrip(buildComboOffsets(combo).map(o=>freqFromOffset(o)));
   activeComboBtn=btn; btn.classList.add('playing'); btn.textContent='■';
   let i=0;
   function step(){
