@@ -701,7 +701,14 @@ function drawNahawandAscDescSVG(svgEl, notes, intervals, jinsBoundary, color1, c
     svgEl.appendChild(txt(x,noteY+26,String(i+1),{'font-size':'11',fill:'#555'}));
     // کلیک برای صدا
     const hitEl=el('circle',{cx:x,cy:noteY,r:r,fill:'transparent',style:'cursor:pointer'});
-    const freq=NOTE_FREQ_C4*Math.pow(2,[0,2,3,5,7,8,11,12][i]||0);
+    // محاسبه offset از intervals
+    const _semis={'1':2,'1⁄2':1,'11⁄2':3,'3⁄4':1.5};
+    const _off=offsets.reduce((acc,v,j)=>{
+      if(j===0) return [0];
+      const diff=_semis[intervals[j-1]]||0;
+      return [...acc, acc[j-1]+diff];
+    },[]);
+    const freq=NOTE_FREQ_C4*Math.pow(2,(_off[i]||0)/12);
     hitEl.addEventListener('click',()=>{ ensureCtx(); playNote(freq,null); });
     svgEl.appendChild(hitEl);
   });
