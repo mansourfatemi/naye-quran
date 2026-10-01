@@ -602,8 +602,12 @@ document.addEventListener('click', function(e){
   }
 });
 // render صعودی/نزولی در انتها
+const _da=document.getElementById('diagAsc');
+const _dd=document.getElementById('diagDesc');
+console.log('diagAsc el:', _da, 'diagDesc el:', _dd, 'ASC_OFFSETS:', ASC_OFFSETS);
 renderAscDesc('diagAsc', ASC_OFFSETS, '#e65100','#c62828');
 renderAscDesc('diagDesc',DESC_OFFSETS,'#5c6bc0','#e65100');
+console.log('diagAsc children:', _da ? _da.children.length : 'null');
 </script>
 </body>
 </html>
