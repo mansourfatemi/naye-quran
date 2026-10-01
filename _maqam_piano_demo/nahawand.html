@@ -136,11 +136,11 @@
     <div class="sub">مقام نهاوند در مسیر صعودی و نزولی دو ساختار متفاوت دارد</div>
     <div style="margin-top:12px">
       <div style="font-weight:bold;color:#e65100;margin-bottom:6px">▲ صعودی — جنس نهاوند + جنس حجاز</div>
-      <div style="overflow-x:auto;direction:ltr"><div id="diagAsc"></div></div>
+      <div class="diagwrap-scroll"><div id="diagAsc"></div></div>
     </div>
     <div style="margin-top:18px">
       <div style="font-weight:bold;color:#5c6bc0;margin-bottom:6px">▼ نزولی — جنس کرد + جنس نهاوند (عجم)</div>
-      <div style="overflow-x:auto;direction:ltr"><div id="diagDesc"></div></div>
+      <div class="diagwrap-scroll"><div id="diagDesc"></div></div>
     </div>
   </div>
 
@@ -602,12 +602,8 @@ document.addEventListener('click', function(e){
   }
 });
 // render صعودی/نزولی در انتها
-const _da=document.getElementById('diagAsc');
-const _dd=document.getElementById('diagDesc');
-console.log('diagAsc el:', _da, 'diagDesc el:', _dd, 'ASC_OFFSETS:', ASC_OFFSETS);
 renderAscDesc('diagAsc', ASC_OFFSETS, '#e65100','#c62828');
 renderAscDesc('diagDesc',DESC_OFFSETS,'#5c6bc0','#e65100');
-console.log('diagAsc children:', _da ? _da.children.length : 'null');
 </script>
 </body>
 </html>
