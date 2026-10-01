@@ -1,4 +1,13 @@
-<!DOCTYPE html>
+<!DOCTY
+
+  <!-- ساختار جنسهای مقام بیات -->
+  <div class="card" id="bayatiJinsCard">
+    <h2>ساختار جنسهای مقام بیات</h2>
+    <div class="sub">مقام بیات از چهار جنس متداخل ساخته شده است</div>
+    <div style="overflow-x:auto;direction:ltr;margin-top:12px">
+      <svg id="svgBayatiJins" xmlns="http://www.w3.org/2000/svg" height="220" style="display:block;width:100%;max-width:580px"></svg>
+    </div>
+  </div>PE html>
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="UTF-8">
@@ -139,13 +148,6 @@
     </div></div>
   </div>
 
-  <div class="card">
-    <h2>📖 جدول کامل سُلم موسیقی عربی (اکتاوخوانی)</h2>
-    <div class="sub">نام‌های بالای نمودار (دوکاه، سیکاه، جهارکاه، ...) بخشی از جدول تاریخی «دیوان» موسیقی عربی هستند — تمام ۴۹ پرده/ربع‌پرده در دو اکتاو کامل، از یکاه تا جواب نوا</div>
-    <div style="text-align:center">
-      <button class="btn btn-play" style="width:100%;justify-content:center" onclick="window.location.href='diwan_reference.html'">📖 مشاهدهی جدول کامل دیوان (۲ اکتاو)</button>
-    </div>
-  </div>
 
 
   <div class="card">
@@ -643,6 +645,64 @@ document.addEventListener('click', function(e){
     if(wrap){ wrap.style.transform = 'none'; }
   }
 });
+</script>
+
+<script>
+(function(){
+  var svg = document.getElementById('svgBayatiJins');
+  if(!svg) return;
+  var notes=['ر','میکوک','فا','سل','لا','سیبمل','دو','ر'];
+  var intervals=['3/4','3/4','1','1','1/2','1','1'];
+  var c1='#2e7d32',c2='#e65100',c3='#6a1b9a',c4='#1565c0';
+  var ns='http://www.w3.org/2000/svg';
+  var step=70,startX=44,noteY=120,H=220,N=notes.length;
+  var W=startX*2+step*(N-1);
+  svg.innerHTML='';
+  svg.setAttribute('viewBox','0 0 '+W+' '+H);
+  svg.setAttribute('width',W); svg.setAttribute('height',H);
+  function el(tag,attrs){
+    var e=document.createElementNS(ns,tag);
+    Object.entries(attrs).forEach(function(kv){e.setAttribute(kv[0],kv[1]);});
+    return e;
+  }
+  function txt(x,y,str,fs,fw,fill){
+    var t=document.createElementNS(ns,'text');
+    t.setAttribute('x',x);t.setAttribute('y',y);
+    t.setAttribute('text-anchor','middle');t.setAttribute('dominant-baseline','middle');
+    t.setAttribute('font-family','Vazirmatn,Tahoma,sans-serif');
+    t.setAttribute('font-size',fs||'12');t.setAttribute('font-weight',fw||'normal');
+    t.setAttribute('fill',fill||'#fff');t.textContent=str;return t;
+  }
+  function bracket(x1,x2,y,h,color,label){
+    [el('line',{x1:x1+1,y1:y,x2:x1+1,y2:y+h,stroke:color,'stroke-width':'2.5'}),
+     el('line',{x1:x1,y1:y,x2:x2,y2:y,stroke:color,'stroke-width':'2.5'}),
+     el('line',{x1:x2-1,y1:y,x2:x2-1,y2:y+h,stroke:color,'stroke-width':'2.5'}),
+     txt((x1+x2)/2,y-8,label,'11','bold',color)
+    ].forEach(function(e){svg.appendChild(e);});
+  }
+  var X=function(i){return startX+step*i;};
+  bracket(X(0),X(3), 8,12,c1,'جنس بیات');
+  bracket(X(2),X(5),28,12,c2,'جنس عجم');
+  bracket(X(3),X(6),48,12,c3,'جنس نهاوند');
+  bracket(X(4),X(7),68,12,c4,'جنس کرد');
+  svg.appendChild(el('line',{x1:X(0),y1:noteY,x2:X(N-1),y2:noteY,stroke:'#555','stroke-width':'2'}));
+  notes.forEach(function(name,i){
+    var x=X(i),isTonic=(i===0||i===N-1);
+    var c=i<=3?c1:i<=5?c2:c3;
+    var r=isTonic?19:16;
+    svg.appendChild(el('circle',{cx:x,cy:noteY,r:r,fill:c}));
+    if(isTonic)svg.appendChild(el('circle',{cx:x,cy:noteY,r:r+3,fill:'none',stroke:c,'stroke-width':'2',opacity:'0.5'}));
+    svg.appendChild(txt(x,noteY,String(i+1),'11','bold','#fff'));
+    svg.appendChild(txt(x,noteY+r+13,name,'12','bold','#ddd'));
+  });
+  intervals.forEach(function(interval,i){
+    var x=X(i)+step/2,c=i<3?c1:i<5?c2:c4;
+    svg.appendChild(el('line',{x1:x,y1:noteY+22,x2:x,y2:noteY+32,stroke:c,'stroke-width':'1.5','stroke-dasharray':'3,2'}));
+    svg.appendChild(el('rect',{x:x-16,y:noteY+33,width:32,height:19,rx:'9',fill:c,opacity:'0.2'}));
+    svg.appendChild(el('rect',{x:x-16,y:noteY+33,width:32,height:19,rx:'9',fill:'none',stroke:c,'stroke-width':'1.5'}));
+    svg.appendChild(txt(x,noteY+42,interval,'11','bold',c));
+  });
+})();
 </script>
 </body>
 </html>
