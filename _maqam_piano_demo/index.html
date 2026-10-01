@@ -21,8 +21,8 @@
   .card .sub{font-size:.8em;color:#888;text-align:center;margin-bottom:14px}
 
   /* ── نمودار فواصل و سلسله‌مراتب (ثلاثی/جنس/عقد/مقام) ── */
-  .diagwrap-scroll{overflow-x:auto;direction:ltr;-webkit-overflow-scrolling:touch;margin-top:10px;padding:4px 20px 8px}
-  .diagwrap{width:370px;margin:0;direction:ltr}
+  .diagwrap-scroll{overflow-x:hidden;direction:ltr;margin-top:10px;padding:4px 4px 8px}
+  .diagwrap{width:370px;margin:0 auto;direction:ltr;transform-origin:left top}
   .tickline{position:relative;height:14px;border-bottom:2px solid #999}
   .tickline .tick{position:absolute;bottom:0;width:2px;height:12px;background:#999}
   .tickline .tick.end{height:18px;background:#333;width:2px}
@@ -1021,5 +1021,29 @@ var _e2=document.getElementById('svgAsc');
 if(_e1) drawAscDescSVG(_e1,['ر','ر#','فا#','سل','لا','سی‌نیم‌بمل','دو','ر'],['½','1½','½','1','¾','¾','1'],3,'#c62828','#1565c0','جنس حجاز','جنس راست');
 if(_e2) drawAscDescSVG3(_e2,['ر','می','فا','سل','لا','لا#','دو#','ر'],['1','1','½','1','½','1½','½'],3,4,'#2e7d32','#00695c','#c62828','جنس کرد','جنس نهاوند','جنس حجاز');
 </script>
+
+<script>
+function scaleDiagrams(){
+  document.querySelectorAll('.diagwrap-scroll').forEach(function(scroll){
+    var wrap = scroll.querySelector('.diagwrap');
+    if(!wrap) return;
+    var available = scroll.clientWidth - 8;
+    var natural = 370;
+    if(available < natural){
+      var scale = available / natural;
+      wrap.style.transform = 'scale(' + scale + ')';
+      wrap.style.width = natural + 'px';
+      scroll.style.height = (wrap.scrollHeight * scale + 10) + 'px';
+    } else {
+      wrap.style.transform = '';
+      wrap.style.width = natural + 'px';
+      scroll.style.height = '';
+    }
+  });
+}
+window.addEventListener('load', scaleDiagrams);
+window.addEventListener('resize', scaleDiagrams);
+</script>
+
 </body>
 </html>
