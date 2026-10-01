@@ -371,14 +371,17 @@ function ensureCtx(){
 }
 function playNote(freq, el){
   const ctx=ensureCtx();
-  const osc=ctx.createOscillator(); const gain=ctx.createGain();
-  osc.type='triangle'; osc.frequency.value=freq;
-  gain.gain.setValueAtTime(0.0001, ctx.currentTime);
-  gain.gain.exponentialRampToValueAtTime(0.35, ctx.currentTime+0.01);
-  gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime+1.8);
-  osc.connect(gain); gain.connect(ctx.destination);
-  osc.start(); osc.stop(ctx.currentTime+1.85);
-  if(el){ el.classList.add('active'); setTimeout(()=>el.classList.remove('active'),900); }
+  const resume = ctx.state==='suspended' ? ctx.resume() : Promise.resolve();
+  resume.then(()=>{
+    const osc=ctx.createOscillator(); const gain=ctx.createGain();
+    osc.type='triangle'; osc.frequency.value=freq;
+    gain.gain.setValueAtTime(0.0001, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.35, ctx.currentTime+0.01);
+    gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime+1.8);
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.start(); osc.stop(ctx.currentTime+1.85);
+    if(el){ el.classList.add('active'); setTimeout(()=>el.classList.remove('active'),900); }
+  });
 }
 function playMainNote(note, el){
   playNote(note.freq!==undefined?note.freq:freqFromOffset(note.offset), el);
