@@ -679,7 +679,7 @@ document.addEventListener('click', function(e){
 
   var c1='#2e7d32', c2='#e65100', c3='#1565c0', c4='#6a1b9a';
   var ns='http://www.w3.org/2000/svg';
-  var step=52, startX=36, endPad=36, noteY=90, H=190, N=notes.length;
+  var step=52, startX=36, endPad=36, noteY=82, H=195, N=notes.length;
   var W=startX+step*(N-1)+endPad;
 
   svg.innerHTML='';
@@ -746,9 +746,9 @@ document.addEventListener('click', function(e){
       var c=jins[0]||(inJ4?c4:c1);
       svg.appendChild(el('circle',{cx:x,cy:noteY,r:r,fill:c,stroke:'#fff','stroke-width':'2'}));
     }
-    var fs=name.length>4?'7':name.length>3?'8':'10';
-    svg.appendChild(txt(x,noteY,name,fs,'bold','#fff'));
-    svg.appendChild(txt(x,noteY+r+11,String(i+1),'10','normal','#888'));
+    // شماره درجه داخل دایره، نام زیر دایره
+    svg.appendChild(txt(x,noteY,String(i+1),'11','bold','#fff'));
+    svg.appendChild(txt(x,noteY+r+13,name,'10','bold','#555'));
 
     // کلیک → صدا
     var freq=NOTE_FREQ_D4*Math.pow(2,(cumOff[i]||0)/12);
