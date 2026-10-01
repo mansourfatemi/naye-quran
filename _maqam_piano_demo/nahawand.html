@@ -270,34 +270,7 @@ for(let i=0;i<8;i++){
   const s=document.createElement('span'); s.style.left=(i*TICK_W)+'px'; s.textContent=toFa(i+1);
   numrow.appendChild(s);
 }
-const ASC_OFFSETS=[0,2,3,5,7,8,11,12];
-const DESC_OFFSETS=[0,2,3,5,7,9,10,12];
-const DL2={1:'1/2',1.5:'3/4',2:'1',3:'1½'};
-function renderAscDesc(elId,offsets,c1,c2){
-  const el=document.getElementById(elId); if(!el) return;
-  el.innerHTML=''; el.className='diagwrap';
-  el.style.width=((offsets.length-1)*TICK_W)+'px';
-  const tl=document.createElement('div'); tl.className='tickline';
-  offsets.forEach((o,i)=>{ const t=document.createElement('div'); t.className='tick'+(i===0||i===offsets.length-1?' end':''); t.style.left=(i*TICK_W)+'px'; tl.appendChild(t); });
-  el.appendChild(tl);
-  const fr=document.createElement('div'); fr.className='fracrow';
-  for(let i=0;i<offsets.length-1;i++){
-    const diff=Math.round((offsets[i+1]-offsets[i])*2)/2;
-    const chip=document.createElement('div');
-    chip.className='frac-chip'+(diff===3?' big':'');
-    chip.style.left=((i+0.5)*TICK_W)+'px';
-    chip.textContent=DL2[diff]||diff;
-    chip.style.background=i<4?c1:c2;
-    chip.style.cursor='pointer';
-    chip.title='کلیک برای صدا';
-    (function(s){ chip.onclick=()=>{ ensureCtx(); playNote(NOTE_FREQ_C4*Math.pow(2,s/12),null); }; })(offsets[i+1]);
-    fr.appendChild(chip);
-  }
-  el.appendChild(fr);
-  const nr=document.createElement('div'); nr.className='numrow';
-  offsets.forEach((o,i)=>{ const s=document.createElement('span'); s.style.left=(i*TICK_W)+'px'; s.textContent=toFa(i+1); nr.appendChild(s); });
-  el.appendChild(nr);
-}
+
 NAHAWAND_NAMES=['راست','دوکاه','سه‌گاه','چهارگاه','نوا','حسینی','اوج','کردان']; // نام‌های دیوان موسیقی عربی از نت دو (Do/C)
 const namerow=document.getElementById('namerow');
 NAHAWAND_NAMES.forEach((nm,i)=>{
@@ -600,9 +573,62 @@ document.addEventListener('click', function(e){
     if(wrap){ wrap.style.transform = 'none'; }
   }
 });
-// render صعودی/نزولی در انتها
-renderAscDesc('diagAsc', ASC_OFFSETS, '#e65100','#c62828');
-renderAscDesc('diagDesc',DESC_OFFSETS,'#5c6bc0','#e65100');
+
+
+function drawNahawandAscDescSVG(svgEl, notes, intervals, jinsBoundary, color1, color2, label1, label2){
+  const ns='http://www.w3.org/2000/svg';
+  const step=56, startX=36, noteY=88, W=startX*2+step*(notes.length-1), H=140;
+  function el(tag,attrs){ const e=document.createElementNS(ns,tag); Object.entries(attrs).forEach(([k,v])=>e.setAttribute(k,v)); return e; }
+  function txt(x,y,str,attrs={}){ const t=el('text',{x,y,'text-anchor':'middle','dominant-baseline':'middle','font-family':'Vazirmatn,Tahoma,sans-serif','font-size':'12',...attrs}); t.textContent=str; return t; }
+  svgEl.innerHTML='';
+  svgEl.setAttribute('viewBox','0 0 '+W+' '+H);
+  svgEl.setAttribute('width',W); svgEl.setAttribute('height',H);
+  svgEl.appendChild(el('line',{x1:startX,y1:noteY,x2:startX+step*(notes.length-1),y2:noteY,stroke:'#aaa','stroke-width':'2'}));
+  const bY=22,bH=12;
+  const bx1=startX,bx2=startX+step*jinsBoundary;
+  [el('line',{x1:bx1,y1:bY,x2:bx1,y2:bY+bH,stroke:color1,'stroke-width':'2'}),
+   el('line',{x1:bx1,y1:bY+bH,x2:bx2,y2:bY+bH,stroke:color1,'stroke-width':'2'}),
+   el('line',{x1:bx2,y1:bY,x2:bx2,y2:bY+bH,stroke:color1,'stroke-width':'2'}),
+   txt((bx1+bx2)/2,bY-6,label1,{'font-size':'11','font-weight':'bold',fill:color1})
+  ].forEach(e=>svgEl.appendChild(e));
+  const bx3=startX+step*jinsBoundary,bx4=startX+step*(notes.length-1);
+  [el('line',{x1:bx3,y1:bY,x2:bx3,y2:bY+bH,stroke:color2,'stroke-width':'2'}),
+   el('line',{x1:bx3,y1:bY+bH,x2:bx4,y2:bY+bH,stroke:color2,'stroke-width':'2'}),
+   el('line',{x1:bx4,y1:bY,x2:bx4,y2:bY+bH,stroke:color2,'stroke-width':'2'}),
+   txt((bx3+bx4)/2,bY-6,label2,{'font-size':'11','font-weight':'bold',fill:color2})
+  ].forEach(e=>svgEl.appendChild(e));
+  intervals.forEach((interval,i)=>{
+    const x=startX+step*i+step/2;
+    const color=i<jinsBoundary?color1:color2;
+    svgEl.appendChild(el('rect',{x:x-13,y:noteY-30,width:26,height:18,rx:'9',fill:color}));
+    svgEl.appendChild(txt(x,noteY-21,interval,{'font-size':'10','font-weight':'bold',fill:'#fff'}));
+  });
+  notes.forEach((name,i)=>{
+    const x=startX+step*i;
+    const isShared=(i===jinsBoundary);
+    const color=i<=jinsBoundary?color1:color2;
+    const r=16;
+    if(isShared){
+      svgEl.appendChild(el('circle',{cx:x,cy:noteY,r:r,fill:color1}));
+      const path=`M ${x} ${noteY-r} A ${r} ${r} 0 0 1 ${x} ${noteY+r} Z`;
+      svgEl.appendChild(el('path',{d:path,fill:color2}));
+      svgEl.appendChild(el('circle',{cx:x,cy:noteY,r:r,fill:'none',stroke:'#fff','stroke-width':'2'}));
+    } else {
+      svgEl.appendChild(el('circle',{cx:x,cy:noteY,r:r,fill:color,stroke:'#fff','stroke-width':'2'}));
+    }
+    svgEl.appendChild(txt(x,noteY,name,{'font-size':name.length>4?'8':name.length>3?'9':'11','font-weight':'bold',fill:'#fff'}));
+    svgEl.appendChild(txt(x,noteY+26,String(i+1),{'font-size':'11',fill:'#555'}));
+    // کلیک برای صدا
+    const hitEl=el('circle',{cx:x,cy:noteY,r:r,fill:'transparent',style:'cursor:pointer'});
+    const freq=NOTE_FREQ_C4*Math.pow(2,[0,2,3,5,7,8,11,12][i]||0);
+    hitEl.addEventListener('click',()=>{ ensureCtx(); playNote(freq,null); });
+    svgEl.appendChild(hitEl);
+  });
+}
+var _sa=document.getElementById('svgAsc');
+var _sd=document.getElementById('svgDesc');
+if(_sa) drawNahawandAscDescSVG(_sa,['دو','ر','می‌بمل','فا','سل','لابمل','سی','دو'],['1','½','1','1','½','1½','½'],4,'#e65100','#c62828','جنس نهاوند','جنس حجاز');
+if(_sd) drawNahawandAscDescSVG(_sd,['دو','ر','می‌بمل','فا','سل','لا','سی‌بمل','دو'],['1','1','½','1','1','½','1'],4,'#43a047','#1565c0','جنس کرد','جنس نهاوند');
 </script>
 </body>
 </html>
