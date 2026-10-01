@@ -140,7 +140,6 @@
   </div>
 
 
-
   <!-- ساختار جنسهای مقام بیات -->
   <div class="card" id="bayatiJinsCard">
     <h2>ساختار جنسهای مقام بیات</h2>
@@ -660,7 +659,7 @@ document.addEventListener('click', function(e){
   svg.innerHTML='';svg.setAttribute('viewBox','0 0 '+W+' '+H);
   svg.setAttribute('width',W);svg.setAttribute('height',H);
   function el(tag,attrs){var e=document.createElementNS(ns,tag);Object.entries(attrs).forEach(function(kv){e.setAttribute(kv[0],kv[1]);});return e;}
-  function txt(x,y,str,fs,fw,fill){var t=document.createElementNS(ns,'text');t.setAttribute('x',x);t.setAttribute('y',y);t.setAttribute('text-anchor','middle');t.setAttribute('dominant-baseline','middle');t.setAttribute('font-family','Vazirmatn,Tahoma,sans-serif');t.setAttribute('font-size',fs||'12');t.setAttribute('font-weight',fw||'normal');t.setAttribute('fill',fill||'#fff');t.textContent=str;return t;}
+  function txt(x,y,s,fs,fw,fill){var t=document.createElementNS(ns,'text');t.setAttribute('x',x);t.setAttribute('y',y);t.setAttribute('text-anchor','middle');t.setAttribute('dominant-baseline','middle');t.setAttribute('font-family','Vazirmatn,Tahoma,sans-serif');t.setAttribute('font-size',fs||'12');t.setAttribute('font-weight',fw||'normal');t.setAttribute('fill',fill||'#fff');t.textContent=s;return t;}
   function bracket(x1,x2,y,h,color,label){[el('line',{x1:x1+1,y1:y,x2:x1+1,y2:y+h,stroke:color,'stroke-width':'2.5'}),el('line',{x1:x1,y1:y,x2:x2,y2:y,stroke:color,'stroke-width':'2.5'}),el('line',{x1:x2-1,y1:y,x2:x2-1,y2:y+h,stroke:color,'stroke-width':'2.5'}),txt((x1+x2)/2,y-8,label,'11','bold',color)].forEach(function(e){svg.appendChild(e);});}
   var X=function(i){return startX+step*i;};
   bracket(X(0),X(3), 8,12,c1,'جنس بیات');
