@@ -514,6 +514,29 @@ BAYATI_COMBOS.forEach((c,idx)=>{
     '<div style="overflow-x:auto;direction:ltr;padding-top:2px"><div id="combodiag-'+idx+'"></div></div>';
   const btn=item.querySelector('.combo-playbtn');
   btn.onclick=(e)=>{ e.stopPropagation(); if(activeComboBtn===btn){ stopComboSequence(); return; } playComboSequence(c, btn); };
+
+  // ردیف دایرههای قابل کلیک
+  const scale=buildComboScale(c);
+  const degRow=document.createElement('div');
+  degRow.style.cssText='display:flex;justify-content:center;gap:8px;margin:10px 0 4px;flex-wrap:wrap;direction:rtl';
+  scale.forEach((s,i)=>{
+    const circle=document.createElement('div');
+    const isJ1=i<4;
+    const bg=isJ1?'#2e7d32':c.color2;
+    circle.style.cssText='width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-weight:bold;font-size:.85em;color:#fff;background:'+bg+';box-shadow:0 2px 4px rgba(0,0,0,.3);user-select:none;transition:transform .1s';
+    circle.textContent=String(s.deg);
+    circle.title=s.label+(s.desc?' — '+s.desc:'');
+    circle.onclick=(e)=>{
+      e.stopPropagation();
+      ensureCtx();
+      playNote(s.freq, null);
+      circle.style.transform='scale(1.25)';
+      setTimeout(()=>{ circle.style.transform='scale(1)'; }, 200);
+    };
+    degRow.appendChild(circle);
+  });
+  item.appendChild(degRow);
+
   comboList.appendChild(item);
   renderIntervalDiagramGeneric(item.querySelector('#combodiag-'+idx), buildComboScale(c).map(s=>s.offset), c.color2, 3);
 });
