@@ -666,7 +666,7 @@ function drawAscDescSVG3(svgEl, notes, intervals, b1_end, b2_start, b2_end, b3_s
 function drawNahawandAscDescSVG(svgEl, notes, intervals, jinsBoundary, color1, color2, label1, label2){
   const ns='http://www.w3.org/2000/svg';
   // viewBox ثابت - browser خودش scale میکند
-  const step=48, startX=32, endPad=32, noteY=82, H=148, W=startX+step*(notes.length-1)+endPad;
+  const step=40, startX=40, endPad=40, noteY=82, H=148, W=startX+step*(notes.length-1)+endPad;
   function el(tag,attrs){ const e=document.createElementNS(ns,tag); Object.entries(attrs).forEach(([k,v])=>e.setAttribute(k,v)); return e; }
   function txt(x,y,str,attrs={}){ const t=el('text',{x,y,'text-anchor':'middle','dominant-baseline':'middle','font-family':'Vazirmatn,Tahoma,sans-serif','font-size':'11',...attrs}); t.textContent=str; return t; }
   svgEl.innerHTML='';
@@ -727,7 +727,7 @@ function drawNahawandAscDescSVG(svgEl, notes, intervals, jinsBoundary, color1, c
 }
 function drawAscDescSVG3(svgEl, notes, intervals, b1_end, b2_start, b2_end, b3_start, c1, c2, c3, l1, l2, l3){
   const ns='http://www.w3.org/2000/svg';
-  const step=52, startX=30, noteY=88, H=190, W=startX*2+step*(notes.length-1);
+  const step=40, startX=40, endPad=40, noteY=88, H=190, W=startX+step*(notes.length-1)+endPad;
   function el(tag,attrs){ const e=document.createElementNS(ns,tag); Object.entries(attrs).forEach(([k,v])=>e.setAttribute(k,v)); return e; }
   function txt(x,y,str,attrs={}){ const t=el('text',{x,y,'text-anchor':'middle','dominant-baseline':'middle','font-family':'Vazirmatn,Tahoma,sans-serif','font-size':'11',...attrs}); t.textContent=str; return t; }
   svgEl.innerHTML='';
