@@ -140,6 +140,16 @@
   </div>
 
 
+  <!-- ساختار جنسهای مقام بیات -->
+  <div class="card" id="bayatiJinsCard">
+    <h2>ساختار جنسهای مقام بیات</h2>
+    <div class="sub">مقام بیات از چهار جنس متداخل ساخته شده است</div>
+
+    <div style="overflow-x:auto;direction:ltr;margin-top:12px">
+      <svg id="svgBayatiJins" xmlns="http://www.w3.org/2000/svg" height="185" style="display:block;width:100%;max-width:550px"></svg>
+    </div>
+  </div>
+
   <div class="card">
     <h2>بیات — از ر (D) شروع می‌شود</h2>
     <div class="sub">روی «پخش پی‌در‌پی» بزنید یا خودتان روی هر کلید ضربه بزنید</div>
@@ -652,7 +662,7 @@ document.addEventListener('click', function(e){
 
   var c1='#2e7d32', c2='#e65100', c3='#1565c0', c4='#6a1b9a';
   var ns='http://www.w3.org/2000/svg';
-  var step=70, startX=44, noteY=120, H=220, N=notes.length;
+  var step=70, startX=44, noteY=90, H=185, N=notes.length;
   var W=startX*2+step*(N-1);
 
   svg.innerHTML='';
@@ -682,10 +692,10 @@ document.addEventListener('click', function(e){
 
   // 4 کروشه در دو ردیف
   var X = function(i){ return startX+step*i; };
-  bracket(X(0), X(3),  8, 12, c1, 'جنس بیات');
-  bracket(X(2), X(5), 28, 12, c2, 'جنس عجم');
-  bracket(X(3), X(6), 48, 12, c4, 'جنس نهاوند');
-  bracket(X(4), X(7), 68, 12, c3, 'جنس کرد');
+  bracket(X(0), X(3), 6,  12, c1, 'جنس بیات');       // بیات deg1-4 ردیف1
+  bracket(X(2), X(5), 22, 12, c2, 'جنس عجم');              // عجم deg3-6 ردیف2
+  bracket(X(4), X(7), 6,  12, c3, 'جنس کرد');              // کرد deg5-8 ردیف1
+  bracket(X(4), X(7), 38, 12, c4, 'جنس نهاوند'); // نهاوند deg5-8 ردیف3
 
   // خط اصلی
   svg.appendChild(el('line',{x1:X(0),y1:noteY,x2:X(N-1),y2:noteY,stroke:'#555','stroke-width':'2'}));
