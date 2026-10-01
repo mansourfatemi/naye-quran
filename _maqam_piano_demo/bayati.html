@@ -480,8 +480,10 @@ function stopComboSequence(){
   if(activeComboBtn){ activeComboBtn.classList.remove('playing'); activeComboBtn.textContent='▶'; activeComboBtn=null; }
 }
 function playComboSequence(combo, btn){
+  console.log('playComboSequence called', combo.name);
   stopSequence(); stopComboSequence(); ensureCtx();
   const seq=buildRoundTrip(buildComboScale(combo).map(s=>s.freq));
+  console.log('seq freqs:', seq.slice(0,4));
   activeComboBtn=btn; btn.classList.add('playing'); btn.textContent='■';
   let i=0;
   function step(){
