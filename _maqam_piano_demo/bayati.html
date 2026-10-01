@@ -482,16 +482,14 @@ function stopComboSequence(){
   if(comboSeqTimer){ clearTimeout(comboSeqTimer); comboSeqTimer=null; }
   if(activeComboBtn){ activeComboBtn.classList.remove('playing'); activeComboBtn.textContent='▶'; activeComboBtn=null; }
 }
-async function playComboSequence(combo, btn){
-  stopSequence(); stopComboSequence();
-  const ctx=ensureCtx();
-  if(ctx.state==='suspended') await ctx.resume();
-  const seq=buildRoundTrip(buildComboScale(combo).map(s=>s.freq));
+function playComboSequence(combo, btn){
+  stopSequence(); stopComboSequence(); ensureCtx();
+  const freqs=buildRoundTrip(buildComboScale(combo).map(s=>freqFromOffset(s.offset)));
   activeComboBtn=btn; btn.classList.add('playing'); btn.textContent='■';
   let i=0;
   function step(){
-    if(i>=seq.length){ stopComboSequence(); return; }
-    playNote(seq[i], null); i++; comboSeqTimer=setTimeout(step,650);
+    if(i>=freqs.length){ stopComboSequence(); return; }
+    playNote(freqs[i], null); i++; comboSeqTimer=setTimeout(step,650);
   }
   step();
 }
