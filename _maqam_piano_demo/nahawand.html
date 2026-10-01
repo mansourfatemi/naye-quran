@@ -644,8 +644,9 @@ function drawAscDescSVG3(svgEl, notes, intervals, b1_end, b2_start, b2_end, b3_s
     svgEl.appendChild(txt(x,noteY,String(i+1),{'font-size':'11','font-weight':'bold',fill:'#fff'}));
     svgEl.appendChild(txt(x,noteY+r+13,name,{'font-size':name.length>4?'9':'12','font-weight':'bold',fill:'#ddd'}));
     // کلیک برای صدا - محاسبه offset از intervals
+    // کلیک صدا برای SVG3
     const _s2={'1':2,'½':1,'1½':3,'¾':1.5};
-    let _cum2=0; for(let _k=0;_k<i;_k++){ _cum2+=_s2[intervals[_k]]||(_s2[String(intervals[_k])]||0); }
+    let _cum2=0; for(let _k=0;_k<i;_k++){ _cum2+=(_s2[intervals[_k]]||0); }
     const _fr2=NOTE_FREQ_C4*Math.pow(2,_cum2/12);
     const _hit2=el('circle',{cx:x,cy:noteY,r:r,fill:'transparent',style:'cursor:pointer'});
     _hit2.addEventListener('click',()=>{ ensureCtx(); playNote(_fr2,null); });
@@ -671,7 +672,9 @@ function drawNahawandAscDescSVG(svgEl, notes, intervals, jinsBoundary, color1, c
   svgEl.innerHTML='';
   svgEl.setAttribute('viewBox','0 0 '+W+' '+H);
   svgEl.setAttribute('width',W); svgEl.setAttribute('height',H);
+  // خط اصلی
   svgEl.appendChild(el('line',{x1:startX,y1:noteY,x2:startX+step*(notes.length-1),y2:noteY,stroke:'#aaa','stroke-width':'2'}));
+  // کروشه جنس 1
   const bY=22,bH=12;
   const bx1=startX,bx2=startX+step*jinsBoundary;
   [el('line',{x1:bx1,y1:bY,x2:bx1,y2:bY+bH,stroke:color1,'stroke-width':'2'}),
@@ -679,18 +682,25 @@ function drawNahawandAscDescSVG(svgEl, notes, intervals, jinsBoundary, color1, c
    el('line',{x1:bx2,y1:bY,x2:bx2,y2:bY+bH,stroke:color1,'stroke-width':'2'}),
    txt((bx1+bx2)/2,bY-6,label1,{'font-size':'11','font-weight':'bold',fill:color1})
   ].forEach(e=>svgEl.appendChild(e));
+  // کروشه جنس 2
   const bx3=startX+step*jinsBoundary,bx4=startX+step*(notes.length-1);
   [el('line',{x1:bx3,y1:bY,x2:bx3,y2:bY+bH,stroke:color2,'stroke-width':'2'}),
    el('line',{x1:bx3,y1:bY+bH,x2:bx4,y2:bY+bH,stroke:color2,'stroke-width':'2'}),
    el('line',{x1:bx4,y1:bY,x2:bx4,y2:bY+bH,stroke:color2,'stroke-width':'2'}),
    txt((bx3+bx4)/2,bY-6,label2,{'font-size':'11','font-weight':'bold',fill:color2})
   ].forEach(e=>svgEl.appendChild(e));
-  intervals.forEach((interval,i)=>{
+  // فواصل
+  const semis={'1':2,'1⁄2':1,'11⁄2':3,'3⁄4':1.5};
+  intervals.forEach((iv,i)=>{
     const x=startX+step*i+step/2;
-    const color=i<jinsBoundary?color1:color2;
-    svgEl.appendChild(el('rect',{x:x-13,y:noteY-30,width:26,height:18,rx:'9',fill:color}));
-    svgEl.appendChild(txt(x,noteY-21,interval,{'font-size':'10','font-weight':'bold',fill:'#fff'}));
+    const c=i<jinsBoundary?color1:color2;
+    svgEl.appendChild(el('rect',{x:x-13,y:noteY-30,width:26,height:18,rx:'9',fill:c}));
+    svgEl.appendChild(txt(x,noteY-21,iv,{'font-size':'10','font-weight':'bold',fill:'#fff'}));
   });
+  // محاسبه semitone offset تجمعی از intervals
+  const cumOff=[0];
+  intervals.forEach((iv)=>{ cumOff.push(cumOff[cumOff.length-1]+(semis[iv]||0)); });
+  // نتها
   notes.forEach((name,i)=>{
     const x=startX+step*i;
     const isShared=(i===jinsBoundary);
@@ -698,8 +708,7 @@ function drawNahawandAscDescSVG(svgEl, notes, intervals, jinsBoundary, color1, c
     const r=16;
     if(isShared){
       svgEl.appendChild(el('circle',{cx:x,cy:noteY,r:r,fill:color1}));
-      const path=`M ${x} ${noteY-r} A ${r} ${r} 0 0 1 ${x} ${noteY+r} Z`;
-      svgEl.appendChild(el('path',{d:path,fill:color2}));
+      svgEl.appendChild(el('path',{d:`M ${x} ${noteY-r} A ${r} ${r} 0 0 1 ${x} ${noteY+r} Z`,fill:color2}));
       svgEl.appendChild(el('circle',{cx:x,cy:noteY,r:r,fill:'none',stroke:'#fff','stroke-width':'2'}));
     } else {
       svgEl.appendChild(el('circle',{cx:x,cy:noteY,r:r,fill:color,stroke:'#fff','stroke-width':'2'}));
@@ -707,23 +716,10 @@ function drawNahawandAscDescSVG(svgEl, notes, intervals, jinsBoundary, color1, c
     svgEl.appendChild(txt(x,noteY,name,{'font-size':name.length>4?'8':name.length>3?'9':'11','font-weight':'bold',fill:'#fff'}));
     svgEl.appendChild(txt(x,noteY+26,String(i+1),{'font-size':'11',fill:'#555'}));
     // کلیک برای صدا
+    const freq=NOTE_FREQ_C4*Math.pow(2,(cumOff[i]||0)/12);
     const hitEl=el('circle',{cx:x,cy:noteY,r:r,fill:'transparent',style:'cursor:pointer'});
-    // محاسبه offset از intervals
-    const _semis={'1':2,'½':1,'1½':3,'¾':1.5};
-    const _off=offsets.reduce((acc,v,j)=>{
-      if(j===0) return [0];
-      const diff=_semis[intervals[j-1]]||0;
-      return [...acc, acc[j-1]+diff];
-    },[]);
-    const freq=NOTE_FREQ_C4*Math.pow(2,(_off[i]||0)/12);
     hitEl.addEventListener('click',()=>{ ensureCtx(); playNote(freq,null); });
     svgEl.appendChild(hitEl);
   });
 }
-var _sa=document.getElementById('svgAsc');
-var _sd=document.getElementById('svgDesc');
-if(_sa) drawNahawandAscDescSVG(_sa,['دو','ر','می‌بمل','فا','سل','لابمل','سی','دو'],['1','½','1','1','½','1½','½'],4,'#e65100','#c62828','جنس نهاوند','جنس حجاز');
-if(_sd) drawAscDescSVG3(_sd,['دو','ر','می‌بمل','فا','سل','لا‌بمل','سی‌بمل','دو'],['1','1','½','1','1','½','1'],3,2,5,4,'#2e7d32','#7b1fa2','#e65100','جنس کرد','جنس عجم','جنس نهاوند');
-</script>
-</body>
-</html>
+
