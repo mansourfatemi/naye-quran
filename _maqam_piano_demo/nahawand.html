@@ -299,9 +299,6 @@ function renderAscDesc(elId,offsets,c1,c2){
   offsets.forEach((o,i)=>{ const s=document.createElement('span'); s.style.left=(i*TICK_W)+'px'; s.textContent=toFa(i+1); nr.appendChild(s); });
   el.appendChild(nr);
 }
-renderAscDesc('diagAsc', ASC_OFFSETS, '#e65100','#c62828');
-renderAscDesc('diagDesc',DESC_OFFSETS,'#5c6bc0','#e65100');
-
 NAHAWAND_NAMES=['راست','دوکاه','سه‌گاه','چهارگاه','نوا','حسینی','اوج','کردان']; // نام‌های دیوان موسیقی عربی از نت دو (Do/C)
 const namerow=document.getElementById('namerow');
 NAHAWAND_NAMES.forEach((nm,i)=>{
@@ -604,6 +601,9 @@ document.addEventListener('click', function(e){
     if(wrap){ wrap.style.transform = 'none'; }
   }
 });
+// render صعودی/نزولی در انتها
+renderAscDesc('diagAsc', ASC_OFFSETS, '#e65100','#c62828');
+renderAscDesc('diagDesc',DESC_OFFSETS,'#5c6bc0','#e65100');
 </script>
 </body>
 </html>
