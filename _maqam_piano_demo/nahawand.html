@@ -408,6 +408,9 @@ function renderIntervalDiagramGeneric(containerEl, offsetsArr){
     const diff=Math.round((offsetsArr[idx+1]-offsetsArr[idx])*2)/2;
     const chip=document.createElement('div'); chip.className='frac-chip'+(diff===3?' big':'');
     chip.style.left=((idx+0.5)*TICK_W)+'px'; chip.textContent=DIFF_LABELS[diff]||diff;
+    chip.style.cursor='pointer';
+    chip.title='کلیک کنید تا صدای این نُت پخش شود';
+    (function(semitone){ chip.onclick=()=>{ ensureCtx(); playNote(NOTE_FREQ_C4*Math.pow(2,semitone/12),null); }; })(offsetsArr[idx+1]);
     fr.appendChild(chip);
   }
   containerEl.appendChild(fr);
