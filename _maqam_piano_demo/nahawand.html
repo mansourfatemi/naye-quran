@@ -690,7 +690,7 @@ function drawNahawandAscDescSVG(svgEl, notes, intervals, jinsBoundary, color1, c
    txt((bx3+bx4)/2,bY-6,label2,{'font-size':'11','font-weight':'bold',fill:color2})
   ].forEach(e=>svgEl.appendChild(e));
   // فواصل
-  const semis={'1':2,'1⁄2':1,'11⁄2':3,'3⁄4':1.5};
+  const semis={'1':2,'½':1,'1½':3,'¾':1.5,'1⁄2':1,'11⁄2':3,'3⁄4':1.5};
   intervals.forEach((iv,i)=>{
     const x=startX+step*i+step/2;
     const c=i<jinsBoundary?color1:color2;
