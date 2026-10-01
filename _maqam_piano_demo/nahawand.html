@@ -579,8 +579,8 @@ document.addEventListener('click', function(e){
 function drawAscDescSVG3(svgEl, notes, intervals, b1_end, b2_start, b2_end, b3_start, c1, c2, c3, l1, l2, l3){
   const ns='http://www.w3.org/2000/svg';
   const _r3=svgEl.parentElement?svgEl.parentElement.getBoundingClientRect().width:0;
-  const containerW3=_r3>50?_r3:(window.innerWidth>50?window.innerWidth-32:340);
-  const step=Math.min(58,Math.floor((containerW3-56)/(notes.length-1))), startX=Math.floor(step*0.65), noteY=80, H=185;
+  const containerW3=_r3>50?_r3:(window.innerWidth>50?window.innerWidth-48:300);
+  const step=Math.min(46,Math.floor((containerW3-40)/(notes.length-1))), startX=20, noteY=80, H=185;
   const W=startX*2+step*(notes.length-1);
   function el(tag,attrs){ const e=document.createElementNS(ns,tag); Object.entries(attrs).forEach(([k,v])=>e.setAttribute(k,v)); return e; }
   function txt(x,y,str,attrs={}){ const t=el('text',{x,y,'text-anchor':'middle','dominant-baseline':'middle','font-family':'Vazirmatn,Tahoma,sans-serif','font-size':'12',...attrs}); t.textContent=str; return t; }
@@ -666,8 +666,8 @@ function drawAscDescSVG3(svgEl, notes, intervals, b1_end, b2_start, b2_end, b3_s
 function drawNahawandAscDescSVG(svgEl, notes, intervals, jinsBoundary, color1, color2, label1, label2){
   const ns='http://www.w3.org/2000/svg';
   const _rect = svgEl.parentElement ? svgEl.parentElement.getBoundingClientRect().width : 0;
-  const containerW = _rect > 50 ? _rect : (window.innerWidth > 50 ? window.innerWidth - 32 : 340);
-  const padding=28, step=Math.min(52, Math.floor((containerW - padding*2) / (notes.length-1)));
+  const containerW = _rect > 50 ? _rect : (window.innerWidth > 50 ? window.innerWidth - 48 : 300);
+  const padding=20, step=Math.min(46, Math.floor((containerW - padding*2) / (notes.length-1)));
   const startX=padding, noteY=90, W=startX*2+step*(notes.length-1), H=145;
   function el(tag,attrs){ const e=document.createElementNS(ns,tag); Object.entries(attrs).forEach(([k,v])=>e.setAttribute(k,v)); return e; }
   function txt(x,y,str,attrs={}){ const t=el('text',{x,y,'text-anchor':'middle','dominant-baseline':'middle','font-family':'Vazirmatn,Tahoma,sans-serif','font-size':'12',...attrs}); t.textContent=str; return t; }
