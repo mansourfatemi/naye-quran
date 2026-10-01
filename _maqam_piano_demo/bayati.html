@@ -494,7 +494,7 @@ BAYATI_COMBOS.forEach((c,idx)=>{
   const item=document.createElement('div'); item.className='combo-item';
   item.innerHTML =
     '<div class="combo-head">'+
-      '<div class="combo-name">'+c.name+' <span style="color:#aaa;font-weight:normal;font-size:.78em">(برای جزئیات بزنید)</span></div>'+
+      '<div class="combo-name">'+c.name+'</div>'+
       '<button class="combo-playbtn" type="button">▶</button>'+
     '</div>'+
     '<div class="combo-bar">'+
@@ -504,7 +504,6 @@ BAYATI_COMBOS.forEach((c,idx)=>{
     '<div style="overflow-x:auto;direction:ltr;padding-top:2px"><div id="combodiag-'+idx+'"></div></div>';
   const btn=item.querySelector('.combo-playbtn');
   btn.onclick=(e)=>{ e.stopPropagation(); if(activeComboBtn===btn){ stopComboSequence(); return; } playComboSequence(c, btn); };
-  item.onclick=()=>{ stopComboSequence(); openComboDetail(c); };
   comboList.appendChild(item);
   renderIntervalDiagramGeneric(item.querySelector('#combodiag-'+idx), buildComboScale(c).map(s=>s.offset), c.color2, 3);
 });
