@@ -709,7 +709,7 @@ function drawNahawandAscDescSVG(svgEl, notes, intervals, jinsBoundary, color1, c
     // کلیک برای صدا
     const hitEl=el('circle',{cx:x,cy:noteY,r:r,fill:'transparent',style:'cursor:pointer'});
     // محاسبه offset از intervals
-    const _semis={'1':2,'1⁄2':1,'11⁄2':3,'3⁄4':1.5};
+    const _semis={'1':2,'½':1,'1½':3,'¾':1.5};
     const _off=offsets.reduce((acc,v,j)=>{
       if(j===0) return [0];
       const diff=_semis[intervals[j-1]]||0;
