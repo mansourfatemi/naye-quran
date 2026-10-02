@@ -119,7 +119,7 @@
     <h2>ساختار جنسهای مقام صبا</h2>
     <div class="sub">جنس صبا (۱–۴) + جنس حجاز (۳–۶) + جنس کرد (۵–۸)</div>
     <div style="overflow-x:auto;padding:4px 0;box-sizing:border-box;min-width:0;margin-top:12px">
-      <svg id="svgSabaJins" xmlns="http://www.w3.org/2000/svg" style="display:block;overflow:hidden;max-width:100%"></svg>
+      <svg id="svgSabaJins" xmlns="http://www.w3.org/2000/svg"></svg>
     </div>
   </div>
 
@@ -572,7 +572,8 @@ document.addEventListener('click', function(e){
 
 function renderSabaJinsSVG(){
   var svg = document.getElementById('svgSabaJins');
-  if(!svg) return;
+  if(!svg){ console.log('svgSabaJins not found'); return; }
+  console.log('svgSabaJins found, rendering...');
 
   // نت‌ها و فواصل مقام صبا
   var notes     = ['ر','می‌کوک','فا','فا#','لا','لا‌بمل','سی‌بمل','ر'];
