@@ -675,6 +675,95 @@ document.addEventListener('click', function(e){
   });
 })();
 
+
+function renderComboJinsDiagram(comboId){
+  var svg = document.getElementById('svgComboJins');
+  if(!svg) return;
+
+  var notes, intervals, brackets;
+  if(comboId === 'zamzam'){
+    notes     = ['ر','می‌بمل','فا','فا#','لا','لا‌بمل','سی‌بمل','ر'];
+    intervals = ['½','1','½','1½','½','1','1'];
+    brackets  = [
+      {x1:0,x2:3,y:20,c:'#1565c0',label:'جنس زمزم'},
+      {x1:2,x2:5,y:38,c:'#e65100',label:'جنس حجاز'},
+      {x1:4,x2:7,y:20,c:'#6a1b9a',label:'جنس کرد'},
+    ];
+  } else { return; }
+
+  var SEMIS={'1':2,'½':1,'1½':3,'¾':1.5};
+  var ns='http://www.w3.org/2000/svg';
+  var step=52,startX=36,endPad=36,noteY=115,H=225,N=notes.length;
+  var W=startX+step*(N-1)+endPad;
+
+  svg.innerHTML='';
+  svg.setAttribute('viewBox','0 0 '+W+' '+H);
+  svg.setAttribute('preserveAspectRatio','xMidYMid meet');
+  svg.style.width='100%'; svg.style.height='auto';
+  svg.style.display='block'; svg.style.overflow='hidden';
+
+  function el(tag,attrs){
+    var e=document.createElementNS(ns,tag);
+    Object.entries(attrs).forEach(function(kv){e.setAttribute(kv[0],kv[1]);});
+    return e;
+  }
+  function txt(x,y,str,fs,fw,fill){
+    var t=document.createElementNS(ns,'text');
+    t.setAttribute('x',x); t.setAttribute('y',y);
+    t.setAttribute('text-anchor','middle'); t.setAttribute('dominant-baseline','middle');
+    t.setAttribute('font-family','Vazirmatn,Tahoma,sans-serif');
+    t.setAttribute('font-size',fs||'12'); t.setAttribute('font-weight',fw||'normal');
+    t.setAttribute('fill',fill||'#fff'); t.textContent=str; return t;
+  }
+  function drawBracket(x1i,x2i,y,color,label){
+    var x1=startX+step*x1i, x2=startX+step*x2i;
+    [el('line',{x1:x1+1,y1:y,x2:x1+1,y2:y+12,stroke:color,'stroke-width':'2.5'}),
+     el('line',{x1:x1,y1:y,x2:x2,y2:y,stroke:color,'stroke-width':'2.5'}),
+     el('line',{x1:x2-1,y1:y,x2:x2-1,y2:y+12,stroke:color,'stroke-width':'2.5'}),
+     txt((x1+x2)/2,y-8,label,'10','bold',color)
+    ].forEach(function(e){svg.appendChild(e);});
+  }
+
+  brackets.forEach(function(b){ drawBracket(b.x1,b.x2,b.y,b.c,b.label); });
+
+  var Xf=function(i){return startX+step*i;};
+  svg.appendChild(el('line',{x1:Xf(0),y1:noteY,x2:Xf(N-1),y2:noteY,stroke:'#555','stroke-width':'2'}));
+
+  var cumOff=[0];
+  intervals.forEach(function(iv){ cumOff.push(cumOff[cumOff.length-1]+(SEMIS[iv]||0)); });
+
+  notes.forEach(function(name,i){
+    var x=Xf(i),r=16;
+    var jc=[];
+    brackets.forEach(function(b){ if(i>=b.x1&&i<=b.x2) jc.push(b.c); });
+    if(!jc.length) jc=[brackets[0].c];
+    if(jc.length>=2){
+      svg.appendChild(el('circle',{cx:x,cy:noteY,r:r,fill:jc[0]}));
+      svg.appendChild(el('path',{d:'M '+x+' '+(noteY-r)+' A '+r+' '+r+' 0 0 1 '+x+' '+(noteY+r)+' Z',fill:jc[1]}));
+      svg.appendChild(el('circle',{cx:x,cy:noteY,r:r,fill:'none',stroke:'#fff','stroke-width':'1.5'}));
+    } else {
+      svg.appendChild(el('circle',{cx:x,cy:noteY,r:r,fill:jc[0],stroke:'#fff','stroke-width':'2'}));
+    }
+    svg.appendChild(txt(x,noteY,String(i+1),'11','bold','#fff'));
+    svg.appendChild(txt(x,noteY+r+13,name,'10','bold','#555'));
+    var freq=NOTE_FREQ_D4*Math.pow(2,(cumOff[i]||0)/12);
+    var hit=el('circle',{cx:x,cy:noteY,r:r,fill:'transparent'});
+    hit.style.cursor='pointer';
+    hit.addEventListener('click',function(){ ensureCtx(); playNote(freq,null); });
+    svg.appendChild(hit);
+  });
+
+  intervals.forEach(function(interval,i){
+    var x=Xf(i)+step/2;
+    var c=brackets[0].c;
+    brackets.forEach(function(b){ if(i>=b.x1&&i<b.x2) c=b.c; });
+    svg.appendChild(el('line',{x1:x,y1:noteY+18,x2:x,y2:noteY+26,stroke:c,'stroke-width':'1.5','stroke-dasharray':'3,2'}));
+    svg.appendChild(el('rect',{x:x-14,y:noteY+27,width:28,height:20,rx:'10',fill:c,opacity:'0.2'}));
+    svg.appendChild(el('rect',{x:x-14,y:noteY+27,width:28,height:20,rx:'10',fill:'none',stroke:c,'stroke-width':'1.5'}));
+    svg.appendChild(txt(x,noteY+37,interval,'11','bold',c));
+  });
+}
+
 </script>
 </body>
 </html>
