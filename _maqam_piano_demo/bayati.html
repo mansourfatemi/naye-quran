@@ -715,10 +715,10 @@ document.addEventListener('click', function(e){
   var X = function(i){ return startX+step*i; };
 
   // 4 کروشه در دو ردیف
-  bracket(X(0), X(3),  6, 12, c1, '\u062c\u0646\u0633 \u0628\u06cc\u0627\u062a');   // بیات 1-4 ردیف1
-  bracket(X(2), X(5), 22, 12, c2, '\u062c\u0646\u0633 \u0639\u062c\u0645');          // عجم 3-6 ردیف2
-  bracket(X(4), X(7),  6, 12, c3, '\u062c\u0646\u0633 \u06a9\u0631\u062f');          // کرد 5-8 ردیف1
-  bracket(X(3), X(7), 38, 12, c4, '\u062c\u0646\u0633 \u0646\u0647\u0627\u0648\u0646\u062f'); // نهاوند 4-8
+  bracket(X(0), X(3), 20, 12, c1, '\u062c\u0646\u0633 \u0628\u06cc\u0627\u062a');   // بیات 1-4 ردیف1
+  bracket(X(2), X(5), 38, 12, c2, '\u062c\u0646\u0633 \u0639\u062c\u0645');          // عجم 3-6 ردیف2
+  bracket(X(4), X(7), 20, 12, c3, '\u062c\u0646\u0633 \u06a9\u0631\u062f');          // کرد 5-8 ردیف1
+  bracket(X(3), X(7), 56, 12, c4, '\u062c\u0646\u0633 \u0646\u0647\u0627\u0648\u0646\u062f'); // نهاوند 4-8
 
   // خط اصلی
   svg.appendChild(el('line',{x1:X(0),y1:noteY,x2:X(N-1),y2:noteY,stroke:'#555','stroke-width':'2'}));
