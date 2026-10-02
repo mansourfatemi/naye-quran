@@ -496,6 +496,13 @@ function openComboDetail(combo){
       '<div class="diagwrap-scroll"><div class="diagwrap" id="diag-detail-hier"></div></div>'+
     '</div>'+
     '<div class="card">'+
+      '<h2>ساختار جنسهای '+combo.name+'</h2>'+
+      '<div class="sub">فواصل موسیقایی و جایگاه جنسها</div>'+
+      '<div style="overflow-x:auto;padding:4px 0;box-sizing:border-box;min-width:0;margin-top:12px">'+
+        '<svg id="svgComboJins" xmlns="http://www.w3.org/2000/svg" style="display:block;overflow:hidden;max-width:100%"></svg>'+
+      '</div>'+
+    '</div>'+
+    '<div class="card">'+
       '<h2>'+combo.name+' — از ر (D) شروع میشود</h2>'+
       '<div class="explain-box idle" id="explainBox-detail">'+
         '<div class="name" id="explainName-detail">برای شروع، پخش را بزنید</div>'+
@@ -513,6 +520,7 @@ function openComboDetail(combo){
 
   renderHierDiagram(document.getElementById('diag-detail-hier'), combo.offsets, combo.hierMain, combo.names);
   maqamControllers.detail = setupMaqamSection('detail', combo.scale);
+  renderComboJinsDiagram(combo.id);
 
   document.getElementById('detailBackBtn').onclick=closeComboDetail;
   document.getElementById('mainView').style.display='none';
