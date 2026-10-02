@@ -5918,7 +5918,7 @@ function upd(autoPlay){
 
   document.getElementById("oT").textContent="اکتاو "+f.o;
 
-  document.getElementById("oT").style.display=(curQari.id==="manshawy"||curQari.id==="hashemi"||curQari.id==="shahhat")?"none":"inline-block";
+  document.getElementById("oT").style.display=(curQari.id==="manshawy"||curQari.id==="hashemi"||curQari.id==="shahhat"||(curQari.id==="mostafa_ismail"&&cT.id===12))?"none":"inline-block";
 
   document.getElementById("dT").textContent=f.d;
 
@@ -7003,7 +7003,7 @@ function renderList(){
 
         <div class="fa">${fv?"⭐ ":""}${ha?"🎵 ":""}${f.a}</div>
 
-        <div class="fm">${f.m} | اکتاو ${f.o} | ${f.t}</div>
+        <div class="fm">${f.m}${(curQari.id==="mostafa_ismail"&&cT.id===12)?"":" | اکتاو "+f.o} | ${f.t}</div>
 
       </div>`;
 
@@ -7049,7 +7049,7 @@ function renderFavs(){
 
         <div class="fa">${f.au?"🎵 ":""}${f.a}</div>
 
-        <div class="fm">${f.m} | اکتاو ${f.o} | ${f.t}</div>
+        <div class="fm">${f.m}${(curQari.id==="mostafa_ismail"&&cT.id===12)?"":" | اکتاو "+f.o} | ${f.t}</div>
 
       </div>
 
