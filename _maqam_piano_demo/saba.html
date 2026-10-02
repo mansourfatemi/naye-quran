@@ -467,10 +467,9 @@ SABA_COMBOS.forEach(c=>{
     '<div class="combo-head">'+
       '<div class="combo-name">'+c.name+' <span style="color:#aaa;font-weight:normal;font-size:.78em">(برای جزئیات بزنید)</span></div>'+
     '</div>'+
-    '<div style="overflow-x:auto;direction:ltr;padding-top:6px"><div id="combodiag-'+c.id+'"></div></div>';
+    '';
   item.onclick=()=>openComboDetail(c);
   comboList.appendChild(item);
-  renderDiagram(item.querySelector('#combodiag-'+c.id), c.offsets, []);
 });
 
 function openComboDetail(combo){
