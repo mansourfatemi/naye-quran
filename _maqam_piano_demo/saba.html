@@ -117,7 +117,7 @@
   
   <div class="card">
     <h2>ساختار جنسهای مقام صبا</h2>
-    <div class="sub">مقام صبا از سه جنس متداخل ساخته شده است</div>
+    <div class="sub">جنس صبا (۱–۴) + جنس حجاز (۳–۶) + جنس کرد (۵–۸)</div>
     <div style="overflow-x:auto;padding:4px 0;box-sizing:border-box;min-width:0;margin-top:12px">
       <svg id="svgSabaJins" xmlns="http://www.w3.org/2000/svg" style="display:block;overflow:hidden;max-width:100%"></svg>
     </div>
@@ -576,12 +576,12 @@ document.addEventListener('click', function(e){
   if(!svg) return;
 
   // نت‌ها و فواصل مقام صبا
-  var notes     = ['ر','می‌کوک','فا','فا#','لا','سی‌بمل','دو','ر'];
+  var notes     = ['ر','می‌کوک','فا','فا#','لا','لا‌بمل','سی‌بمل','ر'];
   var intervals = ['¾','¾','½','1½','½','1','1'];
   var SEMIS = {'1':2, '½':1, '1½':3, '¾':1.5};
 
   // رنگ‌ها: صبا=سبز، حجاز=نارنجی، عجم=آبی
-  var c1='#2e7d32', c2='#e65100', c3='#1565c0';
+  var c1='#2e7d32', c2='#e65100', c3='#6a1b9a';
   var ns='http://www.w3.org/2000/svg';
   var step=52, startX=36, endPad=36, noteY=82, H=195, N=notes.length;
   var W=startX+step*(N-1)+endPad;
@@ -620,7 +620,7 @@ document.addEventListener('click', function(e){
   // کروشه‌ها
   bracket(X(0), X(3),  6, 12, c1, 'جنس صبا');    // صبا 1-4
   bracket(X(2), X(5), 22, 12, c2, 'جنس حجاز'); // حجاز 3-6
-  bracket(X(5), X(7),  6, 12, c3, 'ثلاثی عجم'); // ثلاثی عجم 6-8
+  bracket(X(4), X(7),  6, 12, c3, 'جنس کرد'); // ثلاثی عجم 6-8
 
   // خط اصلی
   svg.appendChild(el('line',{x1:X(0),y1:noteY,x2:X(N-1),y2:noteY,stroke:'#555','stroke-width':'2'}));
@@ -632,7 +632,7 @@ document.addEventListener('click', function(e){
   // نت‌ها
   notes.forEach(function(name,i){
     var x=X(i), r=16;
-    var inJ1=(i>=0&&i<=3), inJ2=(i>=2&&i<=5), inJ3=(i>=5&&i<=7);
+    var inJ1=(i>=0&&i<=3), inJ2=(i>=2&&i<=5), inJ3=(i>=4&&i<=7);
     var jins=[inJ1?c1:null, inJ2?c2:null, inJ3?c3:null].filter(Boolean);
 
     if(jins.length>=2){
@@ -659,7 +659,7 @@ document.addEventListener('click', function(e){
   // فواصل زیر نت‌ها
   intervals.forEach(function(interval,i){
     var x=X(i)+step/2;
-    var c=i<3?c1:(i<5?c2:c3);
+    var c=i<3?c1:(i<5?c2:(i>=5?c3:c2));
     svg.appendChild(el('line',{x1:x,y1:noteY+18,x2:x,y2:noteY+26,stroke:c,'stroke-width':'1.5','stroke-dasharray':'3,2'}));
     svg.appendChild(el('rect',{x:x-14,y:noteY+27,width:28,height:20,rx:'10',fill:c,opacity:'0.2'}));
     svg.appendChild(el('rect',{x:x-14,y:noteY+27,width:28,height:20,rx:'10',fill:'none',stroke:c,'stroke-width':'1.5'}));
