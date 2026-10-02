@@ -450,8 +450,8 @@ function setupMaqamSection(id, scaleArr){
 }
 
 renderHierDiagram(document.getElementById('diag-saba-hier'), SABA_OFFSETS, SABA_HIER_MAIN, SABA_NAMES);
-renderDiagram(document.getElementById('diag-saba'), SABA_OFFSETS, SABA_HIER);
-renderDegNames(document.getElementById('degnames-saba'), SABA_DEGNAMES);
+var _ds=document.getElementById('diag-saba'); if(_ds) renderDiagram(_ds, SABA_OFFSETS, SABA_HIER);
+var _dn=document.getElementById('degnames-saba'); if(_dn) renderDegNames(_dn, SABA_DEGNAMES);
 const maqamControllers = {};
 maqamControllers.saba = setupMaqamSection('saba', SABA_SCALE);
 
