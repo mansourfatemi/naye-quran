@@ -449,7 +449,7 @@ function setupMaqamSection(id, scaleArr){
   return { stopSequence };
 }
 
-renderHierDiagram(document.getElementById('diag-saba-hier'), SABA_OFFSETS, SABA_HIER_MAIN, SABA_NAMES);
+var _dsh=document.getElementById('diag-saba-hier'); if(_dsh) renderHierDiagram(_dsh, SABA_OFFSETS, SABA_HIER_MAIN, SABA_NAMES);
 var _ds=document.getElementById('diag-saba'); if(_ds) renderDiagram(_ds, SABA_OFFSETS, SABA_HIER);
 var _dn=document.getElementById('degnames-saba'); if(_dn) renderDegNames(_dn, SABA_DEGNAMES);
 const maqamControllers = {};
