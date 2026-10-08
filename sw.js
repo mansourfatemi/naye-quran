@@ -1,4 +1,4 @@
-const CACHE='mt-mq-v20261008152626';
+const CACHE='mt-mq-v20261008155122';
 
 const CORE=['./','./index.html','./manifest.json','./icon-192.png','./icon-512.png'];
 
@@ -3028,6 +3028,16 @@ const AUDIO=[
   "./qaris/mostafa_ismail/audio_t12/098.mp3",
   "./qaris/mostafa_ismail/audio_t12/099.mp3",
   "./qaris/mostafa_ismail/audio_t12/100.mp3",
+  "./qaris/mostafa_ismail/audio_t13/001.mp3",
+  "./qaris/mostafa_ismail/audio_t13/002.mp3",
+  "./qaris/mostafa_ismail/audio_t13/003.mp3",
+  "./qaris/mostafa_ismail/audio_t13/004.mp3",
+  "./qaris/mostafa_ismail/audio_t13/005.mp3",
+  "./qaris/mostafa_ismail/audio_t13/006.mp3",
+  "./qaris/mostafa_ismail/audio_t13/007.mp3",
+  "./qaris/mostafa_ismail/audio_t13/008.mp3",
+  "./qaris/mostafa_ismail/audio_t13/009.mp3",
+  "./qaris/mostafa_ismail/audio_t13/010.mp3",
   "./qaris/mostafa_ismail/audio_t1_backup_20260928/01.mp3",
   "./qaris/mostafa_ismail/audio_t1_backup_20260928/02.mp3",
   "./qaris/mostafa_ismail/audio_t1_backup_20260928/03.mp3",
