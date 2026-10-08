@@ -1,4 +1,4 @@
-const CACHE='mt-mq-v20261008123659';
+const CACHE='mt-mq-v20261008152023';
 
 const CORE=['./','./index.html','./manifest.json','./icon-192.png','./icon-512.png'];
 
@@ -3883,8 +3883,6 @@ const AUDIO=[
   "./qaris/mostafa_ismail/audio_t8/095.mp3",
   "./qaris/mostafa_ismail/audio_t8/096.mp3",
   "./qaris/mostafa_ismail/audio_t8/097.mp3",
-  "./qaris/mostafa_ismail/audio_t8/098.mp3",
-  "./qaris/mostafa_ismail/audio_t8/099.mp3",
   "./qaris/mostafa_ismail/audio_t9/001.mp3",
   "./qaris/mostafa_ismail/audio_t9/002.mp3",
   "./qaris/mostafa_ismail/audio_t9/003.mp3",
