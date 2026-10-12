@@ -4457,7 +4457,7 @@ async function cacheTilawat(qariId, tilAudioFiles, onProgress, onDone, onError){
 
     for(const au of tilAudioFiles){
 
-      const url=AUDIO_BASE+qariId+'/'+au;
+      const url=au;
 
       try{
 
@@ -4495,7 +4495,7 @@ async function uncacheTilawat(qariId, tilAudioFiles){
 
     for(const au of tilAudioFiles){
 
-      await cache.delete(AUDIO_BASE+qariId+'/'+au);
+      await cache.delete(au);
 
     }
 
@@ -4901,7 +4901,7 @@ btn.onclick=()=>{ if(typeof Android!=="undefined"&&Android.openAsset){ Android.o
 
     const dlProg=document.getElementById('dlprog_'+curQari.id+'_'+t.id);
 
-    const audioFiles=t.faraz.filter(f=>f.au).map(f=>f.au);
+    const audioFiles=t.faraz.filter(f=>f.au).map(f=>getAudioUrl(curQari,f));
 
     if(dlBtn&&audioFiles.length>0){
 
@@ -4909,7 +4909,7 @@ btn.onclick=()=>{ if(typeof Android!=="undefined"&&Android.openAsset){ Android.o
 
         const cache=await caches.open(OFFLINE_CACHE);
 
-        const firstUrl=AUDIO_BASE+curQari.id+'/'+audioFiles[0];
+        const firstUrl=audioFiles[0];
 
         const cached=await cache.match(firstUrl);
 

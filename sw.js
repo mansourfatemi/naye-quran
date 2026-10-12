@@ -1,4 +1,4 @@
-const CACHE='mt-mq-v20261009154827';
+const CACHE='mt-mq-v20261012090008';
 
 const CORE=['./','./index.html','./manifest.json','./icon-192.png','./icon-512.png'];
 
