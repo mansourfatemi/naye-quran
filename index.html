@@ -6668,12 +6668,22 @@ function tTaqlid(){
       au.play().then(()=>{pl=true;document.getElementById('pBtn').innerHTML='<span>&#9208;</span>';}).catch(()=>{});
       function checkMid(){
         if(!taqlidMode||cT!==savedT||cI!==savedI){stopTaqlid();return;}
-        if(au.currentTime>=endSec){
-          au.pause();pl=false;
-          document.getElementById('pBtn').innerHTML='<span>&#9654;</span>';
-          taqlidTimer=setTimeout(runStep,PAUSE);
+        const remaining=endSec-au.currentTime;
+        if(remaining<=0.15){
+          const origVol=au.volume;
+          let fadeVol=origVol;
+          const fadeStep=origVol/6;
+          const fadeInt=setInterval(()=>{
+            fadeVol-=fadeStep;
+            if(fadeVol<=0.01){
+              clearInterval(fadeInt);
+              au.pause();au.volume=origVol;pl=false;
+              document.getElementById('pBtn').innerHTML='<span>&#9654;</span>';
+              taqlidTimer=setTimeout(runStep,PAUSE);
+            } else {au.volume=fadeVol;}
+          },25);
         } else {
-          taqlidTimer=setTimeout(checkMid,80);
+          taqlidTimer=setTimeout(checkMid,50);
         }
       }
       taqlidTimer=setTimeout(checkMid,80);
