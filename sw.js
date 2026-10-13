@@ -1,4 +1,4 @@
-const CACHE='mt-mq-v20261012111353';
+const CACHE='mt-mq-v20261013090555';
 
 const CORE=['./','./index.html','./manifest.json','./icon-192.png','./icon-512.png'];
 
@@ -4415,11 +4415,11 @@ self.addEventListener('fetch',e=>{
 
   if(e.request.method!=='GET')return;
 
-  if(e.request.url.includes('archive.org')){
+  if(e.request.url.includes('archive.org')||e.request.url.includes('.us.archive.org')){
 
     e.respondWith(caches.open('nq-offline-v1').then(async c=>{
 
-      const hit=await c.match(e.request);
+      const hit=await c.match(e.request.url);
 
       if(hit)return hit;
 
@@ -4427,7 +4427,7 @@ self.addEventListener('fetch',e=>{
 
         const resp=await fetch(e.request);
 
-        if(resp&&resp.ok)c.put(e.request,resp.clone());
+        if(resp&&resp.ok)c.put(e.request.url,resp.clone());
 
         return resp;
 

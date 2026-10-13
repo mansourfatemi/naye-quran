@@ -4455,19 +4455,25 @@ async function cacheTilawat(qariId, tilAudioFiles, onProgress, onDone, onError){
 
     const total=tilAudioFiles.length;
 
-    for(const au of tilAudioFiles){
-
-      const url=au;
+    for(const fileUrl of tilAudioFiles){
 
       try{
 
-        const cached=await cache.match(url);
+        const cached=await cache.match(fileUrl);
 
         if(!cached){
 
-          const resp=await fetch(url,{mode:'cors'});
+          const resp=await fetch(fileUrl);
 
-          if(resp.ok) await cache.put(url,resp);
+          if(resp.ok){
+
+            const blob=await resp.blob();
+
+            const cleanResp=new Response(blob,{status:200,headers:{'Content-Type':'audio/mpeg'}});
+
+            await cache.put(new Request(fileUrl),cleanResp);
+
+          }
 
         }
 
@@ -4475,7 +4481,7 @@ async function cacheTilawat(qariId, tilAudioFiles, onProgress, onDone, onError){
 
         if(onProgress) onProgress(done,total);
 
-      }catch(e){ /* skip failed */ done++; if(onProgress) onProgress(done,total); }
+      }catch(e){ done++; if(onProgress) onProgress(done,total); }
 
     }
 
