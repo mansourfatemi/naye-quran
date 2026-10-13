@@ -6,499 +6,297 @@
 <title>راهنمای نوای قرآن</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:Tahoma,"Segoe UI",Arial,sans-serif;background:#121218;color:#e0e0e0;line-height:1.8;direction:rtl;min-height:100vh}
+body{font-family:Tahoma,"Segoe UI",Arial,sans-serif;background:#121218;color:#e0e0e0;line-height:2;direction:rtl}
 
-/* Header */
-.help-header{background:linear-gradient(135deg,#1a1a2e,#16213e);padding:20px;text-align:center;position:sticky;top:0;z-index:10;box-shadow:0 2px 12px rgba(0,0,0,.4)}
-.help-header h1{color:#c9a84c;font-size:1.4em;margin-bottom:4px}
-.help-header p{color:#999;font-size:.85em}
-.back-link{position:absolute;right:15px;top:50%;transform:translateY(-50%);color:#c9a84c;text-decoration:none;font-size:1.1em}
+.top{background:linear-gradient(135deg,#1a1a2e,#16213e);padding:24px 20px 20px;text-align:center;position:sticky;top:0;z-index:10;box-shadow:0 2px 12px rgba(0,0,0,.4)}
+.top h1{color:#c9a84c;font-size:1.3em}
+.top p{color:#aaa;font-size:.82em;margin-top:2px}
+.top a{position:absolute;right:14px;top:50%;transform:translateY(-50%);color:#c9a84c;text-decoration:none;font-size:.95em}
 
-/* Sections */
-.section{margin:16px 12px;background:#1c1c2c;border-radius:16px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,.3)}
-.section-header{background:linear-gradient(135deg,#1b5e20,#2e7d32);padding:14px 18px;display:flex;align-items:center;gap:12px;cursor:pointer}
-.section-header .icon{font-size:1.6em;width:40px;text-align:center;flex-shrink:0}
-.section-header .title{font-size:1.05em;font-weight:bold;color:#fff}
-.section-header .arrow{margin-right:auto;color:#c8e6c9;font-size:1.2em;transition:transform .3s}
-.section-header.open .arrow{transform:rotate(90deg)}
+.welcome{text-align:center;padding:28px 20px 20px;background:linear-gradient(160deg,#1a1a2e,#0d1b0d)}
+.welcome .big{font-size:2.8em;margin-bottom:6px}
+.welcome h2{color:#c9a84c;font-size:1.15em;margin-bottom:6px}
+.welcome .ayah{font-family:"Traditional Arabic",serif;font-size:1.15em;color:#f0e6c8;margin:8px 0 2px}
+.welcome .tr{color:#888;font-size:.82em;margin-bottom:14px}
+.welcome .nums{display:flex;justify-content:center;gap:14px;flex-wrap:wrap}
+.welcome .n{background:#252538;padding:8px 14px;border-radius:12px;text-align:center;min-width:65px}
+.welcome .n b{color:#c9a84c;font-size:1.3em;display:block}
+.welcome .n small{color:#777;font-size:.72em}
 
-.section-body{padding:0;max-height:0;overflow:hidden;transition:max-height .4s ease}
-.section-body.open{max-height:3000px;padding:16px 18px}
-.section-body p{color:#bbb;margin-bottom:10px;font-size:.92em}
-.section-body .tip{background:#252538;border-right:3px solid #c9a84c;padding:10px 14px;border-radius:8px;margin:10px 0;color:#ddd;font-size:.88em}
-.section-body .tip::before{content:"💡 ";font-size:1.1em}
-.section-body .step{display:flex;align-items:flex-start;gap:10px;margin:8px 0}
-.section-body .step-num{background:#c9a84c;color:#1a1a2e;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:.85em;flex-shrink:0}
-.section-body .step-text{color:#ccc;font-size:.9em}
-.section-body .btn-demo{display:inline-flex;align-items:center;gap:6px;background:#2a2a3a;border:1px solid #444;padding:4px 12px;border-radius:20px;color:#ddd;font-size:.85em;margin:3px}
-.section-body .highlight{color:#c9a84c;font-weight:bold}
-.section-body .maqam-tag{display:inline-block;background:#2e7d32;color:#c8e6c9;padding:2px 10px;border-radius:12px;font-size:.8em;margin:2px}
-.section-body ul{padding-right:20px;margin:8px 0}
-.section-body li{color:#bbb;font-size:.9em;margin:4px 0}
-.section-body .screenshot{width:100%;border-radius:10px;margin:10px 0;border:1px solid #333}
+.card{margin:14px 12px;background:#1c1c2c;border-radius:14px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.25)}
+.card-head{padding:14px 16px;display:flex;align-items:center;gap:10px;cursor:pointer;border-bottom:1px solid transparent}
+.card-head.open{border-bottom-color:#2a2a3a}
+.card-head .em{font-size:1.5em;width:36px;text-align:center;flex-shrink:0}
+.card-head .tt{font-size:.98em;font-weight:bold;color:#e8e0d0;flex:1}
+.card-head .ar{color:#666;font-size:1em;transition:transform .3s}
+.card-head.open .ar{transform:rotate(90deg)}
 
-/* Welcome */
-.welcome{text-align:center;padding:30px 20px;background:linear-gradient(160deg,#1a1a2e,#0d1b0d);margin:0;border-radius:0}
-.welcome .logo{font-size:3em;margin-bottom:10px}
-.welcome h2{color:#c9a84c;font-size:1.3em;margin-bottom:8px}
-.welcome .verse{font-family:"Traditional Arabic",serif;font-size:1.2em;color:#f0e6c8;margin:12px 0;line-height:2}
-.welcome .verse-tr{color:#999;font-size:.85em;margin-bottom:16px}
-.welcome .stats{display:flex;justify-content:center;gap:20px;flex-wrap:wrap;margin-top:16px}
-.welcome .stat{background:#252538;padding:10px 16px;border-radius:12px;text-align:center;min-width:80px}
-.welcome .stat .num{color:#c9a84c;font-size:1.4em;font-weight:bold;display:block}
-.welcome .stat .label{color:#888;font-size:.75em}
+.card-body{max-height:0;overflow:hidden;transition:max-height .4s ease;padding:0 16px}
+.card-body.open{max-height:5000px;padding:14px 16px}
 
-/* Footer */
-.help-footer{text-align:center;padding:30px 20px;color:#666;font-size:.8em}
-.help-footer a{color:#c9a84c;text-decoration:none}
+.card-body p{color:#bbb;font-size:.88em;margin-bottom:8px}
+.hl{color:#c9a84c;font-weight:bold}
+.g{color:#81c784}
 
-/* Qari cards demo */
-.qari-demo{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
-.qari-demo .qd{background:#252538;border-radius:10px;padding:8px 12px;display:flex;align-items:center;gap:8px;font-size:.85em;color:#ddd;flex:1;min-width:120px}
-.qari-demo .qd .dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.row{display:flex;align-items:flex-start;gap:10px;margin:8px 0}
+.row .num{background:#c9a84c;color:#1a1a2e;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:.82em;flex-shrink:0;margin-top:3px}
+.row .txt{color:#ccc;font-size:.88em}
+.row .txt b{color:#e8e0d0}
 
-/* Maqam colors demo */
-.maqam-demo{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
-.maqam-demo span{padding:4px 12px;border-radius:12px;font-size:.8em;color:#fff}
+.note{background:#1a2a1a;border-right:3px solid #4caf50;padding:10px 14px;border-radius:8px;margin:10px 0;font-size:.84em;color:#a5d6a7}
+.note::before{content:"💡 "}
+
+.btn-x{display:inline-flex;align-items:center;gap:4px;background:#252538;border:1px solid #3a3a4a;padding:3px 10px;border-radius:16px;font-size:.82em;color:#ddd;margin:2px}
+
+.colors{display:flex;gap:5px;flex-wrap:wrap;margin:8px 0}
+.colors span{padding:3px 11px;border-radius:10px;font-size:.78em;color:#fff}
+
+.foot{text-align:center;padding:28px 20px;color:#555;font-size:.78em}
+.foot a{color:#c9a84c;text-decoration:none}
 </style>
 </head>
 <body>
 
-<div class="help-header">
-  <a class="back-link" href="index.html">بازگشت ←</a>
+<div class="top">
+  <a href="index.html">بازگشت ←</a>
   <h1>📖 راهنمای نوای قرآن</h1>
-  <p>همه امکانات برنامه در یک نگاه</p>
+  <p>آموزش ساده استفاده از برنامه</p>
 </div>
 
-<!-- خوشآمدگویی -->
 <div class="welcome">
-  <div class="logo">🎵</div>
-  <h2>به نوای قرآن خوش آمدید</h2>
-  <div class="verse">وَرَتِّلِ الْقُرْآنَ تَرْتِيلًا</div>
-  <div class="verse-tr">و قرآن را شمرده شمرده بخوان</div>
-  <div class="stats">
-    <div class="stat"><span class="num">۴</span><span class="label">قاری</span></div>
-    <div class="stat"><span class="num">۳۵</span><span class="label">تلاوت</span></div>
-    <div class="stat"><span class="num">۲۸۰۰+</span><span class="label">فراز</span></div>
-    <div class="stat"><span class="num">۷</span><span class="label">مقام</span></div>
+  <div class="big">🎵</div>
+  <h2>نوای قرآن</h2>
+  <div class="ayah">وَرَتِّلِ الْقُرْآنَ تَرْتِيلًا</div>
+  <div class="tr">و قرآن را شمرده شمرده بخوان</div>
+  <div class="nums">
+    <div class="n"><b>۴</b><small>قاری</small></div>
+    <div class="n"><b>۳۵</b><small>تلاوت</small></div>
+    <div class="n"><b>۲۸۰۰+</b><small>فراز</small></div>
+    <div class="n"><b>۷</b><small>مقام</small></div>
   </div>
 </div>
 
-<!-- ۱. قاریها -->
-<div class="section">
-  <div class="section-header" onclick="toggleSection(this)">
-    <div class="icon">🎙️</div>
-    <div class="title">قاریها</div>
-    <div class="arrow">◂</div>
+<!-- ۱. شروع کار -->
+<div class="card">
+  <div class="card-head" onclick="tog(this)">
+    <div class="em">🏠</div>
+    <div class="tt">شروع کار با برنامه</div>
+    <div class="ar">◂</div>
   </div>
-  <div class="section-body">
-    <p>در صفحه اصلی، <span class="highlight">۴ قاری بزرگ</span> قرآن کریم را مشاهده میکنید:</p>
-    <div class="qari-demo">
-      <div class="qd"><div class="dot" style="background:#2196F3"></div>منشاوی — ۱۹ تلاوت</div>
-      <div class="qd"><div class="dot" style="background:#C41E3A"></div>مصطفی اسماعیل — ۱۲ تلاوت</div>
-      <div class="qd"><div class="dot" style="background:#4CAF50"></div>هاشمی — دروس صوت و لحن</div>
-      <div class="qd"><div class="dot" style="background:#795548"></div>شحات انور — ۳ تلاوت مقامشناسی</div>
-    </div>
-    <p>با ضربه روی هر قاری، لیست تلاوتهای او نمایش داده میشود.</p>
-    <div class="tip">هر قاری رنگ مخصوص خود را دارد — این رنگ در سراسر صفحات آن قاری نمایش داده میشود.</div>
+  <div class="card-body">
+    <p>وقتی برنامه را باز میکنید، صفحه اصلی را میبینید:</p>
+    <div class="row"><div class="num">۱</div><div class="txt"><b>یک قاری را انتخاب کنید</b> — روی عکس و نام قاری ضربه بزنید</div></div>
+    <div class="row"><div class="num">۲</div><div class="txt"><b>یک تلاوت را انتخاب کنید</b> — لیست تلاوتها نمایش داده میشود</div></div>
+    <div class="row"><div class="num">۳</div><div class="txt"><b>گوش دهید!</b> — متن عربی + ترجمه + صوت قاری پخش میشود</div></div>
+    <p>همین! به همین سادگی. 😊</p>
   </div>
 </div>
 
-<!-- ۲. تلاوتها -->
-<div class="section">
-  <div class="section-header" onclick="toggleSection(this)">
-    <div class="icon">📖</div>
-    <div class="title">تلاوتها</div>
-    <div class="arrow">◂</div>
+<!-- ۲. گوش دادن -->
+<div class="card">
+  <div class="card-head" onclick="tog(this)">
+    <div class="em">🎧</div>
+    <div class="tt">گوش دادن به تلاوت</div>
+    <div class="ar">◂</div>
   </div>
-  <div class="section-body">
-    <p>هر قاری دارای <span class="highlight">تلاوتهای مجلسی</span> است. هر تلاوت شامل آیاتی از یک یا چند سوره قرآن است که به فرازها تقسیم شدهاند.</p>
-    <p>اطلاعات هر تلاوت:</p>
-    <ul>
-      <li>📊 تعداد فرازها</li>
-      <li>⬇️ دکمه دانلود برای پخش آفلاین</li>
-      <li>🎵 شماره ستارهای فراز</li>
-    </ul>
-    <div class="tip">با ضربه روی کارت تلاوت، وارد صفحه فرازها میشوید.</div>
-  </div>
-</div>
+  <div class="card-body">
+    <p>وقتی تلاوتی را باز میکنید، هر بخش از تلاوت یک <span class="hl">«فراز»</span> نام دارد. در هر فراز میبینید:</p>
+    <div class="row"><div class="num">📜</div><div class="txt"><b>متن عربی آیه</b> — با خط قرآنی زیبا</div></div>
+    <div class="row"><div class="num">📝</div><div class="txt"><b>ترجمه فارسی</b></div></div>
+    <div class="row"><div class="num">🎵</div><div class="txt"><b>نام مقام</b> — مثلاً «بیات» یا «راست» (نوع آهنگ تلاوت)</div></div>
+    <div class="row"><div class="num">🔊</div><div class="txt"><b>صدای قاری</b> — خودکار پخش میشود</div></div>
 
-<!-- ۳. صفحه فراز (پخش) -->
-<div class="section">
-  <div class="section-header" onclick="toggleSection(this)">
-    <div class="icon">▶️</div>
-    <div class="title">پخش فراز — صفحه اصلی تلاوت</div>
-    <div class="arrow">◂</div>
-  </div>
-  <div class="section-body">
-    <p>وقتی تلاوتی را باز میکنید، <span class="highlight">صفحه فراز</span> نمایش داده میشود که شامل:</p>
-    
-    <div class="step">
-      <div class="step-num">۱</div>
-      <div class="step-text"><strong>متن عربی آیه</strong> — با خط عثمانی و شماره آیه</div>
-    </div>
-    <div class="step">
-      <div class="step-num">۲</div>
-      <div class="step-text"><strong>ترجمه فارسی</strong> — ترجمه فولادوند</div>
-    </div>
-    <div class="step">
-      <div class="step-num">۳</div>
-      <div class="step-text"><strong>نام مقام</strong> — مثلاً <span class="maqam-tag">بیات</span> <span class="maqam-tag">راست</span> <span class="maqam-tag">سهگاه</span></div>
-    </div>
-    <div class="step">
-      <div class="step-num">۴</div>
-      <div class="step-text"><strong>جزئیات فنی</strong> — توضیح درجات مقامی، نغمات فرعی و تکنیکهای اجرا</div>
-    </div>
-    <div class="step">
-      <div class="step-num">۵</div>
-      <div class="step-text"><strong>نوار پخش</strong> — با seekbar قابل کشیدن + نمایش زمان</div>
-    </div>
-
-    <p style="margin-top:14px"><strong>دکمههای کنترل:</strong></p>
+    <p style="margin-top:10px">دکمههای پخش:</p>
     <div>
-      <span class="btn-demo">⏮ فراز قبلی</span>
-      <span class="btn-demo">▶️ پخش / ⏸ توقف</span>
-      <span class="btn-demo">⏭ فراز بعدی</span>
+      <span class="btn-x">⏮ قبلی</span>
+      <span class="btn-x">▶️ پخش</span>
+      <span class="btn-x">⏭ بعدی</span>
     </div>
-    
-    <div class="tip">با کشیدن انگشت روی seekbar میتوانید به هر نقطه از فراز بروید.</div>
+    <div class="note">نوار زمان را با انگشت بکشید تا به هر جای فراز بروید.</div>
   </div>
 </div>
 
-<!-- ۴. دکمههای ویژه -->
-<div class="section">
-  <div class="section-header" onclick="toggleSection(this)">
-    <div class="icon">🎛️</div>
-    <div class="title">دکمههای ویژه پخش</div>
-    <div class="arrow">◂</div>
+<!-- ۳. دکمهها -->
+<div class="card">
+  <div class="card-head" onclick="tog(this)">
+    <div class="em">🎛️</div>
+    <div class="tt">دکمههای کاربردی</div>
+    <div class="ar">◂</div>
   </div>
-  <div class="section-body">
-    <div class="step">
-      <div class="step-num">⭐</div>
-      <div class="step-text"><strong>علاقهمندی</strong> — فراز را به لیست علاقهمندیها اضافه کنید. از تب «علاقهمندی» قابل دسترسی است.</div>
-    </div>
-    <div class="step">
-      <div class="step-num">🔄</div>
-      <div class="step-text"><strong>تکرار</strong> — فراز فعلی را به صورت مکرر پخش کنید. عالی برای حفظ و تمرین.</div>
-    </div>
-    <div class="step">
-      <div class="step-num">🎯</div>
-      <div class="step-text"><strong>حالت تقلید</strong> — ۱۶ مرحله تمرینی: ابتدا کند (0.75x)، سپس سهبخشی (اول، وسط، آخر)، و در پایان تکرار کامل. بهترین روش یادگیری تلاوت!</div>
-    </div>
-    <div class="step">
-      <div class="step-num">🎤</div>
-      <div class="step-text"><strong>حالت تمرین</strong> — صدای خود را ضبط کنید و با قاری مقایسه کنید. دو اسلایدر جداگانه برای تنظیم صدای قاری و صدای خودتان.</div>
-    </div>
-    <div class="step">
-      <div class="step-num">🐌</div>
-      <div class="step-text"><strong>سرعت پخش</strong> — سه سرعت: 1x (عادی) → 0.75x (کند) → 0.5x (خیلی کند). برای فرازهای سریع و پیچیده بسیار مفید.</div>
-    </div>
-    <div class="step">
-      <div class="step-num">📤</div>
-      <div class="step-text"><strong>اشتراکگذاری</strong> — فراز را با دوستان به اشتراک بگذارید (متن + صوت).</div>
-    </div>
-    <div class="step">
-      <div class="step-num">🎧</div>
-      <div class="step-text"><strong>افزودن به ردیف صوتی</strong> — فراز را به پلیلیست شخصی اضافه کنید.</div>
-    </div>
+  <div class="card-body">
+    <p>زیر هر فراز چند دکمه مفید وجود دارد:</p>
+
+    <div class="row"><div class="num">⭐</div><div class="txt"><b>علاقهمندی</b><br>فراز را نشانهگذاری کنید تا بعداً راحت پیدا کنید</div></div>
+
+    <div class="row"><div class="num">🔄</div><div class="txt"><b>تکرار</b><br>همین فراز را پشت سر هم تکرار کنید — مناسب برای حفظ کردن</div></div>
+
+    <div class="row"><div class="num">🎯</div><div class="txt"><b>تمرین تقلید</b><br>برنامه فراز را به ۳ بخش تقسیم میکند و هر بخش را چند بار پخش میکند تا یاد بگیرید. <span class="g">بهترین روش یادگیری!</span></div></div>
+
+    <div class="row"><div class="num">🎤</div><div class="txt"><b>ضبط صدا</b><br>صدای خودتان را ضبط کنید و با قاری مقایسه کنید. دو اسلایدر برای تنظیم صدای قاری و صدای خودتان</div></div>
+
+    <div class="row"><div class="num">🐌</div><div class="txt"><b>سرعت پخش</b><br>قاری تند میخواند؟ سرعت را کم کنید: عادی → کند → خیلی کند</div></div>
+
+    <div class="row"><div class="num">📤</div><div class="txt"><b>اشتراکگذاری</b><br>فراز را برای دوستان بفرستید</div></div>
+
+    <div class="row"><div class="num">🎧</div><div class="txt"><b>افزودن به ردیف صوتی</b><br>فرازهای دلخواه را در یک لیست جمع کنید (مثل پلیلیست موسیقی)</div></div>
   </div>
 </div>
 
-<!-- ۵. تبهای صفحه تلاوت -->
-<div class="section">
-  <div class="section-header" onclick="toggleSection(this)">
-    <div class="icon">📋</div>
-    <div class="title">تبهای صفحه تلاوت</div>
-    <div class="arrow">◂</div>
+<!-- ۴. سه تب -->
+<div class="card">
+  <div class="card-head" onclick="tog(this)">
+    <div class="em">📋</div>
+    <div class="tt">سه تب در پایین صفحه</div>
+    <div class="ar">◂</div>
   </div>
-  <div class="section-body">
-    <p>در پایین صفحه تلاوت، <span class="highlight">سه تب</span> وجود دارد:</p>
-    
-    <div class="step">
-      <div class="step-num">📋</div>
-      <div class="step-text"><strong>لیست</strong> — مرور سریع همه فرازها با متن عربی کوتاه. با ضربه روی هر فراز، مستقیماً به آن بروید.</div>
-    </div>
-    <div class="step">
-      <div class="step-num">⭐</div>
-      <div class="step-text"><strong>علاقهمندی</strong> — فرازهایی که ستاره زدهاید اینجا جمع میشوند.</div>
-    </div>
-    <div class="step">
-      <div class="step-num">📊</div>
-      <div class="step-text"><strong>آمار</strong> — نمودار توزیع مقامات در این تلاوت. ببینید قاری از کدام مقام بیشتر استفاده کرده!</div>
-    </div>
+  <div class="card-body">
+    <p>وقتی داخل یک تلاوت هستید، در پایین صفحه سه تب میبینید:</p>
+
+    <div class="row"><div class="num">📋</div><div class="txt"><b>لیست</b><br>همه فرازها را ببینید. روی هر کدام بزنید تا مستقیماً برود</div></div>
+
+    <div class="row"><div class="num">⭐</div><div class="txt"><b>علاقهمندی</b><br>فرازهایی که ⭐ زدهاید اینجا جمع میشوند</div></div>
+
+    <div class="row"><div class="num">📊</div><div class="txt"><b>آمار</b><br>ببینید قاری از کدام مقامها بیشتر استفاده کرده</div></div>
   </div>
 </div>
 
-<!-- ۶. دانلود آفلاین -->
-<div class="section">
-  <div class="section-header" onclick="toggleSection(this)">
-    <div class="icon">⬇️</div>
-    <div class="title">دانلود و پخش آفلاین</div>
-    <div class="arrow">◂</div>
+<!-- ۵. دانلود آفلاین -->
+<div class="card">
+  <div class="card-head" onclick="tog(this)">
+    <div class="em">⬇️</div>
+    <div class="tt">دانلود — گوش دادن بدون اینترنت</div>
+    <div class="ar">◂</div>
   </div>
-  <div class="section-body">
-    <p>برای گوش دادن <span class="highlight">بدون اینترنت</span>:</p>
-    <div class="step">
-      <div class="step-num">۱</div>
-      <div class="step-text">در لیست تلاوتها، دکمه <span class="btn-demo">⬇️</span> را بزنید</div>
-    </div>
-    <div class="step">
-      <div class="step-num">۲</div>
-      <div class="step-text">صبر کنید تا شمارنده «۱/۵۰ ... ۵۰/۵۰» تمام شود</div>
-    </div>
-    <div class="step">
-      <div class="step-num">۳</div>
-      <div class="step-text">دکمه به ✅ تبدیل میشود — حالا میتوانید اینترنت را قطع کنید!</div>
-    </div>
-    <div class="tip">برای حذف از حافظه، روی ✅ بزنید و «حذف از حافظه» را تأیید کنید.</div>
-    <div class="tip">فایلهای صوتی از archive.org استریم میشوند. اولین پخش هر فراز نیاز به اینترنت دارد، ولی بعد از دانلود به صورت آفلاین پخش میشود.</div>
+  <div class="card-body">
+    <p>میخواهید بدون اینترنت گوش دهید؟</p>
+    <div class="row"><div class="num">۱</div><div class="txt">در لیست تلاوتها، دکمه <span class="btn-x">⬇️</span> کنار تلاوت را بزنید</div></div>
+    <div class="row"><div class="num">۲</div><div class="txt">صبر کنید تا دانلود تمام شود (شمارنده نشان میدهد)</div></div>
+    <div class="row"><div class="num">۳</div><div class="txt">وقتی ✅ شد، اینترنت را قطع کنید و گوش دهید!</div></div>
+    <div class="note">برای حذف از حافظه گوشی، روی ✅ بزنید.</div>
+  </div>
+</div>
+
+<!-- ۶. حالت شب -->
+<div class="card">
+  <div class="card-head" onclick="tog(this)">
+    <div class="em">🌙</div>
+    <div class="tt">حالت شب</div>
+    <div class="ar">◂</div>
+  </div>
+  <div class="card-body">
+    <p>در شب چشمتان اذیت میشود؟</p>
+    <div class="row"><div class="num">🌙</div><div class="txt">دکمه <span class="hl">🌙</span> در بالای صفحه را بزنید → صفحه تاریک میشود</div></div>
+    <div class="row"><div class="num">☀️</div><div class="txt">دوباره بزنید → صفحه روشن میشود</div></div>
+    <p>برنامه انتخاب شما را به خاطر میسپارد.</p>
   </div>
 </div>
 
 <!-- ۷. مقامات -->
-<div class="section">
-  <div class="section-header" onclick="toggleSection(this)">
-    <div class="icon">🎵</div>
-    <div class="title">مقامات قرآنی — ۷ مقام اصلی</div>
-    <div class="arrow">◂</div>
+<div class="card">
+  <div class="card-head" onclick="tog(this)">
+    <div class="em">🎵</div>
+    <div class="tt">مقام چیست؟</div>
+    <div class="ar">◂</div>
   </div>
-  <div class="section-body">
-    <p>در تلاوت قرآن، <span class="highlight">۷ مقام اصلی</span> وجود دارد. هر مقام فضای صوتی و حالت روحی متفاوتی ایجاد میکند:</p>
-    <div class="maqam-demo">
-      <span style="background:#4CAF50">بیات</span>
-      <span style="background:#2196F3">راست</span>
-      <span style="background:#FF9800">نهاوند</span>
-      <span style="background:#9C27B0">سهگاه</span>
-      <span style="background:#E91E63">حجاز</span>
-      <span style="background:#00BCD4">صبا</span>
-      <span style="background:#3F51B5">عجم</span>
+  <div class="card-body">
+    <p>وقتی قاری قرآن میخواند، از <span class="hl">آهنگهای مختلفی</span> استفاده میکند. به هر کدام از این آهنگها یک <span class="hl">«مقام»</span> میگویند.</p>
+
+    <p>۷ مقام اصلی:</p>
+    <div class="colors">
+      <span style="background:#4CAF50">بیات — ملایم و آرام</span>
+      <span style="background:#2196F3">راست — شاد و روشن</span>
+      <span style="background:#FF9800">نهاوند — غمگین و عاطفی</span>
+      <span style="background:#9C27B0">سهگاه — معنوی و عمیق</span>
+      <span style="background:#E91E63">حجاز — حزین و تأثیرگذار</span>
+      <span style="background:#00BCD4">صبا — سوزناک و دلنشین</span>
+      <span style="background:#3F51B5">عجم — باشکوه و قوی</span>
     </div>
-    <p>در نوای قرآن، هر فراز با <span class="highlight">رنگ مقام</span> مشخص شده و جزئیات فنی اجرای مقام (درجات، نغمات فرعی، تکنیکها) توضیح داده شده است.</p>
-    
-    <p style="margin-top:12px"><strong>اصطلاحات رایج:</strong></p>
-    <ul>
-      <li><strong>جنس</strong> — ۴ نت اول یک مقام (tetrachord)</li>
-      <li><strong>عقد</strong> — ۵ نت اول (pentachord)</li>
-      <li><strong>ثلاثی</strong> — ۳ نت اول (trichord)</li>
-      <li><strong>غماز</strong> — درجه پنجم مقام (نقطه اوج)</li>
-      <li><strong>قرار</strong> — پایینترین درجه صوت</li>
-      <li><strong>جواب</strong> — بالاترین درجه (اوج)</li>
-      <li><strong>فرود</strong> — حرکت نزولی به سمت قرار</li>
-      <li><strong>صعود</strong> — حرکت صعودی به سمت جواب</li>
-      <li><strong>قفله</strong> — توقف موقت روی یک نت (نیمبند)</li>
-      <li><strong>تحریر</strong> — لرزش و زینت صدا</li>
-    </ul>
+
+    <p>در نوای قرآن، هر فراز با <span class="hl">رنگ مقام</span> آن مشخص شده. به مرور با گوش دادن، تفاوت مقامها را حس خواهید کرد! 🎶</p>
+
+    <div class="note">نیازی نیست از اول همه مقامها را بشناسید. فقط گوش دهید و لذت ببرید — شناخت با تکرار میآید.</div>
   </div>
 </div>
 
 <!-- ۸. آموزش مقامات -->
-<div class="section">
-  <div class="section-header" onclick="toggleSection(this)">
-    <div class="icon">🎓</div>
-    <div class="title">آموزش مقامات</div>
-    <div class="arrow">◂</div>
+<div class="card">
+  <div class="card-head" onclick="tog(this)">
+    <div class="em">🎓</div>
+    <div class="tt">میخواهم مقامات را یاد بگیرم</div>
+    <div class="ar">◂</div>
   </div>
-  <div class="section-body">
-    <p>در صفحه اصلی، بخش <span class="highlight">«آموزش مقامات»</span> شامل:</p>
-    <ul>
-      <li>🎤 <strong>کلیپهای شحات انور</strong> — ۹۰ قطعه کوتاه به تفکیک ۷ مقام با توضیح قرار/جواب/جوابجواب</li>
-      <li>📊 <strong>نمودارهای تعاملی</strong> — پیانوی مقامی برای هر مقام با نمایش درجات و فواصل</li>
-      <li>🔊 <strong>پیشنمایش صوتی</strong> — شنیدن صدای هر مقام</li>
-    </ul>
-    <div class="tip">تلاوتهای مقامشناسی شحات انور (سوره انسان، انعام، نجموقمر) هر فراز را با تحلیل دقیق مقامی نشان میدهند — بهترین منبع یادگیری عملی مقامات!</div>
+  <div class="card-body">
+    <p>در صفحه اصلی، پایین لیست قاریها:</p>
+    <div class="row"><div class="num">🎵</div><div class="txt"><b>آموزش مقامات</b><br>۹۰ قطعه صوتی کوتاه از استاد شحات انور — هر مقام جداگانه با توضیح فارسی</div></div>
+    <div class="row"><div class="num">🎹</div><div class="txt"><b>پیانوی مقامی</b><br>هر مقام را روی پیانو ببینید و بشنوید — درجات و فواصل صوتی</div></div>
+
+    <p style="margin-top:10px">همچنین تلاوتهای <span class="hl">شحات محمد انور</span> (سوره انسان، انعام، نجموقمر) هر فراز را با <b>تحلیل مقامی</b> نشان میدهند — یعنی توضیح میدهند قاری در هر لحظه از کدام مقام استفاده میکند.</p>
+
+    <div class="note">این تلاوتها بهترین منبع یادگیری عملی هستند. ابتدا فراز را گوش دهید، سپس توضیح مقامی را بخوانید.</div>
   </div>
 </div>
 
 <!-- ۹. آموزش تجوید -->
-<div class="section">
-  <div class="section-header" onclick="toggleSection(this)">
-    <div class="icon">📚</div>
-    <div class="title">آموزش تجوید</div>
-    <div class="arrow">◂</div>
+<div class="card">
+  <div class="card-head" onclick="tog(this)">
+    <div class="em">📚</div>
+    <div class="tt">آموزش تجوید</div>
+    <div class="ar">◂</div>
   </div>
-  <div class="section-body">
-    <p>بخش <span class="highlight">«آموزش تجوید»</span> شامل دو قسمت:</p>
-    <div class="step">
-      <div class="step-num">🔊</div>
-      <div class="step-text"><strong>دروس صوتی تجوید</strong> — ۵۵ درس صوتی با پخشکننده داخلی</div>
-    </div>
-    <div class="step">
-      <div class="step-num">📖</div>
-      <div class="step-text"><strong>کتاب حلیة القرآن</strong> — ۱۶ فصل از کتاب تجوید سطح ۲ با متن کامل و خلاصه هوشمند</div>
-    </div>
+  <div class="card-body">
+    <p>در صفحه اصلی، بخش <span class="hl">«آموزش تجوید»</span>:</p>
+    <div class="row"><div class="num">🔊</div><div class="txt"><b>۵۵ درس صوتی</b><br>دروس تجوید با پخشکننده داخلی — از مبتدی تا پیشرفته</div></div>
+    <div class="row"><div class="num">📖</div><div class="txt"><b>کتاب حلیة القرآن</b><br>۱۶ فصل با متن کامل — قواعد تجوید به زبان ساده</div></div>
   </div>
 </div>
 
-<!-- ۱۰. ردیف صوتی (پلیلیست) -->
-<div class="section">
-  <div class="section-header" onclick="toggleSection(this)">
-    <div class="icon">🎧</div>
-    <div class="title">ردیفهای صوتی من (پلیلیست)</div>
-    <div class="arrow">◂</div>
+<!-- ۱۰. ردیف صوتی -->
+<div class="card">
+  <div class="card-head" onclick="tog(this)">
+    <div class="em">🎧</div>
+    <div class="tt">ردیف صوتی من (پلیلیست شخصی)</div>
+    <div class="ar">◂</div>
   </div>
-  <div class="section-body">
-    <p>میتوانید فرازهای دلخواه را از تلاوتهای مختلف در <span class="highlight">ردیفهای صوتی شخصی</span> جمع کنید:</p>
-    <div class="step">
-      <div class="step-num">۱</div>
-      <div class="step-text">در صفحه فراز، دکمه <span class="btn-demo">🎧</span> را بزنید</div>
-    </div>
-    <div class="step">
-      <div class="step-num">۲</div>
-      <div class="step-text">یک ردیف انتخاب کنید یا ردیف جدید بسازید</div>
-    </div>
-    <div class="step">
-      <div class="step-num">۳</div>
-      <div class="step-text">از صفحه اصلی → «ردیفهای صوتی من» → پخش متوالی</div>
-    </div>
-    <div class="tip">مثلاً یک ردیف «فرازهای بیات» بسازید و همه فرازهای بیات از قاریان مختلف را جمع کنید — عالی برای تمرین یک مقام خاص!</div>
+  <div class="card-body">
+    <p>فرازهای مورد علاقه را از تلاوتهای مختلف جمع کنید:</p>
+    <div class="row"><div class="num">۱</div><div class="txt">در هر فراز، دکمه <span class="btn-x">🎧</span> را بزنید</div></div>
+    <div class="row"><div class="num">۲</div><div class="txt">یک ردیف انتخاب کنید یا جدید بسازید</div></div>
+    <div class="row"><div class="num">۳</div><div class="txt">از صفحه اصلی → «ردیفهای صوتی من» → پخش پشت سر هم</div></div>
+    <div class="note">مثلاً یک ردیف «تمرین بیات» بسازید و فرازهای بیات از قاریان مختلف را جمع کنید!</div>
   </div>
 </div>
 
-<!-- ۱۱. حالت شب -->
-<div class="section">
-  <div class="section-header" onclick="toggleSection(this)">
-    <div class="icon">🌙</div>
-    <div class="title">حالت شب (Dark Mode)</div>
-    <div class="arrow">◂</div>
+<!-- ۱۱. نکات -->
+<div class="card">
+  <div class="card-head" onclick="tog(this)">
+    <div class="em">💡</div>
+    <div class="tt">نکات مفید</div>
+    <div class="ar">◂</div>
   </div>
-  <div class="section-body">
-    <p>دکمه <span class="btn-demo">🌙</span> در <span class="highlight">گوشه بالا-راست</span> هدر:</p>
-    <ul>
-      <li>🌙 → حالت تاریک فعال شود (مناسب شب)</li>
-      <li>☀️ → حالت روشن بازگردد</li>
-    </ul>
-    <p>انتخاب شما ذخیره میشود و دفعه بعد خودکار اعمال میشود.</p>
-    <div class="tip">اگر گوشی شما حالت تاریک سیستم فعال باشد، اپ خودکار در حالت شب باز میشود.</div>
-  </div>
-</div>
-
-<!-- ۱۲. حالت تمرین -->
-<div class="section">
-  <div class="section-header" onclick="toggleSection(this)">
-    <div class="icon">🎤</div>
-    <div class="title">حالت تمرین — ضبط و مقایسه</div>
-    <div class="arrow">◂</div>
-  </div>
-  <div class="section-body">
-    <p>با دکمه <span class="btn-demo">🎤</span> پنل تمرین باز میشود:</p>
-    <div class="step">
-      <div class="step-num">۱</div>
-      <div class="step-text">قاری فراز را پخش میکند</div>
-    </div>
-    <div class="step">
-      <div class="step-num">۲</div>
-      <div class="step-text">دکمه ضبط 🔴 را بزنید و همراه تکرار کنید</div>
-    </div>
-    <div class="step">
-      <div class="step-num">۳</div>
-      <div class="step-text">صدای ضبط شده را بشنوید و با قاری مقایسه کنید</div>
-    </div>
-    <p style="margin-top:10px"><strong>تنظیم صدا:</strong></p>
-    <ul>
-      <li>🔊 <strong>صدای قاری</strong> — اسلایدر جداگانه برای کم/زیاد کردن</li>
-      <li>🎙️ <strong>صدای من</strong> — اسلایدر جداگانه با تقویت تا ۳ برابر</li>
-    </ul>
-    <div class="tip">حالت تمرین فقط در همان فراز فعال است — با رفتن به فراز بعدی، تنظیمات حفظ میشوند.</div>
+  <div class="card-body">
+    <div class="note">اگر اینترنت ضعیف است، تلاوت را دانلود ⬇️ کنید تا بدون قطعی گوش دهید</div>
+    <div class="note">برای نصب روی گوشی: در مرورگر «Add to Home Screen» را بزنید</div>
+    <div class="note">حالت تقلید 🎯 بهترین روش یادگیری فراز جدید است — حتماً امتحان کنید!</div>
+    <div class="note">در تب «آمار» 📊 میتوانید ببینید هر قاری چقدر از هر مقام استفاده کرده</div>
+    <div class="note">اگر قاری خیلی تند میخواند، دکمه سرعت 🐌 را بزنید تا کندتر شود</div>
+    <div class="note">بخش «درباره سازنده» در پایین صفحه اصلی → منابع و اطلاعات بیشتر</div>
   </div>
 </div>
 
-<!-- ۱۳. حالت تقلید -->
-<div class="section">
-  <div class="section-header" onclick="toggleSection(this)">
-    <div class="icon">🎯</div>
-    <div class="title">حالت تقلید — ۱۶ مرحله یادگیری</div>
-    <div class="arrow">◂</div>
-  </div>
-  <div class="section-body">
-    <p>بهترین روش یادگیری تلاوت! دکمه <span class="btn-demo">🎯</span> یک دوره <span class="highlight">۱۶ مرحلهای</span> خودکار اجرا میکند:</p>
-    <div class="step">
-      <div class="step-num">۱</div>
-      <div class="step-text">پخش کامل با سرعت 0.75x (کند — برای شنیدن دقیق)</div>
-    </div>
-    <div class="step">
-      <div class="step-num">۲-۳</div>
-      <div class="step-text">پخش کامل × ۲ بار (سرعت عادی)</div>
-    </div>
-    <div class="step">
-      <div class="step-num">۴-۶</div>
-      <div class="step-text">بخش اول فراز × ۳ بار</div>
-    </div>
-    <div class="step">
-      <div class="step-num">۷-۹</div>
-      <div class="step-text">بخش وسط فراز × ۳ بار</div>
-    </div>
-    <div class="step">
-      <div class="step-num">۱۰-۱۲</div>
-      <div class="step-text">بخش آخر فراز × ۳ بار</div>
-    </div>
-    <div class="step">
-      <div class="step-num">۱۳-۱۶</div>
-      <div class="step-text">پخش کامل × ۴ بار (تثبیت نهایی)</div>
-    </div>
-    <div class="tip">در هر مرحله ۵۰۰ میلیثانیه مکث خودکار هست تا فرصت تکرار داشته باشید. دکمه 🎯 را دوباره بزنید برای توقف.</div>
-  </div>
-</div>
-
-<!-- ۱۴. اتصال اینترنت -->
-<div class="section">
-  <div class="section-header" onclick="toggleSection(this)">
-    <div class="icon">📶</div>
-    <div class="title">اتصال اینترنت و بافرینگ</div>
-    <div class="arrow">◂</div>
-  </div>
-  <div class="section-body">
-    <p>صوت فرازها از سرور <span class="highlight">archive.org</span> استریم میشود:</p>
-    <ul>
-      <li>⏳ اگر اینترنت ضعیف باشد، پیام «در حال بارگذاری» نمایش داده میشود</li>
-      <li>🔄 سیستم خودکار ۳ بار تلاش مجدد میکند</li>
-      <li>📥 فراز بعدی پیش از پخش در پسزمینه بارگذاری میشود</li>
-    </ul>
-    <div class="tip">برای بهترین تجربه، تلاوتهای مورد علاقه را با ⬇️ دانلود کنید تا بدون وابستگی به اینترنت گوش دهید.</div>
-  </div>
-</div>
-
-<!-- ۱۵. درباره سازنده -->
-<div class="section">
-  <div class="section-header" onclick="toggleSection(this)">
-    <div class="icon">👨💻</div>
-    <div class="title">درباره نوای قرآن</div>
-    <div class="arrow">◂</div>
-  </div>
-  <div class="section-body">
-    <p><span class="highlight">نوای قرآن</span> یک برنامه رایگان آموزش تلاوت قرآن با تمرکز بر مقامات و الحان قرآنی است.</p>
-    <p>هدف: کمک به علاقهمندان تلاوت قرآن برای یادگیری مقامات از طریق شنیدن و تحلیل فرازهای بزرگان تلاوت.</p>
-    <ul>
-      <li>💰 کاملاً رایگان و بدون تبلیغات</li>
-      <li>🌐 قابل نصب روی Android و iPhone</li>
-      <li>📱 به صورت PWA (Progressive Web App) طراحی شده</li>
-      <li>💾 قابلیت استفاده آفلاین</li>
-    </ul>
-    <p style="margin-top:10px">لینک دسترسی در «درباره سازنده» در پایین صفحه اصلی.</p>
-  </div>
-</div>
-
-<div class="help-footer">
-  <p>🎵 نوای قرآن — وَرَتِّلِ الْقُرْآنَ تَرْتِيلًا</p>
-  <p style="margin-top:8px"><a href="index.html">بازگشت به برنامه</a></p>
+<div class="foot">
+  <p>🎵 نوای قرآن</p>
+  <p>وَرَتِّلِ الْقُرْآنَ تَرْتِيلًا</p>
+  <p style="margin-top:10px"><a href="index.html">بازگشت به برنامه ←</a></p>
 </div>
 
 <script>
-function toggleSection(header){
-  const body = header.nextElementSibling;
-  const isOpen = body.classList.contains('open');
-  // Close all
-  document.querySelectorAll('.section-body').forEach(b=>b.classList.remove('open'));
-  document.querySelectorAll('.section-header').forEach(h=>h.classList.remove('open'));
-  // Open clicked (if was closed)
-  if(!isOpen){
-    body.classList.add('open');
-    header.classList.add('open');
-    // Scroll into view
-    setTimeout(()=>header.scrollIntoView({behavior:'smooth',block:'start'}),100);
-  }
+function tog(h){
+  var b=h.nextElementSibling, o=b.classList.contains('open');
+  document.querySelectorAll('.card-body').forEach(function(x){x.classList.remove('open')});
+  document.querySelectorAll('.card-head').forEach(function(x){x.classList.remove('open')});
+  if(!o){b.classList.add('open');h.classList.add('open');setTimeout(function(){h.scrollIntoView({behavior:'smooth',block:'start'})},100)}
 }
-// Open first section by default
-document.querySelector('.section-header').click();
+document.querySelector('.card-head').click();
 </script>
 </body>
 </html>
