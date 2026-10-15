@@ -9424,12 +9424,12 @@ function openOnlineLessonsList(){
   document.getElementById("hTitle").textContent="🎧 دروس آنلاین";
   document.getElementById("hSub").textContent="اختصاصی سید منصور فاطمی — "+ONLINE_LESSONS.length+" جلسه";
   document.querySelector(".header").style.background="linear-gradient(135deg,#795548,#8D6E63)";
-  const el=document.getElementById("onlineLessonsCards"); el.innerHTML="";
+  const el=document.getElementById("onlineLessonsCards"); el.innerHTML=""; console.log("onlineLessonsCards el:",el,"ONLINE_LESSONS:",ONLINE_LESSONS.length);
   ONLINE_LESSONS.forEach((les,idx)=>{
     const c=document.createElement("div"); c.className="til-card"; c.style.cssText="margin:10px 6px";
     const badgeNum=['۱','۲','۳','۴','۵','۶','۷','۸','۹','۱۰'][idx]||String(idx+1);
     c.innerHTML='<div class="til-num" style="background:#795548">'+badgeNum+'</div><div class="til-info"><div class="til-name">'+les.name+'</div><div style="font-size:.75em;color:#999">'+les.date+' — '+les.phrases.length+' فراز</div></div>';
-    c.onclick=()=>openOnlineLesson(idx);
+    c.onclick=()=>openOnlineLesson(idx); console.log("Card created:",c.innerHTML.substring(0,50));
     el.appendChild(c);
   });
 }
