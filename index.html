@@ -9464,9 +9464,10 @@ function openOnlineLesson(idx){
   curTilawat = virtualTilawat;
   cameFromOnlineLesson = true;
   onlineLessonSavedQari = savedQari;
-  // Hide online pages, show tilawat detail
+  // Hide online pages, show tilawat via existing player
   document.getElementById("onlineLessonsListPage").style.display="none";
-  openTilawatDetail(virtualTilawat);
+  document.getElementById("tilawatListPage").style.display="none";
+  openTilawat(0);
 }
 var cameFromOnlineLesson = false;
 var onlineLessonSavedQari = null;
@@ -9492,9 +9493,10 @@ goBack=function(){
 
   }
 
-  // goBack: from tilawat detail back to online lessons list (if came from online)
-  if(cameFromOnlineLesson && document.getElementById("tilawatDetailPage") && document.getElementById("tilawatDetailPage").style.display==="block"){
-    document.getElementById("tilawatDetailPage").style.display="none";
+  // goBack: from player back to online lessons list (if came from online)
+  if(cameFromOnlineLesson && document.getElementById("playerPage") && document.getElementById("playerPage").style.display==="block"){
+    document.getElementById("playerPage").style.display="none";
+    au.pause();
     cameFromOnlineLesson=false;
     if(onlineLessonSavedQari) curQari=onlineLessonSavedQari;
     openOnlineLessonsList();
