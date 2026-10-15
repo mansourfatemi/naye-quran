@@ -1347,6 +1347,27 @@ body:not(.dark-mode) .dm-toggle{color:#555}
 
 
 
+<!-- صفحه قفل دروس آنلاین -->
+<div id="onlineLockPage" style="display:none;padding:16px;text-align:center">
+  <div style="margin:40px auto;max-width:300px">
+    <div style="font-size:3em;margin-bottom:16px">🔒</div>
+    <div style="font-size:1.1em;font-weight:bold;color:#795548;margin-bottom:20px">این بخش اختصاصی است</div>
+    <input type="password" id="onlinePwdInput" placeholder="رمز عبور" style="width:100%;padding:12px;font-size:1.1em;border:2px solid #795548;border-radius:8px;text-align:center;margin-bottom:12px" onkeydown="if(event.key==='Enter')checkOnlinePwd()">
+    <div id="onlinePwdErr" style="display:none;color:#c62828;font-size:.85em;margin-bottom:10px">رمز عبور اشتباه است</div>
+    <button onclick="checkOnlinePwd()" style="width:100%;padding:12px;background:#795548;color:#fff;border:none;border-radius:8px;font-size:1em;cursor:pointer;font-family:inherit">ورود</button>
+  </div>
+</div>
+
+<!-- صفحه لیست دروس آنلاین -->
+<div id="onlineLessonsListPage" style="display:none;padding:16px">
+  <div id="onlineLessonsCards"></div>
+</div>
+
+<!-- صفحه جزئیات درس آنلاین (فرازها) -->
+<div id="onlineLessonDetailPage" style="display:none;padding:16px">
+  <div id="onlineLessonPhrases"></div>
+</div>
+
 <!-- صفحه دروس صوت و لحن استاد هاشمی -->
 
 <div id="hashemiLessonsPage" style="display:none;padding:16px">
@@ -5017,6 +5038,14 @@ function renderTilawatList(){
 lBtn.onclick=()=>openHashemiLessons();
 
     el.appendChild(lBtn);
+
+    // --- دروس آنلاین (password protected) ---
+    const olBtn=document.createElement("div");
+    olBtn.className="til-card";
+    olBtn.style.cssText="margin:10px 6px";
+    olBtn.innerHTML='<div class="til-num" style="background:#795548">🔒</div>'+'<div class="til-info"><div class="til-name">دروس آنلاین اختصاصی</div><div style='font-size:.75em;color:#999'>صفحه اختصاصی سید منصور فاطمی</div></div>';
+    olBtn.onclick=()=>showOnlineLockScreen();
+    el.appendChild(olBtn);
 
     const secLbl=document.createElement("div");
 
@@ -9336,6 +9365,99 @@ goBack=function(){
 
 };
 
+
+// ═══ دروس آنلاین اختصاصی ═══
+const ONLINE_LESSONS_PWD = "abcd1234m";
+let onlineLessonsUnlocked = false;
+
+const ONLINE_LESSONS = [
+  {id:"anfal_nas", name:"سوره انفال ۱-۶ و سوره ناس", date:"۱۴ اکتبر ۲۰۲۶", audio_folder:"audio_online_anfal", phrases:[
+{num:1,ayah:"أَعُوذُ بِاللّهِ مِنَ الشَّيْطانِ الرَّجيمِ",m:"بیات",d:"زیر قرار و قرار بیات",time:"0:09",au:"audio_online_anfal/001.mp3"},
+{num:2,ayah:"بِسْمِ اللّهِ الرَّحْمنِ الرَّحيمِ",m:"بیات",d:"بیات دوکاه",time:"0:11",au:"audio_online_anfal/002.mp3"},
+{num:3,ayah:"يَسْأَلُونَكَ عَنِ الْأَنفَالِ ۖ قُلِ الْأَنفَالُ لِلَّهِ وَالرَّسُولِ ۖ",m:"بیات",d:"قرار بیات",time:"0:22",au:"audio_online_anfal/003.mp3"},
+{num:4,ayah:"فَاتَّقُوا اللَّهَ وَأَصْلِحُوا ذَاتَ بَيْنِكُمْ ۖ",m:"بیات",d:"بیات نوا",time:"0:28",au:"audio_online_anfal/004.mp3"},
+{num:5,ayah:"وَأَطِيعُوا اللَّهَ وَرَسُولَهُ إِن كُنتُم مُّؤْمِنِينَ",m:"بیات",d:"بیات حسینی",time:"0:22",au:"audio_online_anfal/005.mp3"},
+{num:6,ayah:"إِنَّمَا الْمُؤْمِنُونَ الَّذِينَ إِذَا ذُكِرَ اللَّهُ وَجِلَتْ قُلُوبُهُمْ",m:"رست",d:"قرار رست",time:"0:19",au:"audio_online_anfal/006.mp3"},
+{num:7,ayah:"إِذَا ذُكِرَ اللَّهُ وَجِلَتْ قُلُوبُهُمْ وَإِذَا تُلِيَتْ عَلَيْهِمْ آيَاتُهُ زَادَتْهُمْ إِيمَانًا",m:"رست",d:"رست چهارگاه - نیشاپورک",time:"0:29",au:"audio_online_anfal/007.mp3"},
+{num:8,ayah:"وَإِذَا تُلِيَتْ عَلَيْهِمْ آيَاتُهُ زَادَتْهُمْ إِيمَانًا وَعَلَىٰ رَبِّهِمْ يَتَوَكَّلُونَ",m:"بیات",d:"جنس بیات",time:"0:29",au:"audio_online_anfal/008.mp3"},
+{num:9,ayah:"الَّذِينَ يُقِيمُونَ الصَّلَاةَ وَمِمَّا رَزَقْنَاهُمْ يُنفِقُونَ أُولَٰئِكَ هُمُ الْمُؤْمِنُونَ حَقًّا ۚ",m:"بیات",d:"غماز بیات",time:"0:31",au:"audio_online_anfal/009.mp3"},
+{num:10,ayah:"الَّذِينَ يُقِيمُونَ الصَّلَاةَ وَمِمَّا رَزَقْنَاهُمْ يُنفِقُونَ أُولَٰئِكَ هُمُ الْمُؤْمِنُونَ حَقًّا ۚ",m:"بیات",d:"جنس بیات - ترکیبی از نوت ۸ مقام بیات",time:"0:34",au:"audio_online_anfal/010.mp3"},
+{num:11,ayah:"الَّذِينَ يُقِيمُونَ الصَّلَاةَ وَمِمَّا رَزَقْنَاهُمْ يُنفِقُونَ أُولَٰئِكَ هُمُ الْمُؤْمِنُونَ حَقًّا ۚ",m:"بیات",d:"جنس بیات - ترکیبی از نوت ۸ مقام بیات",time:"0:33",au:"audio_online_anfal/011.mp3"},
+{num:12,ayah:"لَّهُمْ دَرَجَاتٌ",m:"حجاز",d:"قرار حجاز",time:"0:08",au:"audio_online_anfal/012.mp3"},
+{num:13,ayah:"لَّهُمْ دَرَجَاتٌ عِندَ رَبِّهِمْ وَمَغْفِرَةٌ وَرِزْقٌ كَرِيمٌ",m:"حجاز",d:"قرار حجاز",time:"0:24",au:"audio_online_anfal/013.mp3"},
+{num:14,ayah:"كَمَا أَخْرَجَكَ رَبُّكَ مِن بَيْتِكَ بِالْحَقِّ وَإِنَّ فَرِيقًا مِّنَ الْمُؤْمِنِينَ لَكَارِهُونَ",m:"حجاز",d:"غماز حجاز",time:"0:33",au:"audio_online_anfal/014.mp3"},
+{num:15,ayah:"يُجَادِلُونَكَ فِي الْحَقِّ بَعْدَ مَا تَبَيَّنَ كَأَنَّمَا يُسَاقُونَ إِلَى الْمَوْتِ وَهُمْ يَنظُرُونَ",m:"حجاز",d:"ترکیبی از صبا زمزم و بعد اجرای نوت ۸ مقام حجاز",time:"0:30",au:"audio_online_anfal/015.mp3"},
+{num:16,ayah:"يُجَادِلُونَكَ فِي الْحَقِّ بَعْدَ مَا تَبَيَّنَ كَأَنَّمَا يُسَاقُونَ إِلَى الْمَوْتِ وَهُمْ يَنظُرُونَ",m:"حجاز",d:"ترکیبی از صبا زمزم و بعد اجرای نوت ۸ مقام حجاز",time:"0:30",au:"audio_online_anfal/016.mp3"},
+{num:17,ayah:"بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
+قُلْ أَعُوذُ بِرَبِّ النَّاسِ ﴿١﴾ مَلِكِ النَّاسِ ﴿٢﴾ إِلَٰهِ النَّاسِ ﴿٣﴾",m:"حجاز",d:"قرار حجاز",time:"0:31",au:"audio_online_anfal/017.mp3"},
+{num:18,ayah:"إِلَٰهِ النَّاسِ مِن شَرِّ الْوَسْوَاسِ الْخَنَّاسِ",m:"حجاز",d:"غماز حجاز",time:"0:19",au:"audio_online_anfal/018.mp3"},
+{num:19,ayah:"الَّذِي يُوَسْوِسُ فِي صُدُورِ النَّاسِ مِنَ الْجِنَّةِ وَالنَّاسِ",m:"حجاز",d:"نوت هشت مقام",time:"0:23",au:"audio_online_anfal/019.mp3"},
+{num:20,ayah:"مِنَ الْجِنَّةِ وَالنَّاسِ",m:"حجاز",d:"تاکید بر تحریر آخر",time:"0:14",au:"audio_online_anfal/020.mp3"},
+{num:21,ayah:"تلاوت کامل سوره انفال ۱-۶ و سوره ناس",m:"",d:"فایل کامل جلسه ۱۴ اکتبر ۲۰۲۶",time:"25:02",au:"audio_online_anfal/full.mp3"}
+  ]}
+];
+
+function showOnlineLockScreen(){
+  if(onlineLessonsUnlocked){ openOnlineLessonsList(); return; }
+  document.getElementById("tilawatListPage").style.display="none";
+  document.getElementById("onlineLockPage").style.display="block";
+  document.getElementById("hTitle").textContent="🔒 دروس آنلاین";
+  document.getElementById("hSub").textContent="لطفاً رمز عبور را وارد کنید";
+  document.querySelector(".header").style.background="linear-gradient(135deg,#795548,#8D6E63)";
+  document.getElementById("onlinePwdInput").value="";
+  document.getElementById("onlinePwdErr").style.display="none";
+}
+
+function checkOnlinePwd(){
+  const v=document.getElementById("onlinePwdInput").value.trim();
+  if(v===ONLINE_LESSONS_PWD){
+    onlineLessonsUnlocked=true;
+    openOnlineLessonsList();
+  } else {
+    document.getElementById("onlinePwdErr").style.display="block";
+  }
+}
+
+function openOnlineLessonsList(){
+  document.getElementById("tilawatListPage").style.display="none";
+  document.getElementById("onlineLockPage").style.display="none";
+  document.getElementById("onlineLessonsListPage").style.display="block";
+  document.getElementById("hTitle").textContent="🎧 دروس آنلاین";
+  document.getElementById("hSub").textContent="اختصاصی سید منصور فاطمی — "+ONLINE_LESSONS.length+" جلسه";
+  document.querySelector(".header").style.background="linear-gradient(135deg,#795548,#8D6E63)";
+  const el=document.getElementById("onlineLessonsCards"); el.innerHTML="";
+  ONLINE_LESSONS.forEach((les,idx)=>{
+    const c=document.createElement("div"); c.className="til-card"; c.style.cssText="margin:10px 6px";
+    const badgeNum=['۱','۲','۳','۴','۵','۶','۷','۸','۹','۱۰'][idx]||String(idx+1);
+    c.innerHTML='<div class="til-num" style="background:#795548">'+badgeNum+'</div><div class="til-info"><div class="til-name">'+les.name+'</div><div style="font-size:.75em;color:#999">'+les.date+' — '+les.phrases.length+' فراز</div></div>';
+    c.onclick=()=>openOnlineLesson(idx);
+    el.appendChild(c);
+  });
+}
+
+function openOnlineLesson(idx){
+  const les=ONLINE_LESSONS[idx];
+  document.getElementById("onlineLessonsListPage").style.display="none";
+  document.getElementById("onlineLessonDetailPage").style.display="block";
+  document.getElementById("hTitle").textContent="📖 "+les.name;
+  document.getElementById("hSub").textContent=les.date;
+  document.querySelector(".header").style.background="linear-gradient(135deg,#795548,#8D6E63)";
+  const el=document.getElementById("onlineLessonPhrases"); el.innerHTML="";
+  les.phrases.forEach(p=>{
+    const isFullFile = p.num === les.phrases.length;
+    const card=document.createElement("div"); card.className="fraz-card"; card.style.cssText="margin:6px 0;padding:10px 12px;background:#fff;border:1px solid #e0d5c0;border-radius:8px;cursor:pointer";
+    const mColor = MCOLORS[p.m]||"#666";
+    const numLabel = isFullFile ? "📢" : p.num;
+    card.innerHTML='<div style="display:flex;align-items:center;gap:8px"><div style="min-width:28px;height:28px;border-radius:50%;background:'+mColor+';color:#fff;display:flex;align-items:center;justify-content:center;font-size:.75em;font-weight:bold">'+numLabel+'</div><div style="flex:1"><div style="font-family:Uthmanic,serif;font-size:clamp(1.4em,5.3vw,2.0em);font-weight:600;line-height:1.6;text-align:right" dir="rtl">'+p.ayah+'</div>'+(p.m?'<div style="margin-top:4px"><span style="background:'+mColor+';color:#fff;padding:2px 8px;border-radius:10px;font-size:.7em">'+p.m+'</span><span style="font-size:.7em;color:#888;margin-right:6px">'+p.d+'</span></div>':'')+'<div style="font-size:.72em;color:#aaa;margin-top:2px">'+p.time+'</div></div></div>';
+    card.onclick=()=>{
+      const url="https://archive.org/download/naye-quran-audio/qaris/hashemi/"+p.au;
+      au.src=url; au.play();
+    };
+    el.appendChild(card);
+  });
+}
+
+
 const _origGoBack3=goBack;
 
 goBack=function(){
@@ -9356,7 +9478,32 @@ goBack=function(){
 
   }
 
-  if(document.getElementById("hashemiLessonsPage").style.display==="block"){
+  // goBack: online lesson detail -> online lessons list
+  if(document.getElementById("onlineLessonDetailPage") && document.getElementById("onlineLessonDetailPage").style.display==="block"){
+    document.getElementById("onlineLessonDetailPage").style.display="none";
+    openOnlineLessonsList();
+    return;
+  }
+  // goBack: online lessons list -> hashemi tilawat page
+  if(document.getElementById("onlineLessonsListPage") && document.getElementById("onlineLessonsListPage").style.display==="block"){
+    document.getElementById("onlineLessonsListPage").style.display="none";
+    document.getElementById("tilawatListPage").style.display="block";
+    document.getElementById("hTitle").textContent="🎵 "+curQari.name;
+    document.getElementById("hSub").textContent=curQari.full_name||curQari.desc;
+    document.querySelector(".header").style.background=`linear-gradient(135deg,${curQari.color},${curQari.color}dd)`;
+    return;
+  }
+  // goBack: online lock screen -> hashemi tilawat page
+  if(document.getElementById("onlineLockPage") && document.getElementById("onlineLockPage").style.display==="block"){
+    document.getElementById("onlineLockPage").style.display="none";
+    document.getElementById("tilawatListPage").style.display="block";
+    document.getElementById("hTitle").textContent="🎵 "+curQari.name;
+    document.getElementById("hSub").textContent=curQari.full_name||curQari.desc;
+    document.querySelector(".header").style.background=`linear-gradient(135deg,${curQari.color},${curQari.color}dd)`;
+    return;
+  }
+
+    if(document.getElementById("hashemiLessonsPage").style.display==="block"){
 
     document.getElementById("hashemiLessonsPage").style.display="none";
 
