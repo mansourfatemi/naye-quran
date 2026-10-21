@@ -1,4 +1,4 @@
-const CACHE='mt-mq-v20261021141408';
+const CACHE='mt-mq-v20261021141955';
 
 const CORE=['./','./index.html','./manifest.json','./icon-192.png','./icon-512.png','./avatar_manshawy.jpg','./avatar_mostafa_ismail.jpg','./avatar_hashemi.jpg','./avatar_shahhat_anwar.jpg','./creator.jpg'];
 
