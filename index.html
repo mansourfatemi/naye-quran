@@ -9664,9 +9664,38 @@ function openOnlineLessonsList(){
   ONLINE_LESSONS.forEach((les,idx)=>{
     const c=document.createElement("div"); c.className="til-card"; c.style.cssText="margin:10px 6px";
     const badgeNum=['۱','۲','۳','۴','۵','۶','۷','۸','۹','۱۰'][idx]||String(idx+1);
-    c.innerHTML='<div class="til-num" style="background:#795548">'+badgeNum+'</div><div class="til-info"><div class="til-name">'+les.name+'</div><div style="font-size:.75em;color:#999">'+les.date+' — '+les.phrases.length+' فراز</div></div>';
-    c.onclick=()=>openOnlineLesson(idx);
+    const dlId='ondl_'+idx;
+    const prId='onpr_'+idx;
+    c.innerHTML='<div class="til-num" style="background:#795548">'+badgeNum+'</div><div class="til-info"><div class="til-name">'+les.name+'</div><div style="font-size:.75em;color:#999">'+les.date+' — '+les.phrases.length+' فراز</div><div class="til-dl-progress" id="'+prId+'"></div></div><button class="til-dl-btn" id="'+dlId+'" title="دانلود برای پخش آفلاین">⬇️</button>';
+    c.onclick=(e)=>{if(!e.target.closest('.til-dl-btn'))openOnlineLesson(idx);};
     el.appendChild(c);
+    // setup download button
+    (async()=>{
+      const audioFiles=les.phrases.map(p=>(les.archiveBase||'https://archive.org/download/naye-quran-audio/qaris/hashemi/')+p.au);
+      const btn=document.getElementById(dlId);
+      const prog=document.getElementById(prId);
+      if(!btn) return;
+      const cache=await caches.open(OFFLINE_CACHE);
+      const cached=await cache.match(audioFiles[0]);
+      if(cached){btn.textContent='✅';btn.classList.add('done');btn.title='دانلود شده — برای حذف بزنید';}
+      btn.onclick=async(e)=>{
+        e.stopPropagation();
+        const isCached=await cache.match(audioFiles[0]);
+        if(isCached){
+          await uncacheTilawat('online_'+idx, audioFiles);
+          btn.textContent='⬇️';btn.classList.remove('done');btn.title='دانلود برای پخش آفلاین';
+          if(prog){prog.textContent='';prog.classList.remove('show');}
+        } else {
+          btn.textContent='⏳';btn.classList.add('loading');
+          if(prog){prog.textContent='۰/'+audioFiles.length;prog.classList.add('show');}
+          await cacheTilawat('online_'+idx, audioFiles,
+            (d,t)=>{if(prog)prog.textContent=d+'/'+t;},
+            ()=>{btn.textContent='✅';btn.classList.remove('loading');btn.classList.add('done');btn.title='دانلود شده — برای حذف بزنید';if(prog){prog.textContent='';prog.classList.remove('show');}},
+            ()=>{btn.textContent='⬇️';btn.classList.remove('loading');}
+          );
+        }
+      };
+    })();
   });
 }
 
