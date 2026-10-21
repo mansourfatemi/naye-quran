@@ -123,7 +123,7 @@
 
 
 
-.badge-row{display:flex;align-items:center;justify-content:center;margin:4px 0 8px}.badge-chain{display:flex;align-items:center;flex:1}.badge-chain.bleft{justify-content:flex-end}.badge-chain.bright{justify-content:flex-start}.chain-line{height:2px;width:20px;background:#4caf50;flex-shrink:0}.chain-diamond{width:7px;height:7px;background:#4caf50;transform:rotate(45deg);flex-shrink:0;margin:0 3px}.chain-arr{color:#4caf50;font-size:.9em;flex-shrink:0;margin:0 3px}.btext{position:relative;z-index:2}.frame-div{height:2px;background:linear-gradient(90deg,transparent,#4caf50 20%,#4caf50 80%,transparent);margin:8px -12px;position:relative}.frame-div::before,.frame-div::after{content:"C6";position:absolute;top:50%;transform:translateY(-50%);color:#4caf50;font-size:.6em;background:#fff;padding:0 5px;line-height:1}.frame-div::before{right:10px}.frame-div::after{left:10px}.mr{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:10px 0}
+.badge-row{display:flex;align-items:center;justify-content:center;margin:4px 0 8px}.badge-chain{display:flex;align-items:center;flex:1}.badge-chain.bleft{justify-content:flex-end}.badge-chain.bright{justify-content:flex-start}.chain-line{height:2px;width:20px;background:#4caf50;flex-shrink:0}.chain-diamond{width:7px;height:7px;background:#4caf50;transform:rotate(45deg);flex-shrink:0;margin:0 3px}.chain-arr{color:#4caf50;font-size:.9em;flex-shrink:0;margin:0 3px}.btext{position:relative;z-index:2}.frame-div{height:2px;background:linear-gradient(90deg,transparent,#4caf50 20%,#4caf50 80%,transparent);margin:8px -12px;position:relative}.frame-div::before,.frame-div::after{content:"\25C6";position:absolute;top:50%;transform:translateY(-50%);color:#4caf50;font-size:.6em;background:#fff;padding:0 5px;line-height:1}.frame-div::before{right:10px}.frame-div::after{left:10px}.mr{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:10px 0}
 
 .tag{border:2px solid var(--mqcolor);color:var(--mqcolor);padding:4px 13px;border-radius:18px;font-weight:bold;font-size:.85em}
 
@@ -10898,6 +10898,7 @@ function tjcBuild(){
       var items=sec.items;
       for(var i=0;i<items.length;i++){
         var it=items[i], card=null;
+        if(it.card===0) continue;
         if(it.type==='def'){
           var m=/<span class="halya-dt-term">(.*?)<\/span>\s*([\s\S]*)/.exec(it.text||'');
           card={t:'def',front:m?m[1]:tjcStrip(it.text).split(' ')[0],back:m?m[2]:it.text};
