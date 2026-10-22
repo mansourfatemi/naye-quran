@@ -11094,7 +11094,7 @@ function tjcRenderBody(){
   b.innerHTML=h; var fd=document.getElementById('tjcFd'); if(fd) fd.scrollTop=0;
 }
 function tjcFlip(){var c=tjcSet[tjcCur]; if(c&&c.q){tjcFlipped=!tjcFlipped;tjcRenderBody();}}
-function tjcGoogle(){var c=tjcSet[tjcCur]; if(!c) return; var cl=function(t){return (t||'').replace(/<[^>]+>/g,' ').replace(/‌/g,' ').replace(/[ً-ْٰ]/g,'').replace(/\s+/g,' ').trim();}; var q=cl(c.q||c.front||c.title), a=cl(c.back), s=q; if(s.length<160&&a){ s=(s+' '+a).slice(0,220); } var u='https://www.google.com/search?q='+encodeURIComponent(s); var w=window.open(u,'_blank'); if(!w) location.href=u;}
+function tjcGoogle(){var c=tjcSet[tjcCur]; if(!c) return; var cl=function(t){return (t||'').replace(/<[^>]+>/g,' ').replace(/‌/g,' ').replace(/[ً-ْٰ]/g,'').replace(/\s+/g,' ').trim();}; var q=cl(c.q||c.front||c.title); var s=('تجوید قرآن '+q).slice(0,200); var u='https://www.google.com/search?q='+encodeURIComponent(s); var w=window.open(u,'_blank'); if(!w) location.href=u;}
 function tjcNav(d){ if(!tjcSet.length) return; tjcCur=(tjcCur+d+tjcSet.length)%tjcSet.length; tjcShowCard(); }
 (function(){var sx=0,sy=0,fd=null;document.addEventListener('DOMContentLoaded',function(){fd=document.getElementById('tjcFd');if(!fd)return;
   fd.addEventListener('touchstart',function(e){sx=e.touches[0].clientX;sy=e.touches[0].clientY;},{passive:true});
