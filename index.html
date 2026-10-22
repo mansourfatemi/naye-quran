@@ -9922,7 +9922,9 @@ goBack=function(){
 // Override goBack for tajweed cards
 const _origGoBack8=goBack;
 goBack=function(){
-  if(typeof goBackFromTjc==='function' && (nav==='tjcCard'||nav==='tjcList')){ goBackFromTjc(); return; }
+  var _tc=document.getElementById("tjcCardPage"), _tl=document.getElementById("tjcListPage");
+  if(_tc && _tc.style.display==="block"){ nav='tjcCard'; goBackFromTjc(); return; }
+  if(_tl && _tl.style.display==="block"){ nav='tjcList'; goBackFromTjc(); return; }
   _origGoBack8();
 };
 
@@ -10964,7 +10966,7 @@ function tjcUpdateFolderMeta(){
   var m=document.getElementById('tjcFolderMeta'); if(m) m.textContent=tjcFa(HALYA_CHAPTERS.length)+' عنوان · '+tjcFa(all.length)+' کارت';
   var m2=document.getElementById('tjcFavMeta'); if(m2) m2.textContent=n?(tjcFa(n)+' کارت · '+(due?'امروز '+tjcFa(due)+' کارت موعد مرور':'هیچ کارتی موعدش نیست')):'هنوز کارتی حفظ نشده — در کارت‌ها ★ بزنید';
 }
-function tjcHideAll(){['tajweedFolderPage','halyaPage','tajweedPage','tjcListPage','tjcCardPage','qariListPage','tilawatListPage','playerPage'].forEach(function(id){var e=document.getElementById(id);if(e)e.style.display='none';});}
+function tjcHideAll(){ if(nav==='tjcCard'||nav==='tjcList') nav='tajweedFolder';['tajweedFolderPage','halyaPage','tajweedPage','tjcListPage','tjcCardPage','qariListPage','tilawatListPage','playerPage'].forEach(function(id){var e=document.getElementById(id);if(e)e.style.display='none';});}
 function openTjcList(){
   tjcHideAll(); document.getElementById('tjcListPage').style.display='block'; nav='tjcList';
   document.getElementById('bBtn').style.display='inline-block';
