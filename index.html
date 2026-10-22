@@ -178,6 +178,7 @@
 .bshare:disabled{opacity:.4}
 
 .bfav{color:#ccc;font-size:1.2em}
+.tjc-g{font-size:1.05em;color:#4285f4}
 
 .bfav.on{color:#e63950;border-color:#e63950;background:#fff5f5}
 
@@ -1416,6 +1417,7 @@ body:not(.dark-mode) .dm-toggle{color:#555}
       <div class="tjc-rev" id="tjcRev" style="display:none"><button class="again" onclick="tjcGrade(0)">&#128260; دوباره</button><button class="good" onclick="tjcGrade(1)">&#9989; بلد بودم</button></div>
       <div class="ctrl-row">
         <button class="btn bnav" onclick="tjcNav(-1)" title="قبلی">&#9194;</button>
+        <button class="btn bshare tjc-g" onclick="tjcGoogle()" title="جستجو در گوگل">&#128269;</button>
         <button class="btn bfav" id="tjcFav" onclick="tjcToggleFav()" title="حفظ">&#9733;</button>
         <button class="btn bnav" onclick="tjcNav(1)" title="بعدی">&#9193;</button>
       </div>
@@ -11092,6 +11094,7 @@ function tjcRenderBody(){
   b.innerHTML=h; var fd=document.getElementById('tjcFd'); if(fd) fd.scrollTop=0;
 }
 function tjcFlip(){var c=tjcSet[tjcCur]; if(c&&c.q){tjcFlipped=!tjcFlipped;tjcRenderBody();}}
+function tjcGoogle(){var c=tjcSet[tjcCur]; if(!c) return; var cl=function(t){return (t||'').replace(/<[^>]+>/g,' ').replace(/‌/g,' ').replace(/[ً-ْٰ]/g,'').replace(/\s+/g,' ').trim();}; var q=cl(c.q||c.front||c.title), a=cl(c.back), s=q; if(s.length<160&&a){ s=(s+' '+a).slice(0,220); } var u='https://www.google.com/search?q='+encodeURIComponent(s); var w=window.open(u,'_blank'); if(!w) location.href=u;}
 function tjcNav(d){ if(!tjcSet.length) return; tjcCur=(tjcCur+d+tjcSet.length)%tjcSet.length; tjcShowCard(); }
 (function(){var sx=0,sy=0,fd=null;document.addEventListener('DOMContentLoaded',function(){fd=document.getElementById('tjcFd');if(!fd)return;
   fd.addEventListener('touchstart',function(e){sx=e.touches[0].clientX;sy=e.touches[0].clientY;},{passive:true});
