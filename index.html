@@ -1041,6 +1041,14 @@
 .tjc-prog{height:4px;background:#eee;border-radius:2px;margin-top:6px;overflow:hidden}.tjc-prog i{display:block;height:100%;background:linear-gradient(90deg,#4caf50,#8bc34a)}
 .tjc-pc{height:calc(100vh - 222px);height:calc(100dvh - 222px)}
 #tjcTabs{margin:-2px -8px 8px;top:60px}
+.tjc-ql{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;background:#fff;border:1px solid #e0d6c2;border-radius:10px;margin-bottom:8px;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.tjc-ql.cur{background:#e8f5e9;border-color:#66bb6a}
+.tjc-ql .n{width:30px;height:30px;border-radius:50%;background:var(--tjcTabCol,#2e7d32);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9em;flex-shrink:0;margin-top:2px}
+.tjc-ql .t{flex:1;text-align:right;color:#1b3a1e;font-weight:600;line-height:1.9;font-size:.98em}
+.tjc-ql .m{font-size:.75em;color:#888;margin-top:2px;font-weight:400}
+.tjc-ql .s{color:#e63950;font-size:1.1em;flex-shrink:0}
+.tjc-qlh{text-align:center;color:#2e7d32;font-weight:700;margin:4px 0 10px;font-size:.95em}
+.dark-mode .tjc-ql{background:#1a1a28;border-color:#2a2a3a}.dark-mode .tjc-ql .t{color:#eee}.dark-mode .tjc-ql.cur{background:#1f2f22}
 #tjcTabs .tab.active{color:var(--tjcTabCol,#2e7d32);border-bottom-color:var(--tjcTabCol,#2e7d32)}
 .tjc-pc .fd{padding:12px 14px 10px;display:flex;flex-direction:column}
 .tjc-pc .tjc-body{flex:1;display:flex;flex-direction:column;justify-content:center}
@@ -1380,8 +1388,9 @@ body:not(.dark-mode) .dm-toggle{color:#555}
 </div>
 <div id="tjcListPage" style="display:none;padding:70px 15px 90px"><div id="tjcListContent"></div></div>
 <div id="tjcCardPage" style="display:none;padding:62px 8px 10px">
-  <div class="tabs" id="tjcTabs"><div class="tab active" id="tjcTabCards" onclick="tjcTab('cards')"><span class="tab-icon">🃏</span>کارت‌ها</div><div class="tab" id="tjcTabFav" onclick="tjcTab('fav')"><span class="tab-icon">⭐</span>لیست علاقه‌مندی</div></div>
-  <div class="pw"><div class="pc tjc-pc">
+  <div class="tabs" id="tjcTabs"><div class="tab active" id="tjcTabCards" onclick="tjcTab('cards')"><span class="tab-icon">🃏</span>کارت‌ها</div><div class="tab" id="tjcTabList" onclick="tjcTab('list')"><span class="tab-icon">❓</span>سوالات</div><div class="tab" id="tjcTabFav" onclick="tjcTab('fav')"><span class="tab-icon">⭐</span>لیست علاقه‌مندی</div></div>
+  <div id="tjcQList" style="display:none;padding:0 4px 90px"></div>
+  <div class="pw" id="tjcPw"><div class="pc tjc-pc">
     <span class="corner tl"><svg viewBox="0 0 40 40"><path d="M3 22 C3 11 11 3 22 3" stroke="currentColor" stroke-width="2.2" fill="none" opacity="0.85"/><circle cx="4" cy="4" r="3" fill="currentColor" opacity="0.9"/></svg></span>
     <span class="corner tr"><svg viewBox="0 0 40 40"><path d="M3 22 C3 11 11 3 22 3" stroke="currentColor" stroke-width="2.2" fill="none" opacity="0.85"/><circle cx="4" cy="4" r="3" fill="currentColor" opacity="0.9"/></svg></span>
     <span class="corner bl"><svg viewBox="0 0 40 40"><path d="M3 22 C3 11 11 3 22 3" stroke="currentColor" stroke-width="2.2" fill="none" opacity="0.85"/><circle cx="4" cy="4" r="3" fill="currentColor" opacity="0.9"/></svg></span>
@@ -11006,19 +11015,36 @@ function openTjcCards(mode,chNum,keepCur){
 }
 function tjcTab(t){
   if(t==='fav'){ if(tjcMode==='ch') tjcLastCh={num:tjcChNum,cur:tjcCur}; tjcFavOrigin=(tjcMode==='ch'&&tjcChNum)?'cards':tjcFavOrigin; openTjcFav(); }
+  else if(t==='list'){ tjcRenderQList(); }
   else { if(tjcLastCh.num){ openTjcCards('ch',tjcLastCh.num,true); } else { openTjcList(); } }
 }
+function tjcRenderQList(){
+  var el=document.getElementById('tjcQList'), pw=document.getElementById('tjcPw'); if(!el||!pw) return;
+  pw.style.display='none'; el.style.display='block';
+  var f=tjcLoad(), h='<div class="tjc-qlh">'+(tjcMode==='fav'?'⭐ سوالات حفظ‌شده':'فصل '+tjcFa(tjcChNum))+' · '+tjcFa(tjcSet.length)+' سوال</div>';
+  tjcSet.forEach(function(c,i){
+    var q=c.q||tjcStrip(c.title||c.front||c.back).slice(0,90), fv=f[c.id];
+    h+='<div class="tjc-ql'+(i===tjcCur?' cur':'')+'" onclick="tjcGoto('+i+')"><div class="n">'+tjcFa(i+1)+'</div><div class="t">'+q+'<div class="m">'+(TJC_TYPES[c.t]||'')+(c.sec?' · '+c.sec:'')+'</div></div>'+(fv?'<div class="s"><span class="tjc-box b'+fv.b+'"></span>★</div>':'')+'</div>';
+  });
+  el.innerHTML=h;
+  var tc=document.getElementById('tjcTabCards'),tl=document.getElementById('tjcTabList'),tf=document.getElementById('tjcTabFav');
+  if(tc)tc.className='tab'; if(tf)tf.className='tab'; if(tl)tl.className='tab active';
+  document.getElementById('hSub').textContent='فهرست سوالات';
+  window.scrollTo(0,0);
+}
+function tjcGoto(i){ tjcCur=i; tjcShowCard(); }
 function tjcRefreshTabs(){
   var f=tjcLoad(), n=Object.keys(f).length;
   var tc=document.getElementById('tjcTabCards'), tf=document.getElementById('tjcTabFav'); if(!tc||!tf) return;
   tf.innerHTML='<span class="tab-icon">⭐</span>لیست علاقه‌مندی'+(n?' ('+tjcFa(n)+')':'');
-  tc.className='tab'+(tjcMode==='ch'?' active':''); tf.className='tab'+(tjcMode==='fav'?' active':'');
+  tc.className='tab'+(tjcMode==='ch'?' active':''); tf.className='tab'+(tjcMode==='fav'?' active':''); var tl=document.getElementById('tjcTabList'); if(tl) tl.className='tab';
   var tabs=document.getElementById('tjcTabs'); if(tabs) tabs.style.setProperty('--tjcTabCol',tjcMode==='fav'?'#e63950':'#2e7d32');
 }
 function tjcShowCard(){
   tjcHideAll(); document.getElementById('tjcCardPage').style.display='block'; nav='tjcCard';
   document.getElementById('bBtn').style.display='inline-block';
   var c=tjcSet[tjcCur]; if(!c) return;
+  var _ql=document.getElementById('tjcQList'), _pw=document.getElementById('tjcPw'); if(_ql)_ql.style.display='none'; if(_pw)_pw.style.display='';
   tjcFlipped=false;
   document.getElementById('hTitle').textContent=(tjcMode==='fav'?'⭐ مرور حفظ‌شده‌ها':'🃏 '+c.chT);
   document.getElementById('hSub').textContent='کارت '+tjcFa(tjcCur+1)+' از '+tjcFa(tjcSet.length);
