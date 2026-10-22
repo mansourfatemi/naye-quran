@@ -1040,7 +1040,8 @@
 .tjc-cp b{color:#e63950;font-weight:600}
 .tjc-prog{height:4px;background:#eee;border-radius:2px;margin-top:6px;overflow:hidden}.tjc-prog i{display:block;height:100%;background:linear-gradient(90deg,#4caf50,#8bc34a)}
 .tjc-pc{height:calc(100vh - 222px);height:calc(100dvh - 222px)}
-#tjcTabs{margin:0 2px 8px}
+#tjcTabs{margin:-2px -8px 8px;top:60px}
+#tjcTabs .tab.active{color:var(--tjcTabCol,#2e7d32);border-bottom-color:var(--tjcTabCol,#2e7d32)}
 .tjc-pc .fd{padding:12px 14px 10px;display:flex;flex-direction:column}
 .tjc-pc .tjc-body{flex:1;display:flex;flex-direction:column;justify-content:center}
 .tjc-pc .tjc-body.ans{justify-content:flex-start}
@@ -1379,7 +1380,7 @@ body:not(.dark-mode) .dm-toggle{color:#555}
 </div>
 <div id="tjcListPage" style="display:none;padding:70px 15px 90px"><div id="tjcListContent"></div></div>
 <div id="tjcCardPage" style="display:none;padding:62px 8px 10px">
-  <div class="ptabs" id="tjcTabs"><button class="ptab on" id="tjcTabCards" onclick="tjcTab('cards')">🃏 کارت‌ها</button><button class="ptab" id="tjcTabFav" onclick="tjcTab('fav')">⭐ لیست علاقه‌مندی</button></div>
+  <div class="tabs" id="tjcTabs"><div class="tab active" id="tjcTabCards" onclick="tjcTab('cards')"><span class="tab-icon">🃏</span>کارت‌ها</div><div class="tab" id="tjcTabFav" onclick="tjcTab('fav')"><span class="tab-icon">⭐</span>لیست علاقه‌مندی</div></div>
   <div class="pw"><div class="pc tjc-pc">
     <span class="corner tl"><svg viewBox="0 0 40 40"><path d="M3 22 C3 11 11 3 22 3" stroke="currentColor" stroke-width="2.2" fill="none" opacity="0.85"/><circle cx="4" cy="4" r="3" fill="currentColor" opacity="0.9"/></svg></span>
     <span class="corner tr"><svg viewBox="0 0 40 40"><path d="M3 22 C3 11 11 3 22 3" stroke="currentColor" stroke-width="2.2" fill="none" opacity="0.85"/><circle cx="4" cy="4" r="3" fill="currentColor" opacity="0.9"/></svg></span>
@@ -11009,9 +11010,9 @@ function tjcTab(t){
 function tjcRefreshTabs(){
   var f=tjcLoad(), n=Object.keys(f).length;
   var tc=document.getElementById('tjcTabCards'), tf=document.getElementById('tjcTabFav'); if(!tc||!tf) return;
-  tf.innerHTML='⭐ لیست علاقه‌مندی'+(n?' ('+tjcFa(n)+')':'');
-  tc.className='ptab'+(tjcMode==='ch'?' on':''); tf.className='ptab'+(tjcMode==='fav'?' on':'');
-  var col=(tjcMode==='fav')?'#e63950':'#2e7d32'; [tc,tf].forEach(function(b){b.style.setProperty('--mqcolor',col);});
+  tf.innerHTML='<span class="tab-icon">⭐</span>لیست علاقه‌مندی'+(n?' ('+tjcFa(n)+')':'');
+  tc.className='tab'+(tjcMode==='ch'?' active':''); tf.className='tab'+(tjcMode==='fav'?' active':'');
+  var tabs=document.getElementById('tjcTabs'); if(tabs) tabs.style.setProperty('--tjcTabCol',tjcMode==='fav'?'#e63950':'#2e7d32');
 }
 function tjcShowCard(){
   tjcHideAll(); document.getElementById('tjcCardPage').style.display='block'; nav='tjcCard';
