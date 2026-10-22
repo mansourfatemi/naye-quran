@@ -1039,6 +1039,8 @@
 .tjc-ci{flex:1;text-align:right}.tjc-ct{font-weight:700;color:#1b3a1e;font-size:1.02em}.tjc-cp{font-size:.8em;color:#777;margin-top:3px}
 .tjc-cp b{color:#e63950;font-weight:600}
 .tjc-prog{height:4px;background:#eee;border-radius:2px;margin-top:6px;overflow:hidden}.tjc-prog i{display:block;height:100%;background:linear-gradient(90deg,#4caf50,#8bc34a)}
+.tjc-pc{height:calc(100vh - 222px);height:calc(100dvh - 222px)}
+#tjcTabs{margin:0 2px 8px}
 .tjc-pc .fd{padding:12px 14px 10px;display:flex;flex-direction:column}
 .tjc-pc .tjc-body{flex:1;display:flex;flex-direction:column;justify-content:center}
 .tjc-pc .tjc-body.ans{justify-content:flex-start}
@@ -1377,6 +1379,7 @@ body:not(.dark-mode) .dm-toggle{color:#555}
 </div>
 <div id="tjcListPage" style="display:none;padding:70px 15px 90px"><div id="tjcListContent"></div></div>
 <div id="tjcCardPage" style="display:none;padding:62px 8px 10px">
+  <div class="ptabs" id="tjcTabs"><button class="ptab on" id="tjcTabCards" onclick="tjcTab('cards')">🃏 کارت‌ها</button><button class="ptab" id="tjcTabFav" onclick="tjcTab('fav')">⭐ لیست علاقه‌مندی</button></div>
   <div class="pw"><div class="pc tjc-pc">
     <span class="corner tl"><svg viewBox="0 0 40 40"><path d="M3 22 C3 11 11 3 22 3" stroke="currentColor" stroke-width="2.2" fill="none" opacity="0.85"/><circle cx="4" cy="4" r="3" fill="currentColor" opacity="0.9"/></svg></span>
     <span class="corner tr"><svg viewBox="0 0 40 40"><path d="M3 22 C3 11 11 3 22 3" stroke="currentColor" stroke-width="2.2" fill="none" opacity="0.85"/><circle cx="4" cy="4" r="3" fill="currentColor" opacity="0.9"/></svg></span>
@@ -10906,7 +10909,7 @@ function renderTajweedFolder() {
 
 
 // ===================== کارتهای تجوید =====================
-var TJC_CARDS=null, tjcCur=0, tjcSet=[], tjcMode='ch', tjcFlipped=false, tjcChNum=0;
+var TJC_CARDS=null, tjcCur=0, tjcSet=[], tjcMode='ch', tjcFlipped=false, tjcChNum=0, tjcLastCh={num:0,cur:0};
 var TJC_TYPES={fact:'نکته',qa:'پرسش',def:'تعریف',ex:'مثال',table:'جدول',note:'نکته',poem:'شعر حفظی',block:'قاعده'};
 function tjcFa(n){return String(n).replace(/[0-9]/g,function(d){return '۰۱۲۳۴۵۶۷۸۹'[d]});}
 function tjcStrip(h){return (h||'').replace(/<[^>]+>/g,'');}
@@ -10996,8 +10999,19 @@ function openTjcFav(dueOnly){
     document.getElementById('tjcListContent').innerHTML='<div class="tjc-empty">هنوز کارتی حفظ نشده.<br>در «کارت‌های تجوید» روی ★ بزنید تا کارت به اینجا بیاید.</div>'; return; }
   tjcSet=set; tjcMode='fav'; tjcCur=0; tjcShowCard();
 }
-function openTjcCards(mode,chNum){
-  tjcSet=tjcBuild().filter(function(c){return c.ch===chNum;}); tjcMode='ch'; tjcChNum=chNum; tjcCur=0; tjcShowCard();
+function openTjcCards(mode,chNum,keepCur){
+  tjcSet=tjcBuild().filter(function(c){return c.ch===chNum;}); tjcMode='ch'; tjcChNum=chNum; tjcCur=(keepCur&&tjcLastCh.num===chNum)?Math.min(tjcLastCh.cur,tjcSet.length-1):0; tjcShowCard();
+}
+function tjcTab(t){
+  if(t==='fav'){ if(tjcMode==='ch') tjcLastCh={num:tjcChNum,cur:tjcCur}; openTjcFav(); }
+  else { if(tjcLastCh.num){ openTjcCards('ch',tjcLastCh.num,true); } else { openTjcList(); } }
+}
+function tjcRefreshTabs(){
+  var f=tjcLoad(), n=Object.keys(f).length;
+  var tc=document.getElementById('tjcTabCards'), tf=document.getElementById('tjcTabFav'); if(!tc||!tf) return;
+  tf.innerHTML='⭐ لیست علاقه‌مندی'+(n?' ('+tjcFa(n)+')':'');
+  tc.className='ptab'+(tjcMode==='ch'?' on':''); tf.className='ptab'+(tjcMode==='fav'?' on':'');
+  var col=(tjcMode==='fav')?'#e63950':'#2e7d32'; [tc,tf].forEach(function(b){b.style.setProperty('--mqcolor',col);});
 }
 function tjcShowCard(){
   tjcHideAll(); document.getElementById('tjcCardPage').style.display='block'; nav='tjcCard';
@@ -11015,6 +11029,8 @@ function tjcShowCard(){
   document.getElementById('tjcRev').style.display=(tjcMode==='fav')?'flex':'none';
   tjcRenderBody();
   var pc=document.querySelector('.tjc-pc'); if(pc) pc.style.setProperty('--mqcolor',tjcMode==='fav'?'#e63950':'#2e7d32');
+  if(tjcMode==='ch') tjcLastCh={num:tjcChNum,cur:tjcCur};
+  tjcRefreshTabs();
 }
 function tjcRenderBody(){
   var c=tjcSet[tjcCur], b=document.getElementById('tjcBody'), h='';
@@ -11045,7 +11061,7 @@ function tjcNav(d){ if(!tjcSet.length) return; tjcCur=(tjcCur+d+tjcSet.length)%t
 function tjcToggleFav(){
   var c=tjcSet[tjcCur], f=tjcLoad();
   if(f[c.id]){ delete f[c.id]; } else { f[c.id]={b:0,d:Date.now()}; }
-  tjcSave(f); document.getElementById('tjcFav').className='btn bfav'+(f[c.id]?' on':'');
+  tjcSave(f); document.getElementById('tjcFav').className='btn bfav'+(f[c.id]?' on':''); tjcRefreshTabs();
 }
 function tjcGrade(g){
   var c=tjcSet[tjcCur], f=tjcLoad(); if(!f[c.id]) f[c.id]={b:0,d:Date.now()};
