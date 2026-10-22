@@ -10900,7 +10900,7 @@ function renderTajweedFolder() {
   var c4 = document.createElement('div');
   c4.className = 'qari-card'; c4.style.cssText = 'cursor:pointer;margin:12px 0';
   c4.innerHTML = '<div class="qari-avatar" style="background:linear-gradient(135deg,#b71c1c,#e63950);display:flex;align-items:center;justify-content:center;font-size:2em">⭐</div><div class="qari-info"><div class="qari-name">کارت‌های حفظ‌شده</div><div class="qari-meta" id="tjcFavMeta">مرور با تکرار فاصله‌دار</div></div><div class="qari-arrow">›</div>';
-  c4.onclick = function(){ openTjcFav(); };
+  c4.onclick = function(){ tjcFavOrigin='folder'; openTjcFav(); };
   el.appendChild(c4);
   tjcUpdateFolderMeta();
 }
@@ -10910,7 +10910,7 @@ function renderTajweedFolder() {
 
 
 // ===================== کارتهای تجوید =====================
-var TJC_CARDS=null, tjcCur=0, tjcSet=[], tjcMode='ch', tjcFlipped=false, tjcChNum=0, tjcLastCh={num:0,cur:0};
+var TJC_CARDS=null, tjcCur=0, tjcSet=[], tjcMode='ch', tjcFlipped=false, tjcChNum=0, tjcLastCh={num:0,cur:0}, tjcFavOrigin='folder', tjcListEmptyFav=false;
 var TJC_TYPES={fact:'نکته',qa:'پرسش',def:'تعریف',ex:'مثال',table:'جدول',note:'نکته',poem:'شعر حفظی',block:'قاعده'};
 function tjcFa(n){return String(n).replace(/[0-9]/g,function(d){return '۰۱۲۳۴۵۶۷۸۹'[d]});}
 function tjcStrip(h){return (h||'').replace(/<[^>]+>/g,'');}
@@ -10976,9 +10976,10 @@ function openTjcList(){
   document.getElementById('bBtn').style.display='inline-block';
   document.getElementById('hTitle').textContent='🃏 کارت‌های تجوید';
   document.getElementById('hSub').textContent='۲۰ عنوان — حلیة القرآن سطح ۲';
+  tjcListEmptyFav=false;
   var el=document.getElementById('tjcListContent'), all=tjcBuild(), f=tjcLoad(); el.innerHTML='';
   var due=tjcDueList().length;
-  if(due){var dv=document.createElement('div');dv.className='tjc-due';dv.textContent='⏰ امروز '+tjcFa(due)+' کارت موعد مرور است — شروع مرور';dv.onclick=function(){openTjcFav(true);};el.appendChild(dv);}
+  if(due){var dv=document.createElement('div');dv.className='tjc-due';dv.textContent='⏰ امروز '+tjcFa(due)+' کارت موعد مرور است — شروع مرور';dv.onclick=function(){tjcFavOrigin='list';openTjcFav(true);};el.appendChild(dv);}
   var list=document.createElement('div'); list.className='tjc-list';
   HALYA_CHAPTERS.forEach(function(ch){
     var cards=all.filter(function(c){return c.ch===ch.num;}); if(!cards.length) return;
@@ -10994,7 +10995,7 @@ function openTjcList(){
 function openTjcFav(dueOnly){
   var f=tjcLoad(), all=tjcBuild();
   var set=dueOnly?tjcDueList():all.filter(function(c){return f[c.id];});
-  if(!set.length){ tjcHideAll(); document.getElementById('tjcListPage').style.display='block'; nav='tjcList';
+  if(!set.length){ tjcHideAll(); document.getElementById('tjcListPage').style.display='block'; nav='tjcList'; tjcListEmptyFav=true;
     document.getElementById('bBtn').style.display='inline-block';
     document.getElementById('hTitle').textContent='⭐ کارت‌های حفظ‌شده'; document.getElementById('hSub').textContent='';
     document.getElementById('tjcListContent').innerHTML='<div class="tjc-empty">هنوز کارتی حفظ نشده.<br>در «کارت‌های تجوید» روی ★ بزنید تا کارت به اینجا بیاید.</div>'; return; }
@@ -11004,7 +11005,7 @@ function openTjcCards(mode,chNum,keepCur){
   tjcSet=tjcBuild().filter(function(c){return c.ch===chNum;}); tjcMode='ch'; tjcChNum=chNum; tjcCur=(keepCur&&tjcLastCh.num===chNum)?Math.min(tjcLastCh.cur,tjcSet.length-1):0; tjcShowCard();
 }
 function tjcTab(t){
-  if(t==='fav'){ if(tjcMode==='ch') tjcLastCh={num:tjcChNum,cur:tjcCur}; openTjcFav(); }
+  if(t==='fav'){ if(tjcMode==='ch') tjcLastCh={num:tjcChNum,cur:tjcCur}; tjcFavOrigin=(tjcMode==='ch'&&tjcChNum)?'cards':tjcFavOrigin; openTjcFav(); }
   else { if(tjcLastCh.num){ openTjcCards('ch',tjcLastCh.num,true); } else { openTjcList(); } }
 }
 function tjcRefreshTabs(){
@@ -11070,9 +11071,14 @@ function tjcGrade(g){
   tjcSave(f);
   if(tjcCur<tjcSet.length-1){ tjcCur++; tjcShowCard(); } else { openTjcList(); }
 }
+function tjcBackToOrigin(){
+  if(tjcFavOrigin==='cards'&&tjcLastCh.num){ openTjcCards('ch',tjcLastCh.num,true); }
+  else if(tjcFavOrigin==='list'){ openTjcList(); }
+  else { openTajweedFolder(); }
+}
 function goBackFromTjc(){
-  if(nav==='tjcCard'){ if(tjcMode==='fav'){ openTajweedFolder(); } else { openTjcList(); } return true; }
-  if(nav==='tjcList'){ openTajweedFolder(); return true; }
+  if(nav==='tjcCard'){ if(tjcMode==='fav'){ tjcBackToOrigin(); } else { openTjcList(); } return true; }
+  if(nav==='tjcList'){ if(tjcListEmptyFav){ tjcBackToOrigin(); } else { openTajweedFolder(); } return true; }
   return false;
 }
 
