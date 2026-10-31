@@ -5013,20 +5013,29 @@ const NET_RETRY_DELAY=2000;
 let netBufferTimer=null;
 function showNetMsg(t){var e=document.getElementById('netMsg');if(e){e.textContent=t;e.style.display='block';}}
 function hideNetMsg(){var e=document.getElementById('netMsg');if(e)e.style.display='none';}
-au.addEventListener('waiting',function(){
+// archive.org: هر فایل ابتدا 302 redirect میشود و معمولاً ۱٫۳ تا ۲ ثانیه تا اولین بایت طول میکشد (حتی با اینترنت خوب).
+// بنابراین در شروع فراز، پیام خنثی «در حال بارگذاری» و فقط بعد از ۵ ثانیه (یا هنگام قطع در میانهٔ پخش) «اینترنت ضعیف» نشان داده میشود.
+let netWeakTimer=null;
+function onNetWait(){
   if(netBufferTimer)clearTimeout(netBufferTimer);
-  netBufferTimer=setTimeout(function(){showNetMsg('⏳ در حال بارگذاری (اینترنت ضعیف)...');},700);
-});
-au.addEventListener('stalled',function(){
-  if(netBufferTimer)clearTimeout(netBufferTimer);
-  netBufferTimer=setTimeout(function(){showNetMsg('⏳ در حال بارگذاری (اینترنت ضعیف)...');},700);
-});
-au.addEventListener('playing',function(){
+  if(netWeakTimer)clearTimeout(netWeakTimer);
+  var initial=(au.currentTime<0.5);
+  var d1=initial?2500:1200, d2=initial?5000:3500;
+  netBufferTimer=setTimeout(function(){showNetMsg('⏳ در حال بارگذاری...');},d1);
+  netWeakTimer=setTimeout(function(){showNetMsg('⏳ در حال بارگذاری (اینترنت ضعیف)...');},d2);
+}
+function clearNetTimers(){
   if(netBufferTimer){clearTimeout(netBufferTimer);netBufferTimer=null;}
+  if(netWeakTimer){clearTimeout(netWeakTimer);netWeakTimer=null;}
+}
+au.addEventListener('waiting',onNetWait);
+au.addEventListener('stalled',onNetWait);
+au.addEventListener('playing',function(){
+  clearNetTimers();
   netRetryCount=0;hideNetMsg();
 });
 au.addEventListener('canplaythrough',function(){
-  if(netBufferTimer){clearTimeout(netBufferTimer);netBufferTimer=null;}
+  clearNetTimers();
   hideNetMsg();
 });
 au.addEventListener('error',function(){
