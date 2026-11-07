@@ -5202,7 +5202,7 @@ async function isTilawatCached(qariId, tilId){
 
     const prefix=AUDIO_BASE+qariId+'/';
 
-    return keys.some(k=>k.url.startsWith(prefix));
+    return keys.some(k=>k.url.startsWith(prefix)||k.url.includes('/qaris/'+qariId+'/'));
 
   }catch(e){return false;}
 
