@@ -5372,7 +5372,9 @@ function preloadNextPhraseAudio(qari,tilawat,idx){
 
 function setColor(c){document.documentElement.style.setProperty('--qcolor',c);}
 
-function getAudioUrl(qari,f){ if(f.auFull) return f.auFull; /* NEVER add audio_t shortcut here — always route through qaris/{id}/ */ return "https://archive.org/download/naye-quran-audio/qaris/"+qari.id+"/"+f.au; }
+const AU_ITEM_OVERRIDE={"manshawy/audio_t21/":"https://archive.org/download/naye-quran-audio-2026/qaris/"};
+function auBase(rel){for(const k in AU_ITEM_OVERRIDE){if(rel.startsWith(k))return AU_ITEM_OVERRIDE[k];}return "https://archive.org/download/naye-quran-audio/qaris/";}
+function getAudioUrl(qari,f){ if(f.auFull) return f.auFull; /* NEVER add audio_t shortcut here — always route through qaris/{id}/ */ const rel=qari.id+"/"+f.au; return auBase(rel)+rel; }
 
 function openAboutPage(){
 
@@ -9064,7 +9066,7 @@ function openMaqamTilawatDetail(maqam, color, qId, tId){
 
     const qIdx=mqdQueue.length;
 
-    mqdQueue.push({btn:playBtn, audioSrc:has?("https://archive.org/download/naye-quran-audio/qaris/"+q.id+"/"+f.au):null, au:f.au, has:has});
+    mqdQueue.push({btn:playBtn, audioSrc:has?(auBase(q.id+"/"+f.au)+q.id+"/"+f.au):null, au:f.au, has:has});
 
     if(has){
 
@@ -9582,7 +9584,7 @@ function togglePlPlay(plId,idx){
 
   if(!f.au){alert("🔇 این فراز فایل صوتی ندارد");return;}
 
-  const audioPath="https://archive.org/download/naye-quran-audio/qaris/"+q.id+"/"+f.au;
+  const audioPath=auBase(q.id+"/"+f.au)+q.id+"/"+f.au;
 
   if(plPlayingIdx===idx && !plAudio.paused){
 
@@ -10436,7 +10438,7 @@ const ONLINE_LESSONS = [
 {num:11,ayah:"وَأَخْرَجَتِ الْأَرْضُ أَثْقَالَهَا ﴿٢﴾ وَقَالَ الْإِنسَانُ مَا لَهَا ﴿٣﴾ يَوْمَئِذٍ تُحَدِّثُ أَخْبَارَهَا ﴿٤﴾ بِأَنَّ رَبَّكَ أَوْحَىٰ لَهَا ﴿٥﴾",tr:"و زمین بارهای سنگین خود را برون افکند، و انسان گوید: «[زمین] را چه شده است؟» آن روز است که [زمین] خبرهای خود را باز گوید. [همان گونه] که پروردگارت بدان وحی کرده است.",m:"حجاز",d:"اوج مقام",time:"0:34",au:"audio_online_zalzalah/011.mp3"}
   ]}
 ,
-  {id:"alimran_133",archiveBase:"https://archive.org/download/naye-quran-audio/", name:"سوره آل عمران ۱۳۳–۱۴۳", date:"نوامبر ۲۰۲۶", audio_folder:"audio_online_alimran_133", phrases:[
+  {id:"alimran_133",archiveBase:"https://archive.org/download/naye-quran-audio-2026/", name:"سوره آل عمران ۱۳۳–۱۴۳", date:"نوامبر ۲۰۲۶", audio_folder:"audio_online_alimran_133", phrases:[
 {num:1,ayah:"وَسَارِعُوا إِلَىٰ مَغْفِرَةٍ مِنْ رَبِّكُمْ وَجَنَّةٍ",tr:"و برای نیل به آمرزشی از پروردگار خود و بهشتی بشتابید",m:"بیات",d:"قرار بیات",time:"0:11",au:"audio_online_alimran_133/001.mp3"},
 {num:2,ayah:"وَجَنَّةٍ عَرْضُهَا السَّمَاوَاتُ وَالْأَرْضُ أُعِدَّتْ لِلْمُتَّقِينَ ﴿١٣٣﴾",tr:"و بهشتی که پهنایش [به قدر] آسمان‌ها و زمین است [و] برای پرهیزگاران آماده شده است.",m:"بیات",d:"بیات نوا",time:"0:15",au:"audio_online_alimran_133/002.mp3"},
 {num:3,ayah:"الَّذِينَ يُنْفِقُونَ فِي السَّرَّاءِ وَالضَّرَّاءِ وَالْكَاظِمِينَ الْغَيْظَ",tr:"همانان که در فراخی و تنگی انفاق می‌کنند؛ و خشم خود را فرو می‌برند؛",m:"بیات",d:"بیات حسینی",time:"0:21",au:"audio_online_alimran_133/003.mp3"},
@@ -10472,7 +10474,7 @@ const ONLINE_LESSONS = [
 {num:33,ayah:"وَلَقَدْ كُنْتُمْ تَمَنَّوْنَ الْمَوْتَ مِنْ قَبْلِ أَنْ تَلْقَوْهُ فَقَدْ رَأَيْتُمُوهُ",tr:"و شما مرگ را پیش از آنکه با آن روبرو شوید، سخت آرزو می‌کردید؛ پس، آن را دیدید",m:"بیات",d:"",time:"0:22",au:"audio_online_alimran_133/033.mp3"},
 {num:34,ayah:"فَقَدْ رَأَيْتُمُوهُ وَأَنْتُمْ تَنْظُرُونَ ﴿١٤٣﴾",tr:"پس، آن را دیدید و [همچنان] نگاه می‌کردید.",m:"بیات",d:"",time:"0:13",au:"audio_online_alimran_133/034.mp3"}
   ]},
-  {id:"azan_ghalwash",archiveBase:"https://archive.org/download/naye-quran-audio/", name:"اذان (استاد غلوش)", date:"نوامبر ۲۰۲۶", audio_folder:"audio_online_azan", phrases:[
+  {id:"azan_ghalwash",archiveBase:"https://archive.org/download/naye-quran-audio-2026/", name:"اذان (استاد غلوش)", date:"نوامبر ۲۰۲۶", audio_folder:"audio_online_azan", phrases:[
 {num:1,ayah:"اَللّهُ اَكبَرُ",tr:"خدا بزرگ‌تر است",m:"",d:"",time:"0:03",au:"audio_online_azan/001.mp3"},
 {num:2,ayah:"اَللّهُ اَكبَرُ",tr:"خدا بزرگ‌تر است",m:"",d:"",time:"0:14",au:"audio_online_azan/002.mp3"},
 {num:3,ayah:"اَشْهَدُ اَنْ لا اِلَهَ إِلاَّ اللّهُ",tr:"گواهی می‌دهم که معبودی جز خدا نیست",m:"",d:"",time:"0:11",au:"audio_online_azan/003.mp3"},
