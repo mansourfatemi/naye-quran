@@ -167,7 +167,7 @@
 
 .bt.on{background:#FF9800;color:#fff;border-color:#FF9800}
 
-.bspd{color:#3F51B5;font-size:.68em;font-weight:700}.btql{color:#E91E63;font-size:.85em;font-weight:700}.btql.on{background:#E91E63;color:#fff;border-color:#E91E63}
+.bspd{color:#3F51B5;font-size:.68em;font-weight:700}.btql{color:#E91E63;font-size:.85em;font-weight:700}.btql.on{background:#E91E63;color:#fff;border-color:#E91E63}.bab{color:#009688;font-size:.72em;font-weight:700}.bab.on{background:#009688;color:#fff;border-color:#009688}.bab.saved{border-color:#009688;box-shadow:0 0 0 1px #009688 inset}.abm{position:absolute;top:-5px;bottom:-5px;width:3px;border-radius:2px;background:#009688;transform:translateX(50%);display:none;z-index:3;pointer-events:none}.abm.b{background:#E91E63}.abm.dim{opacity:.35}.abr{position:absolute;top:0;bottom:0;background:rgba(0,150,136,.25);display:none;z-index:1;pointer-events:none}.abr.dim{opacity:.4}.abp{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:6px;margin:6px 0 0;font-size:.78em}.abp .abk{display:inline-flex;align-items:center;gap:4px;background:#f3f6f5;border:1px solid #d9e4e1;border-radius:14px;padding:2px 8px}.abp .aba b{color:#009688}.abp .abb b{color:#E91E63}.abp button{border:1px solid #cfd8d6;background:#fff;border-radius:10px;padding:1px 7px;font-size:.95em;cursor:pointer;font-family:inherit}.abp button:disabled{opacity:.35}.abp .abgo{background:#009688;color:#fff;border-color:#009688}.abp .abx{color:#c62828}.abp .ablen{color:#666}
 
 .bspd.on{background:#3F51B5;color:#fff;border-color:#3F51B5}
 
@@ -1657,11 +1657,11 @@ body:not(.dark-mode) .dm-toggle{color:#555}
 
     <div class="pa">
 
-      <div class="pt" id="pTr"><div class="pf" id="pF"></div><div class="pt-thumb" id="pThumb"></div></div>
+      <div class="pt" id="pTr"><div class="pf" id="pF"></div><div class="abr" id="abRg"></div><div class="abm a" id="abMa"></div><div class="abm b" id="abMb"></div><div class="pt-thumb" id="pThumb"></div></div>
 
 
 
-      <div class="tr"><span id="tTo">0:00</span><span id="tC">0:00</span></div>
+      <div class="tr"><span id="tTo">0:00</span><span id="tC">0:00</span></div><div class="abp" id="abPanel" style="display:none" dir="rtl"><span class="abk aba">A <b id="abTa">0:00.0</b><button onclick="abNudge('a',-0.5)" title="نیم ثانیه عقب">&minus;۰٫۵</button><button onclick="abNudge('a',0.5)" title="نیم ثانیه جلو">+۰٫۵</button></span><span class="abk abb">B <b id="abTb">—</b><button class="abnb" onclick="abNudge('b',-0.5)" title="نیم ثانیه عقب">&minus;۰٫۵</button><button class="abnb" onclick="abNudge('b',0.5)" title="نیم ثانیه جلو">+۰٫۵</button></span><span class="ablen" id="abLen"></span><button class="abgo" id="abOn" onclick="abActivate()" style="display:none">🔁 فعال</button><button class="abgo" id="abGo" onclick="abResume()" style="display:none">&#9654; ادامهٔ فراز</button><button class="abx" onclick="abClearAll()" title="حذف بازه">&#10006;</button></div>
 
     </div>
 
@@ -1697,6 +1697,7 @@ body:not(.dark-mode) .dm-toggle{color:#555}
         <button class="btn bn" onclick="nF(true)" title="بعدی">&#9198;</button>
 
         <button class="btn btql" id="tqlBtn" onclick="tTaqlid()" title="حالت تقلید">&#127919;</button>
+        <button class="btn bab" id="abBtn" onclick="tAB()" title="حلقهٔ A–B">A·B</button>
 
       </div>
 
@@ -6986,6 +6987,7 @@ function upd(autoPlay){
 
   setTimeout(fixCtrlPos,0);
 
+  abOnPhraseChange();
   // پاک کردن ضبط قبلی هنگام تعویض فراز
 
   if(taqlidMode){stopTaqlid();}
@@ -7230,7 +7232,7 @@ function tTaqlid(){
   if(taqlidMode){stopTaqlid();return;}
   if(!cT||!cT.faraz[cI]||!cT.faraz[cI].au)return;
   taqlidMode=true;
-  rp=false;plMode=null;
+  rp=false;plMode=null;if(abLoop)abSetActive(false);
   const b=document.getElementById('tqlBtn');
   if(b){b.textContent='⏹وقف';b.classList.add('on');}
   const savedI=cI,savedT=cT;
@@ -7313,6 +7315,80 @@ function tTaqlid(){
     },{once:true});
   }
 }
+
+// ══ حلقهٔ A–B (تمرین تحریر) ══
+let abLoop=false, abA=null, abB=null, abTimer=null, abPending=false, abSuspend=false;
+function abDur(){if(au.duration&&isFinite(au.duration)&&au.duration>0)return au.duration;try{const t=(cT.faraz[cI].t||"0:00").split(":");return (+t[0])*60+(+t[1]);}catch(e){return 0;}}
+function abKey(){return (curQari&&cT&&cT.faraz[cI])?(curQari.id+"_"+cT.id+"_"+cT.faraz[cI].n):null;}
+function abLoadAll(){try{return JSON.parse(localStorage.getItem("nq_ab")||"{}");}catch(e){return {};}}
+function abSave(){const k=abKey();if(!k)return;const o=abLoadAll();if(abA!==null&&abB!==null)o[k]=[Math.round(abA*10)/10,Math.round(abB*10)/10];else delete o[k];try{localStorage.setItem("nq_ab",JSON.stringify(o));}catch(e){}}
+function abFmt(t){const m=Math.floor(t/60),s=(t%60);return m+":"+(s<10?"0":"")+s.toFixed(1);}
+function abTick(){
+  if(!abLoop||abA===null||abB===null){abTimer=null;return;}
+  if(!abSuspend&&pl&&!_dragging&&au.currentTime>=abB-0.03){au.currentTime=abA;}
+  abTimer=setTimeout(abTick,50);
+}
+function abSetActive(on){
+  abLoop=!!on;
+  if(abLoop){if(taqlidMode)stopTaqlid();if(abTimer)clearTimeout(abTimer);abTimer=setTimeout(abTick,50);}
+  else if(abTimer){clearTimeout(abTimer);abTimer=null;}
+  abRender();
+}
+function abRender(){
+  const ma=document.getElementById("abMa"),mb=document.getElementById("abMb"),rg=document.getElementById("abRg"),pn=document.getElementById("abPanel"),btn=document.getElementById("abBtn");
+  if(!ma||!mb||!rg||!pn||!btn)return;
+  const d=abDur();
+  const pa=(abA!==null&&d)?Math.max(0,Math.min(100,abA/d*100)):null, pb=(abB!==null&&d)?Math.max(0,Math.min(100,abB/d*100)):null;
+  ma.style.display=pa!==null?"block":"none"; if(pa!==null)ma.style.right=pa+"%";
+  mb.style.display=pb!==null?"block":"none"; if(pb!==null)mb.style.right=pb+"%";
+  if(pa!==null&&pb!==null){rg.style.display="block";rg.style.right=pa+"%";rg.style.width=Math.max(0,pb-pa)+"%";}else rg.style.display="none";
+  [ma,mb,rg].forEach(x=>x.classList.toggle("dim",!abLoop));
+  btn.classList.toggle("on",abLoop); btn.classList.toggle("saved",!abLoop&&abA!==null&&abB!==null);
+  btn.title=abLoop?"خاموش کردن حلقه و ادامهٔ فراز":(abA===null?"حلقهٔ A–B: ضربهٔ اول = شروع، ضربهٔ دوم = پایان":(abB===null?"ضربهٔ دوم = نقطهٔ پایان":"فعال کردن حلقهٔ ذخیرهشده"));
+  if(abA===null){pn.style.display="none";}
+  else{
+    pn.style.display="flex";
+    document.getElementById("abTa").textContent=abFmt(abA);
+    document.getElementById("abTb").textContent=abB===null?"—":abFmt(abB);
+    document.getElementById("abLen").textContent=abB===null?"ضربهٔ دوم را بزنید":("("+(abB-abA).toFixed(1)+" ث)");
+    document.querySelectorAll("#abPanel .abnb").forEach(x=>x.disabled=(abB===null));
+    document.getElementById("abGo").style.display=abLoop?"inline-block":"none";
+    document.getElementById("abOn").style.display=(!abLoop&&abB!==null)?"inline-block":"none";
+  }
+  if(typeof fixCtrlPos==="function")setTimeout(fixCtrlPos,0);
+}
+function tAB(){
+  if(!cT||!cT.faraz[cI]||!cT.faraz[cI].au)return;
+  if(abLoop){abSetActive(false);return;}
+  if(abA!==null&&abB!==null){abActivate();return;}
+  const d=abDur(); if(!d)return;
+  if(abA===null){abA=Math.max(0,Math.min(d-0.5,au.currentTime));abPending=true;abRender();return;}
+  let b=au.currentTime; if(b<abA){const t=abA;abA=b;b=t;} if(b-abA<0.5)b=Math.min(d,abA+0.5); if(b-abA<0.5)abA=Math.max(0,b-0.5);
+  abB=b;abPending=false;abSave();abActivate();
+}
+function abActivate(){
+  abSetActive(true);
+  if(au.currentTime<abA||au.currentTime>abB)au.currentTime=abA;
+  if(!pl)tPlay();
+}
+function abNudge(which,delta){
+  const d=abDur(); if(!d||abA===null)return;
+  if(which==="a"){abA=Math.max(0,Math.min(abA+delta,(abB!==null?abB:d)-0.5));}
+  else{if(abB===null)return;abB=Math.min(d,Math.max(abB+delta,abA+0.5));}
+  abA=Math.round(abA*10)/10; if(abB!==null)abB=Math.round(abB*10)/10;
+  if(abB!==null)abSave();
+  if(abLoop&&(au.currentTime<abA||au.currentTime>abB))au.currentTime=abA;
+  abRender();
+}
+function abResume(){abSetActive(false);if(!pl)tPlay();}
+function abClearAll(){abA=null;abB=null;abPending=false;abSave();abSetActive(false);}
+function abOnPhraseChange(){
+  if(abTimer){clearTimeout(abTimer);abTimer=null;}
+  abLoop=false;abA=null;abB=null;abPending=false;abSuspend=false;
+  const k=abKey(); if(k){const o=abLoadAll();if(o[k]&&o[k].length===2){abA=o[k][0];abB=o[k][1];}}
+  abRender();
+}
+
 function tSpeed(){const speeds=[1,0.75,0.5];let idx=speeds.indexOf(curSpeed);idx=(idx+1)%speeds.length;curSpeed=speeds[idx];au.playbackRate=curSpeed;const b=document.getElementById("speedBtn");b.textContent=(curSpeed===1?"1x":curSpeed+"x");b.classList.toggle("on",curSpeed!==1);}
 
 function tFav(){
@@ -7502,6 +7578,7 @@ function getRatioFromEvent(e){
 
 
 function doSeek(ratio){
+  if(abLoop&&au.duration&&abA!==null&&abB!==null){const _t=ratio*au.duration;if(_t<abA-0.05||_t>abB+0.05)abSetActive(false);}
 
   updateThumb(ratio);
 
@@ -7807,7 +7884,9 @@ function playBothSequential(){
 
   status.textContent='در حال پخش صدای قاری...';
 
-  au.currentTime=0;
+  au.currentTime=(abLoop&&abA!==null)?abA:0;abSuspend=abLoop;
+
+  if(abLoop&&abB!==null){const _abw=()=>{if(!abSuspend)return;if(!pl){setTimeout(_abw,100);return;}if(au.currentTime>=abB){au.pause();const h=au.onended;if(h)h();}else setTimeout(_abw,50);};setTimeout(_abw,120);}
 
   au.play().then(()=>{
 
@@ -7819,7 +7898,7 @@ function playBothSequential(){
 
   au.onended=function _bothEnd(){
 
-    au.onended=null;
+    au.onended=null;abSuspend=false;
 
     pl=false;
 
@@ -7997,7 +8076,9 @@ async function recLibDel(id){
 
 
 
+au.addEventListener("loadedmetadata",()=>{abRender();});
 au.addEventListener("timeupdate",()=>{
+  if(abLoop&&!abSuspend&&abB!==null&&!_dragging&&au.currentTime>=abB)au.currentTime=abA;
 
   if(au.duration && !_dragging){
 
@@ -8014,6 +8095,7 @@ au.addEventListener("timeupdate",()=>{
 });
 
 au.addEventListener("ended",()=>{
+  if(abLoop&&abA!==null&&abB!==null&&!abSuspend){au.currentTime=abA;au.play().catch(()=>{});return;}
 
   if(taqlidMode){ return; }
 
