@@ -1661,7 +1661,7 @@ body:not(.dark-mode) .dm-toggle{color:#555}
 
 
 
-      <div class="tr"><span id="tTo">0:00</span><span id="tC">0:00</span></div><div class="abp" id="abPanel" style="display:none" dir="rtl"><span class="abk aba">A <b id="abTa">0:00.0</b><button onclick="abNudge('a',-0.5)" title="نیم ثانیه عقب">&minus;۰٫۵</button><button onclick="abNudge('a',0.5)" title="نیم ثانیه جلو">+۰٫۵</button></span><span class="abk abb">B <b id="abTb">—</b><button class="abnb" onclick="abNudge('b',-0.5)" title="نیم ثانیه عقب">&minus;۰٫۵</button><button class="abnb" onclick="abNudge('b',0.5)" title="نیم ثانیه جلو">+۰٫۵</button></span><span class="abk abw">وقفه <b id="abTp">۰</b> ث <button onclick="abPause(-1)" title="یک ثانیه کمتر">&minus;۱</button><button onclick="abPause(1)" title="یک ثانیه بیشتر">+۱</button><button id="abPEq" onclick="abPauseEq()" title="وقفه برابر طول بازه">= بازه</button></span><span class="abcd" id="abCd"></span><span class="ablen" id="abLen"></span><button class="abgo" id="abOn" onclick="abActivate()" style="display:none">🔁 فعال</button><button class="abgo" id="abGo" onclick="abResume()" style="display:none">&#9654; ادامهٔ فراز</button><button class="abx" onclick="abClearAll()" title="حذف بازه">&#10006;</button></div>
+      <div class="tr"><span id="tTo">0:00</span><span id="tC">0:00</span></div><div class="abp" id="abPanel" style="display:none" dir="rtl"><span class="abk aba">A <b id="abTa">0:00.0</b><button onclick="abNudge('a',-0.5)" title="نیم ثانیه عقب">&minus;0.5</button><button onclick="abNudge('a',0.5)" title="نیم ثانیه جلو">+0.5</button></span><span class="abk abb">B <b id="abTb">—</b><button class="abnb" onclick="abNudge('b',-0.5)" title="نیم ثانیه عقب">&minus;0.5</button><button class="abnb" onclick="abNudge('b',0.5)" title="نیم ثانیه جلو">+0.5</button></span><span class="abk abw">وقفه <b id="abTp">0</b> ث <button onclick="abPause(-1)" title="یک ثانیه کمتر">&minus;1</button><button onclick="abPause(1)" title="یک ثانیه بیشتر">+1</button><button id="abPEq" onclick="abPauseEq()" title="وقفه برابر طول بازه">= بازه</button></span><span class="abcd" id="abCd"></span><span class="ablen" id="abLen"></span><button class="abgo" id="abOn" onclick="abActivate()" style="display:none">🔁 فعال</button><button class="abgo" id="abGo" onclick="abResume()" style="display:none">&#9654; ادامهٔ فراز</button><button class="abx" onclick="abClearAll()" title="حذف بازه">&#10006;</button></div>
 
     </div>
 
@@ -7383,7 +7383,7 @@ function abNudge(which,delta){
   abRender();
 }
 function abResume(){abSetActive(false);if(!pl)tPlay();}
-function abFa(n){return String(n).replace(/\d/g,x=>"۰۱۲۳۴۵۶۷۸۹"[x]);}
+function abFa(n){return String(n);}
 function abPauseLen(){if(abPEq&&abA!==null&&abB!==null)return Math.max(0.5,(abB-abA)/(au.playbackRate||1));return abP;}
 function abReachedB(){
   const L=abPauseLen();
