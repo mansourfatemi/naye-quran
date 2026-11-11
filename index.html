@@ -5368,6 +5368,47 @@ function preloadNextPhraseAudio(qari,tilawat,idx){
     _preloadAu.load();
   }catch(e){}
 }
+// ── کش پسزمینه (لایهٔ ۳): فراز جاری + چند فراز بعدی بهتدریج در کش آفلاین ذخیره میشوند ──
+// نتیجه: شنوندهای که یک بار تلاوتی را گوش داده، در روزهای خرابی سرور به آن وابسته نیست.
+const BG_CACHE_AHEAD=4;      // تعداد فراز پیشرو
+const BG_CACHE_DELAY=1500;   // تأخیر اولیه تا بافر فراز جاری کامل شود (ms)
+let _bgQueue=[],_bgRunning=false,_bgTimer=null;
+function bgCacheEnabled(){
+  try{
+    if(location.protocol==='file:')return false;
+    if(!('caches' in window))return false;
+    if(localStorage.getItem('nq_bgCache')==='0')return false;
+    var c=navigator.connection;if(c&&c.saveData)return false;
+  }catch(e){return false;}
+  return true;
+}
+function bgCacheAhead(qari,tilawat,idx){
+  try{
+    if(!bgCacheEnabled()||!tilawat||!tilawat.faraz)return;
+    var urls=[];
+    for(var i=idx;i<tilawat.faraz.length&&i<=idx+BG_CACHE_AHEAD;i++){var f=tilawat.faraz[i];if(f&&f.au)urls.push(getAudioUrl(qari,f));}
+    _bgQueue=urls;
+    if(_bgTimer)clearTimeout(_bgTimer);
+    _bgTimer=setTimeout(bgCacheRun,BG_CACHE_DELAY);
+  }catch(e){}
+}
+async function bgCacheRun(){
+  if(_bgRunning)return;_bgRunning=true;
+  try{
+    var cache=await caches.open(OFFLINE_CACHE);
+    while(_bgQueue.length){
+      var url=_bgQueue.shift();
+      try{
+        if(await cache.match(url))continue;
+        var resp=await fetch(url,{priority:'low'});
+        if(resp&&resp.ok){var blob=await resp.blob();await cache.put(new Request(url),new Response(blob,{status:200,headers:{'Content-Type':'audio/mpeg'}}));}
+      }catch(e){}
+    }
+  }catch(e){}
+  _bgRunning=false;
+  if(_bgQueue.length)bgCacheRun();
+}
+
 
 
 
@@ -7020,6 +7061,7 @@ if(recUrl){URL.revokeObjectURL(recUrl);recUrl=null;recBlob=null;}
     document.getElementById("pTr").style.opacity="1";
 
     preloadNextPhraseAudio(curQari,cT,cI);
+    bgCacheAhead(curQari,cT,cI);
 
     if(autoPlay){
 
