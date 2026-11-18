@@ -1382,7 +1382,7 @@ body:not(.dark-mode) .dm-toggle{color:#555}
     <div class="qari-arrow">&#8250;</div>
 
   </div>
-<div class="about-link-wrap"><a class="about-link" href="help.html">📖 راهنمای استفاده</a> &nbsp;|&nbsp; <a class="about-link" onclick="openAboutPage()">درباره سازنده</a></div>
+<div class="about-link-wrap"><a class="about-link" href="help.html">📖 راهنمای استفاده</a> &nbsp;|&nbsp; <a class="about-link" onclick="openAboutPage()">درباره سازنده</a> &nbsp;|&nbsp; <a class="about-link" onclick="openFeedback(false)">&#128172; نظر شما</a></div>
 
 </div>
 
@@ -1672,7 +1672,7 @@ body:not(.dark-mode) .dm-toggle{color:#555}
 
       <div class="ctrl-row ctrl-util">
 
-        <button class="btn bfav" id="favBtn" onclick="tFav()" title="علاقهمندی">&#9733;</button>
+        <button class="btn bfav" id="favBtn" onclick="tFav()" title="علاقهمندی">&#9733;</button><button class="btn bshare" onclick="openFeedback(true)" title="نظر دربارهٔ این فراز">&#128172;</button>
 
         <button class="btn bshare" id="shareBtn" onclick="tShare()" title="اشتراکگذاری">&#128228;</button>
 
@@ -12922,6 +12922,76 @@ function toggleShahhatClip(id){
 }
 
 
+
+
+// ══ نظرات کاربران → Firebase Realtime DB (REST، بدون SDK) ══
+const FB_URL='https://fatemi-schulplaner-default-rtdb.europe-west1.firebasedatabase.app/nayequran_feedback.json';
+const FB_QUEUE='nq_fb_queue';
+function fbCtx(withPhrase){
+  var c={app:(window.IS_APK?'apk':'pwa'),ua:String(navigator.userAgent||'').slice(0,120)};
+  if(withPhrase){try{
+    c.qari=curQari?(typeof curQari==='string'?curQari:(curQari.name||curQari.id||'')):'';
+    c.tilawat=cT?(typeof cT==='string'?cT:(cT.name||'')):''; c.fraz=(cI|0)+1;
+  }catch(e){}}
+  return c;
+}
+function fbEnsureUI(){
+  if(document.getElementById('fbOverlay'))return;
+  var st=document.createElement('style');
+  st.textContent='#fbOverlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:99999;display:none;align-items:center;justify-content:center;padding:16px;direction:rtl}#fbOverlay.show{display:flex}'
+   +'.fbCard{background:#fffdf7;border:2px solid #c9a84c;border-radius:16px;max-width:460px;width:100%;padding:18px;box-shadow:0 10px 40px rgba(0,0,0,.35);font-family:inherit;max-height:92vh;overflow:auto}'
+   +'.fbCard h3{margin:0 0 6px;color:#2E7D32;font-size:1.15em}.fbCard .fbc{font-size:.85em;color:#777;margin-bottom:8px;min-height:1em}'
+   +'.fbCard select,.fbCard textarea,.fbCard input{width:100%;box-sizing:border-box;border:1.5px solid #ddd;border-radius:10px;padding:10px;font-size:1em;font-family:inherit;margin-bottom:10px;background:#fff;direction:rtl}'
+   +'.fbCard textarea{min-height:110px;resize:vertical}.fbRow{display:flex;gap:10px}.fbRow button{flex:1;border:none;border-radius:12px;padding:12px;font-size:1em;font-family:inherit;cursor:pointer}'
+   +'.fbSend{background:#2E7D32;color:#fff;font-weight:700}.fbCancel{background:#eee;color:#444}.fbMsg{margin-top:10px;font-size:.9em;min-height:1.2em;text-align:center}'
+   +'.dark-mode .fbCard{background:#1a1a2a;color:#ddd}.dark-mode .fbCard select,.dark-mode .fbCard textarea,.dark-mode .fbCard input{background:#222;color:#ddd;border-color:#444}';
+  document.head.appendChild(st);
+  var o=document.createElement('div'); o.id='fbOverlay';
+  o.innerHTML='<div class="fbCard"><h3>&#128172; نظر شما</h3><div class="fbc" id="fbCtxLine"></div>'
+   +'<select id="fbType"><option value="پیشنهاد">پیشنهاد برای بهتر شدن برنامه</option><option value="اشکال">گزارش اشکال / خطا</option><option value="محتوا">اشکال در متن، ترجمه یا مقام</option><option value="تشکر">تشکر و دعا</option><option value="دیگر">موارد دیگر</option></select>'
+   +'<textarea id="fbText" maxlength="1500" placeholder="نظر خود را اینجا بنویسید..."></textarea>'
+   +'<input id="fbName" maxlength="60" placeholder="نام شما (اختیاری)">'
+   +'<div class="fbRow"><button class="fbSend" onclick="fbSend()">ارسال</button><button class="fbCancel" onclick="closeFeedback()">بستن</button></div><div class="fbMsg" id="fbMsg"></div></div>';
+  o.addEventListener('click',function(e){if(e.target===o)closeFeedback();});
+  document.body.appendChild(o);
+  try{document.getElementById('fbName').value=localStorage.getItem('nq_fb_name')||'';}catch(e){}
+}
+function openFeedback(withPhrase){
+  fbEnsureUI(); var o=document.getElementById('fbOverlay'); o.dataset.ctx=withPhrase?'1':'';
+  var c=fbCtx(!!withPhrase), line='';
+  if(withPhrase&&(c.qari||c.tilawat))line='دربارهٔ: '+[c.qari,c.tilawat,c.fraz?('فراز '+c.fraz):''].filter(Boolean).join(' › ');
+  document.getElementById('fbCtxLine').textContent=line; document.getElementById('fbMsg').textContent='';
+  o.classList.add('show'); setTimeout(function(){document.getElementById('fbText').focus();},50);
+}
+function closeFeedback(){var o=document.getElementById('fbOverlay');if(o)o.classList.remove('show');}
+function fbPost(item){
+  return fetch(FB_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(item)}).then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json();});
+}
+function fbFlushQueue(){
+  var q=[];try{q=JSON.parse(localStorage.getItem(FB_QUEUE)||'[]');}catch(e){}
+  if(!q.length||!navigator.onLine)return;
+  var it=q.shift();
+  fbPost(it).then(function(){localStorage.setItem(FB_QUEUE,JSON.stringify(q));if(q.length)fbFlushQueue();}).catch(function(){});
+}
+function fbSend(){
+  var t=(document.getElementById('fbText').value||'').trim(), n=(document.getElementById('fbName').value||'').trim(), m=document.getElementById('fbMsg');
+  if(t.length<3){m.style.color='#c62828';m.textContent='لطفاً متن نظر را بنویسید.';return;}
+  try{localStorage.setItem('nq_fb_name',n);}catch(e){}
+  var o=document.getElementById('fbOverlay'), item=fbCtx(o.dataset.ctx==='1');
+  item.type=document.getElementById('fbType').value; item.text=t; if(n)item.name=n;
+  item.ts=Date.now(); item.date=new Date().toISOString(); item.status='new';
+  m.style.color='#555'; m.textContent='در حال ارسال...';
+  fbPost(item).then(function(){
+    m.style.color='#2E7D32'; m.textContent='نظر شما رسید. از شما سپاسگزاریم.'; document.getElementById('fbText').value='';
+    setTimeout(closeFeedback,1800);
+  }).catch(function(){
+    var q=[];try{q=JSON.parse(localStorage.getItem(FB_QUEUE)||'[]');}catch(e){} q.push(item);
+    try{localStorage.setItem(FB_QUEUE,JSON.stringify(q));}catch(e){}
+    m.style.color='#e67e22'; m.textContent='اینترنت در دسترس نیست؛ نظر شما ذخیره شد و با اتصال بعدی خودکار ارسال میشود.';
+    document.getElementById('fbText').value=''; setTimeout(closeFeedback,2600);
+  });
+}
+window.addEventListener('online',fbFlushQueue); setTimeout(fbFlushQueue,4000);
 
 </script>
 
