@@ -12965,7 +12965,7 @@ function openFeedback(withPhrase){
 }
 function closeFeedback(){var o=document.getElementById('fbOverlay');if(o)o.classList.remove('show');}
 function fbPost(item){
-  return fetch(FB_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(item)}).then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json();});
+  return fetch(FB_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(item)}).then(function(r){if(!r.ok){var e=new Error('HTTP '+r.status);e.http=r.status;throw e;}return r.json();});
 }
 function fbFlushQueue(){
   var q=[];try{q=JSON.parse(localStorage.getItem(FB_QUEUE)||'[]');}catch(e){}
@@ -12984,10 +12984,11 @@ function fbSend(){
   fbPost(item).then(function(){
     m.style.color='#2E7D32'; m.textContent='نظر شما رسید. از شما سپاسگزاریم.'; document.getElementById('fbText').value='';
     setTimeout(closeFeedback,1800);
-  }).catch(function(){
+  }).catch(function(err){
     var q=[];try{q=JSON.parse(localStorage.getItem(FB_QUEUE)||'[]');}catch(e){} q.push(item);
     try{localStorage.setItem(FB_QUEUE,JSON.stringify(q));}catch(e){}
-    m.style.color='#e67e22'; m.textContent='اینترنت در دسترس نیست؛ نظر شما ذخیره شد و با اتصال بعدی خودکار ارسال میشود.';
+    m.style.color='#e67e22';
+    m.textContent=(err&&err.http)?('سرور نظرها فعلاً پاسخ نمیدهد (خطای '+err.http+')؛ نظر شما ذخیره شد و بعداً خودکار ارسال میشود.'):'اینترنت در دسترس نیست؛ نظر شما ذخیره شد و با اتصال بعدی خودکار ارسال میشود.';
     document.getElementById('fbText').value=''; setTimeout(closeFeedback,2600);
   });
 }
