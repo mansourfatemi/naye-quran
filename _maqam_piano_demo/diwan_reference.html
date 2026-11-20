@@ -229,7 +229,7 @@ function drawLadder(svgId, fromIdx, toIdx){
   const W = 400, Q = 24, PAD = 26;
   const maxOff = FULL_TABLE[toIdx].off, minOff = FULL_TABLE[fromIdx].off;
   const H = PAD*2 + (maxOff-minOff)*2*Q;
-  svg.setAttribute('viewBox', '0 0 '+W+' '+H); svg.setAttribute('preserveAspectRatio','xMidYMin meet'); svg.removeAttribute('height'); svg.removeAttribute('width');
+  svg.setAttribute('viewBox', '0 0 '+W+' '+H); svg.setAttribute('preserveAspectRatio','xMidYMin meet'); svg.setAttribute('direction','rtl'); svg.removeAttribute('height'); svg.removeAttribute('width');
   const yOf = off => PAD + (maxOff-off)*2*Q;
   let html = '';
   // ریل عمودی نردبان
@@ -241,7 +241,7 @@ function drawLadder(svgId, fromIdx, toIdx){
     const pt = FULL_TABLE[i], y = yOf(pt.off);
     html += '<g class="ld-sub" onclick="playFreq('+freqOf(pt.off).toFixed(3)+')">';
     html += '<line x1="150" y1="'+y+'" x2="'+(W-16)+'" y2="'+y+'" class="ld-subln"/>';
-    html += '<text x="'+(W-22)+'" y="'+(y-3)+'" class="ld-subt" text-anchor="end">'+pt.auth+'</text>';
+    html += '<text x="'+(W-22)+'" y="'+(y-3)+'" class="ld-subt" text-anchor="start">'+pt.auth+'</text>';
     html += '<rect x="150" y="'+(y-10)+'" width="'+(W-166)+'" height="20" fill="transparent"/></g>';
   }
   // پلههای اصلی + فاصلهها
@@ -256,9 +256,9 @@ function drawLadder(svgId, fromIdx, toIdx){
     }
     html += '<g class="ld-main'+(isBase?' base':'')+'" onclick="playFreq('+freqOf(pt.off).toFixed(3)+')">';
     html += '<rect x="80" y="'+(y-14)+'" width="'+(W-96)+'" height="28" rx="8" class="ld-bar"/>';
-    html += '<text x="'+(W-26)+'" y="'+(y+5)+'" class="ld-name" text-anchor="end">'+pt.auth+'</text>';
-    html += '<text x="90" y="'+(y+4)+'" class="ld-west" text-anchor="start">'+pt.west+'</text>';
-    html += '<text x="'+(W-16+8)+'" y="'+(y+4)+'" class="ld-spk" text-anchor="start">🔊</text></g>';
+    html += '<text x="'+(W-26)+'" y="'+(y+5)+'" class="ld-name" text-anchor="start">'+pt.auth+'</text>';
+    html += '<text x="104" y="'+(y+4)+'" class="ld-west" text-anchor="end">'+pt.west+'</text>';
+    html += '<text x="86" y="'+(y+4)+'" class="ld-spk" text-anchor="end">🔊</text></g>';
     prev = pt;
   }
   svg.innerHTML = html;
