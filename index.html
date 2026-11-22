@@ -5540,6 +5540,18 @@ function onNetWait(){
   netBufferTimer=setTimeout(function(){showNetMsg('⏳ در حال بارگذاری...');},d1);
   netWeakTimer=setTimeout(function(){showNetMsg('⏳ در حال بارگذاری (اینترنت ضعیف)...');},d2);
 }
+function netDiagnose(url){
+  if(!url)return;
+  if(navigator.onLine===false){showNetMsg('❌ دستگاه آفلاین است (اینترنت قطع). برای پخش بدون اینترنت، تلاوت را دانلود کنید (⬇️)');return;}
+  var ctl=('AbortController' in window)?new AbortController():null;var tm=ctl?setTimeout(function(){ctl.abort();},12000):null;
+  fetch(url,{method:'GET',headers:{'Range':'bytes=0-0'},cache:'no-store',signal:ctl?ctl.signal:undefined}).then(function(r){
+    if(tm)clearTimeout(tm);
+    if(r.status===404)showNetMsg('❌ فایل صوتی این فراز روی سرور یافت نشد (کد ۴۰۴) — مشکل از اینترنت نیست؛ لطفاً این فراز را به سازنده اطلاع دهید (💬)');
+    else if(r.status>=500)showNetMsg('❌ سرور archive.org موقتاً پاسخ نمیدهد (کد '+r.status+') — چند دقیقه بعد دوباره تلاش کنید');
+    else if(r.ok||r.status===206)showNetMsg('⚠️ فایل روی سرور موجود است ولی پخش ناموفق بود — اینترنت بسیار کند است یا حافظهٔ دستگاه پر است. تلاوت را دانلود کنید (⬇️) یا دوباره ▶ بزنید');
+    else showNetMsg('❌ خطا در بارگذاری (کد '+r.status+')');
+  }).catch(function(){if(tm)clearTimeout(tm);showNetMsg('❌ ارتباط با سرور صوت برقرار نشد — اینترنت قطع/ضعیف یا archive.org مسدود است. برای پخش آفلاین، تلاوت را دانلود کنید (⬇️)');});
+}
 function clearNetTimers(){
   if(netBufferTimer){clearTimeout(netBufferTimer);netBufferTimer=null;}
   if(netWeakTimer){clearTimeout(netWeakTimer);netWeakTimer=null;}
@@ -5568,6 +5580,7 @@ au.addEventListener('error',function(){
     },NET_RETRY_DELAY);
   }else{
     showNetMsg('❌ خطا در بارگذاری — اتصال اینترنت ضعیف است. برای پخش بدون قطعی، این تلاوت را دانلود کنید (⬇️)');
+    netDiagnose(au.src);
   }
 });
 // پیشبارگذاری فراز بعدی در پسزمینه — کاهش کندی هنگام رفتن به فراز بعد

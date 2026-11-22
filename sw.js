@@ -1,4 +1,4 @@
-const CACHE='mt-mq-v20261122210935';
+const CACHE='mt-mq-v20261122214754';
 
 const CORE=['./','./index.html','./manifest.json','./icon-192.png','./icon-512.png','./avatar_manshawy.jpg','./avatar_mostafa_ismail.jpg','./avatar_hashemi.jpg','./avatar_shahhat_anwar.jpg','./creator.jpg'];
 
@@ -28,7 +28,7 @@ self.addEventListener('fetch',e=>{
 
     e.respondWith(caches.open('nq-offline-v1').then(async c=>{
 
-      const hit=await c.match(e.request.url);
+      let hit=null;try{hit=await c.match(e.request.url);}catch(_){hit=null;}
 
       if(hit){
 
@@ -54,13 +54,13 @@ self.addEventListener('fetch',e=>{
 
         const resp=await fetch(e.request);
 
-        if(resp&&resp.status===200)c.put(e.request.url,resp.clone());
+        if(resp&&resp.status===200){try{c.put(e.request.url,resp.clone()).catch(function(){});}catch(_){}}
 
         return resp;
 
       }catch(err){return new Response('',{status:503});}
 
-    }));
+    }).catch(function(){return fetch(e.request);}));
 
     return;
 
