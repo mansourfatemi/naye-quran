@@ -7487,7 +7487,7 @@ function pF(ap){
 
 }
 
-function tRep(){rp=!rp;const b=document.getElementById("rBtn");b.classList.toggle("on",rp);if(rp)b.style.background=curQari.color;}
+function tRep(){rp=!rp;const b=document.getElementById("rBtn");b.classList.toggle("on",rp);if(rp)b.style.background=curQari.color;else b.style.background="";}
 
 function stopTaqlid(){
   taqlidMode=false;
@@ -7506,6 +7506,7 @@ function tTaqlid(){
   if(!cT||!cT.faraz[cI]||!cT.faraz[cI].au)return;
   taqlidMode=true;
   rp=false;plMode=null;if(abLoop)abSetActive(false);
+  var _rb=document.getElementById('rBtn');if(_rb){_rb.classList.remove('on');_rb.style.background='';}
   const b=document.getElementById('tqlBtn');
   if(b){b.textContent='⏹وقف';b.classList.add('on');}
   const savedI=cI,savedT=cT;
